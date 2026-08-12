@@ -19,6 +19,7 @@ const projects = [
     title: 'IMAGEM DE ATLETA',
     category: 'DIREÇÃO · CONTEÚDO · BRANDING',
     type: 'video',
+    video: '/videos/luis-miguel-video.mp4',
    
   },
   {
