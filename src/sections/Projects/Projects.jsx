@@ -3,7 +3,7 @@ import './Projects.css';
 import sidaoImg from '../../assets/imagens/sidao.png';
 import lucanetaImg from '../../assets/imagens/lucaneta.png';
 import luisMiguelImg from '../../assets/imagens/luis-miguel.png';
-import luisMiguelVideo from '../../assets/videos/luis-miguel-video.mp4';
+
 import kreativeAtletaImg from '../../assets/imagens/kreative-atleta.png';
 
 const projects = [
