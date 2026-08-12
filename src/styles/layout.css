@@ -1,0 +1,29 @@
+.container {
+  width: 100%;
+  max-width: var(--container-max); /* 1280px */
+  margin-inline: auto;
+  padding-inline: 2.4rem; /* Mobile: respiro padrão */
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding-inline: 4.0rem; /* Tablet: equilibrado */
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    padding-inline: 6.4rem; /* Desktop: respiro elegante, sem espremer o conteúdo */
+  }
+}
+
+/* Utilitários de espaçamento */
+.section-padding {
+  padding-block: var(--space-lg);
+}
+
+@media (min-width: 1024px) {
+  .section-padding {
+    padding-block: var(--space-xl);
+  }
+}

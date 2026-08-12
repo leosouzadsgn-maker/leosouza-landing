@@ -1,0 +1,506 @@
+/* Container Principal da Hero */
+.hero-section {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: var(--bg-main);
+  /* Inicializa as variáveis do parallax */
+  --move-x: 0;
+  --move-y: 0;
+}
+
+/* Efeito de luz cinematográfica sutil no fundo */
+.hero-glow {
+  position: absolute;
+  top: 30%;
+  left: 20%;
+  width: 60vw;
+  height: 60vw;
+  background: radial-gradient(circle, var(--surface) 0%, transparent 70%);
+  opacity: 0.5;
+  filter: blur(80px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Luz cinematográfica difusa com animação contínua */
+.hero-ambient-light {
+  position: absolute;
+  top: 15%;
+  left: 20%;
+  width: 50vw;
+  height: 50vw;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.04) 0%, transparent 60%);
+  filter: blur(80px);
+  z-index: 0;
+  pointer-events: none;
+  animation: pulseLight 10s ease-in-out infinite alternate; /* Movimento lento e contínuo */
+}
+
+/* Camada da imagem cobrindo a área editorialmente */
+.hero-image-layer {
+  position: absolute;
+  right: 0;
+  bottom: -12vh;
+  width: 55vw;
+  height: 95vh;
+  max-width: 900px;
+  z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  pointer-events: none;
+}
+
+
+/* Imagem sem fundo tratada para estética Premium/Dark */
+.hero-image-png {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center bottom;
+  opacity: 0.85;
+  filter: grayscale(100%) contrast(1.1) brightness(0.9);
+}
+
+/* Degradês pretos para fundir a imagem ao background */
+.hero-shadow-overlay {
+  position: absolute;
+  inset: 0;
+  background: 
+    linear-gradient(to top, var(--bg-main) 0%, transparent 20%), /* Fundo base */
+    linear-gradient(to right, var(--bg-main) 0%, transparent 40%), /* Transição da esquerda pro texto */
+    linear-gradient(to left, var(--bg-main) 0%, transparent 5%); /* Suaviza a borda direita */
+  z-index: 2;
+}
+
+
+/* Grid Interno da Hero */
+.hero-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1;
+  padding-block: var(--space-md);
+  z-index: 2; /* Fica acima da imagem */
+  position: relative;
+}
+
+/* Topo: Assinatura e Indicador */
+.hero-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  font-family: var(--font-title);
+  font-size: var(--text-xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  border-top: 1px solid var(--border-color);
+  padding-top: var(--space-sm);
+}
+
+.hero-signature {
+  display: flex;
+  flex-direction: column;
+}
+
+.signature-name {
+  color: var(--text-main);
+  font-weight: var(--weight-bold);
+}
+
+.signature-role {
+  color: var(--text-muted);
+}
+
+/* Centro: Headline e Textos */
+.hero-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+  margin-top: auto;
+  margin-bottom: auto;
+  pointer-events: none; /* Para não bugar o hover na imagem embaixo */
+}
+
+.hero-title-group {
+  max-width: 900px;
+}
+
+.hero-headline {
+  font-size: clamp(4.0rem, 6.5vw, 9.2rem);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--text-main);
+  margin-bottom: var(--space-xs);
+}
+
+.hero-subheadline {
+  font-size: clamp(2.4rem, 4vw, 4.8rem);
+  color: var(--accent-primary); /* Vermelho esportivo */
+}
+
+/* Base: Textos e Ações */
+.hero-action-group {
+  max-width: 500px;
+  pointer-events: auto; /* Reativa clique pros botões */
+  margin-left: auto; /* Empurra pra direita no desktop */
+  background: linear-gradient(90deg, transparent, var(--bg-main) 15%); /* Garantir leitura em cima da foto */
+  padding-left: var(--space-md);
+}
+
+.hero-support-text {
+  font-size: var(--text-lg);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-md);
+}
+
+.hero-ctas {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+/* Scroll Indicator */
+.hero-scroll {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+  font-family: var(--font-title);
+  font-size: var(--text-xs);
+  letter-spacing: 0.2em;
+  color: var(--text-secondary);
+  margin-top: auto;
+}
+
+.scroll-line {
+  width: 1px;
+  height: 40px;
+  background-color: var(--text-muted);
+  position: relative;
+  overflow: hidden;
+}
+
+.scroll-line::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  background-color: var(--accent-primary);
+  animation: scrollDrop 2s infinite ease-in-out;
+}
+
+/* =========================================
+   ANIMAÇÕES (CSS APENAS)
+========================================= */
+
+@keyframes fadeUp {
+  0% { opacity: 0; transform: translateY(40px); }
+  100% { opacity: 1; transform: translateY(0); }
+  
+}@keyframes pulseLight {
+  0% {
+    transform: scale(1) translate(0, 0);
+    opacity: 0.6;
+  }
+
+  100% {
+    transform: scale(1.3) translate(-3vw, 3vw);
+    opacity: 1;
+  }
+}
+
+@keyframes smoothReveal {
+  0% { opacity: 0; clip-path: inset(10% 0 10% 0); transform: scale(1.05); }
+  100% { opacity: 1; clip-path: inset(0 0 0 0); transform: scale(1); }
+}
+
+@keyframes scrollDrop {
+  0% { transform: translateY(-100%); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: translateY(200%); opacity: 0; }
+}
+
+/* Classes utilitárias de Animação */
+.fade-up {
+  opacity: 0;
+  animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.smooth-reveal {
+  opacity: 0;
+  animation: smoothReveal 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Delays para Entrada Sequencial */
+.delay-1 { animation-delay: 0.2s; }
+.delay-2 { animation-delay: 0.4s; }
+.delay-3 { animation-delay: 0.6s; }
+.delay-4 { animation-delay: 0.8s; }
+.delay-5 { animation-delay: 1.0s; }
+
+/* Classes de Parallax via CSS Vars injetadas pelo JS */
+.parallax-bg {
+  /* Move o fundo suavemente na direção OPOSTA ao mouse */
+  transform: translate(calc(var(--move-x) * -1px), calc(var(--move-y) * -1px));
+  transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.parallax-text {
+  /* Move o texto suavemente na DIREÇÃO do mouse (cria distorção 3D) */
+  transform: translate(calc(var(--move-x) * 0.5px), calc(var(--move-y) * 0.5px));
+  transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+}
+.parallax-img {
+  transform: translate(
+    calc(var(--move-x-img) * -1px),
+    calc(var(--move-y-img) * -1px)
+  );
+
+  transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* =========================================
+   RESPONSIVIDADE (Mobile First invertido/Ajustes)
+========================================= */
+
+@media (max-width: 1024px) {
+  .hero-image-layer {
+    width: 65vw;
+  }
+  
+  .hero-action-group {
+  max-width: 500px;
+  pointer-events: auto;
+  margin-left: auto;
+  margin-right: 4vw;
+  margin-top: -6vh;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--bg-main) 15%
+  );
+  padding-left: var(--space-md);
+}
+}
+@media (max-width: 768px) {
+  .hero-section {
+    min-height: 100svh;
+  }
+
+  .hero-ambient-light {
+    width: 100vw;
+    height: 100vw;
+    top: 5%;
+    left: 0;
+  }
+
+  /* Foto vira elemento visual de fundo */
+  .hero-image-layer {
+    width: 100%;
+    height: 58vh;
+    bottom: 0;
+    right: 0;
+    opacity: 0.28;
+    z-index: 1;
+  }
+
+  .hero-image-png {
+    object-position: bottom center;
+    filter: grayscale(100%) contrast(1.15) brightness(0.75);
+  }
+
+  /* Escurece a região onde ficam texto e botões */
+  .hero-shadow-overlay {
+    background:
+      linear-gradient(
+        to bottom,
+        var(--bg-main) 0%,
+        rgba(5, 5, 5, 0.92) 35%,
+        rgba(5, 5, 5, 0.45) 65%,
+        var(--bg-main) 100%
+      ),
+      linear-gradient(
+        to right,
+        var(--bg-main) 0%,
+        transparent 50%,
+        var(--bg-main) 100%
+      );
+  }
+
+  /* Conteúdo fica definitivamente acima da foto */
+  .hero-container {
+    padding-block: var(--space-md);
+    z-index: 3;
+  }
+
+  .hero-content {
+    gap: var(--space-md);
+    margin-top: 4vh;
+    margin-bottom: 0;
+    transform: none;
+  }
+
+  .hero-title-group {
+    max-width: 100%;
+  }
+
+  .hero-headline {
+    font-size: clamp(4rem, 13vw, 6rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
+  .hero-subheadline {
+    font-size: clamp(2.4rem, 8vw, 3.6rem);
+  }
+
+  .hero-action-group {
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    background: none;
+  }
+
+  .hero-support-text {
+    font-size: 1.5rem;
+    max-width: 42rem;
+    margin-bottom: var(--space-md);
+  }
+
+  .hero-ctas {
+    flex-direction: column;
+    width: 100%;
+    gap: 1rem;
+  }
+
+  .hero-ctas .btn {
+    width: 100%;
+  }
+
+  .hero-scroll {
+    margin-top: auto;
+    padding-top: var(--space-md);
+  }
+}
+@media (max-width: 768px) {
+
+  .hero-section {
+    min-height: 100svh;
+    overflow: hidden;
+  }
+
+  .hero-container {
+    min-height: 100svh;
+    padding-top: 1rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .hero-top {
+    padding-top: 0.75rem;
+  }
+
+  .hero-signature {
+    max-width: 70%;
+  }
+
+  .signature-name {
+    font-size: 0.75rem;
+  }
+
+  .signature-role {
+    font-size: 0.55rem;
+    line-height: 1.4;
+  }
+
+  .hero-indicator {
+    font-size: 0.65rem;
+    white-space: nowrap;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 4;
+    gap: 1.25rem;
+    margin-top: 5vh;
+  }
+
+  .hero-title-group {
+    width: 100%;
+  }
+
+  .hero-headline {
+    font-size: clamp(3.2rem, 14vw, 5.2rem);
+    line-height: 0.92;
+    letter-spacing: -0.035em;
+  }
+
+  .hero-subheadline {
+    margin-top: 0.5rem;
+    font-size: clamp(2rem, 8vw, 3.2rem);
+    line-height: 0.95;
+  }
+
+  .hero-action-group {
+    position: relative;
+    z-index: 5;
+    width: 100%;
+  }
+
+  .hero-support-text {
+    max-width: 90%;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .hero-ctas {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 0.75rem;
+  }
+
+  .hero-ctas .btn {
+    width: 100%;
+    min-height: 52px;
+  }
+
+  .hero-image-layer {
+    width: 100%;
+    height: 58vh;
+    bottom: 0;
+    right: 0;
+    opacity: 0.28;
+    z-index: 1;
+  }
+
+  .hero-image-png {
+    object-position: bottom center;
+    filter: grayscale(100%) contrast(1.15) brightness(0.7);
+  }
+
+  .hero-shadow-overlay {
+    z-index: 2;
+  }
+
+  .hero-scroll {
+    position: relative;
+    z-index: 5;
+    margin-top: auto;
+    padding-top: 1rem;
+  }
+
+  .hero-glow,
+  .hero-ambient-light {
+    pointer-events: none;
+  }
+
+}

@@ -1,0 +1,522 @@
+/* =========================================
+CONTACT — BASE
+========================================= */
+
+.contact-section {
+  position: relative;
+  min-height: 100vh;
+
+  background: var(--bg-secondary);
+
+  border-top: 1px solid var(--border-color);
+
+  overflow: hidden;
+}
+
+.contact-container {
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+
+  padding-block: var(--space-lg);
+
+  position: relative;
+  z-index: 2;
+}
+
+/* =========================================
+TOPO
+========================================= */
+
+.contact-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding-bottom: var(--space-sm);
+
+  border-bottom: 1px solid var(--border-color);
+
+  font-family: var(--font-title);
+  font-size: var(--text-xs);
+
+  letter-spacing: 0.16em;
+
+  text-transform: uppercase;
+
+  color: var(--text-muted);
+
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.contact-label {
+  color: var(--text-main);
+}
+
+/* =========================================
+CONTEÚDO
+========================================= */
+
+.contact-main {
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+
+  padding-block: var(--space-xl);
+
+  max-width: 1200px;
+
+  opacity: 0;
+  transform: translateY(50px);
+}
+
+.contact-kicker {
+  display: block;
+
+  margin-bottom: var(--space-md);
+
+  font-family: var(--font-title);
+
+  font-size: var(--text-sm);
+
+  letter-spacing: 0.18em;
+
+  text-transform: uppercase;
+
+  color: var(--accent-primary);
+}
+
+/* =========================================
+TÍTULO
+========================================= */
+
+.contact-heading {
+  display: flex;
+  flex-direction: column;
+
+  margin: 0;
+
+  font-family: var(--font-title);
+
+  font-size: clamp(4.5rem, 8vw, 10rem);
+
+  font-weight: var(--weight-bold);
+
+  line-height: 0.84;
+
+  letter-spacing: -0.045em;
+
+  text-transform: uppercase;
+
+  color: var(--text-main);
+}
+
+.contact-heading-muted {
+  color: var(--text-muted);
+
+  margin-top: 0.05em;
+}
+
+.contact-heading-accent {
+  color: var(--accent-primary);
+
+  margin-top: 0.08em;
+}
+
+/* =========================================
+DESCRIÇÃO
+========================================= */
+
+.contact-description {
+  max-width: 650px;
+
+  margin-top: var(--space-lg);
+
+  font-family: var(--font-body);
+
+  font-size: var(--text-lg);
+
+  line-height: 1.5;
+
+  color: var(--text-secondary);
+}
+
+/* =========================================
+BOTÃO
+========================================= */
+
+.contact-button {
+  width: fit-content;
+
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 4rem;
+
+  margin-top: var(--space-xl);
+
+  padding: 1.2rem 1.5rem;
+
+  border: 1px solid var(--border-color);
+
+  background: transparent;
+
+  color: var(--text-main);
+
+  text-decoration: none;
+
+  font-family: var(--font-title);
+
+  font-size: var(--text-sm);
+
+  letter-spacing: 0.12em;
+
+  transition:
+    background 0.4s ease,
+    color 0.4s ease,
+    border-color 0.4s ease,
+    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.contact-button span:last-child {
+  font-size: var(--text-lg);
+
+  transition:
+    transform 0.4s ease;
+}
+
+.contact-button:hover {
+  background: var(--accent-primary);
+
+  border-color: var(--accent-primary);
+
+  color: #fff;
+
+  transform: translateY(-4px);
+}
+
+.contact-button:hover span:last-child {
+  transform: translate(5px, -5px);
+}
+
+/* =========================================
+RODAPÉ
+========================================= */
+
+.contact-bottom {
+  display: flex;
+
+  justify-content: space-between;
+
+  padding-top: var(--space-sm);
+
+  border-top: 1px solid var(--border-color);
+
+  font-family: var(--font-title);
+
+  font-size: var(--text-xs);
+
+  letter-spacing: 0.14em;
+
+  color: var(--text-muted);
+
+  opacity: 0;
+}
+
+/* =========================================
+NÚMERO GIGANTE
+========================================= */
+
+.contact-background-number {
+  position: absolute;
+
+  right: -3vw;
+  bottom: -9vw;
+
+  font-family: var(--font-title);
+
+  font-size: clamp(20rem, 40vw, 55rem);
+
+  font-weight: var(--weight-black);
+
+  line-height: 0.7;
+
+  letter-spacing: -0.07em;
+
+  color: rgba(255, 255, 255, 0.018);
+
+  pointer-events: none;
+
+  user-select: none;
+
+  z-index: 0;
+}
+
+/* =========================================
+ANIMAÇÕES
+========================================= */
+
+.contact-section.is-visible .contact-top {
+  animation:
+    contactFade
+    0.8s
+    ease
+    forwards;
+}
+
+.contact-section.is-visible .contact-main {
+  animation:
+    contactIntro
+    1s
+    cubic-bezier(0.16, 1, 0.3, 1)
+    0.2s
+    forwards;
+}
+
+.contact-section.is-visible .contact-bottom {
+  animation:
+    contactFade
+    0.8s
+    ease
+    0.9s
+    forwards;
+}
+
+/* =========================================
+KEYFRAMES
+========================================= */
+
+@keyframes contactFade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes contactIntro {
+  from {
+    opacity: 0;
+
+    transform: translateY(50px);
+  }
+
+  to {
+    opacity: 1;
+
+    transform: translateY(0);
+  }
+}
+
+/* =========================================
+RESPONSIVIDADE
+========================================= */
+
+@media (max-width: 1024px) {
+
+  .contact-heading {
+    font-size: clamp(5rem, 10vw, 8rem);
+  }
+
+  .contact-main {
+    max-width: 900px;
+  }
+}
+
+@media (max-width: 768px) {
+
+  .contact-container {
+    min-height: auto;
+
+    padding-block: var(--space-xl);
+  }
+
+  .contact-top {
+    align-items: flex-start;
+
+    gap: var(--space-sm);
+  }
+
+  .contact-main {
+    padding-block: var(--space-xl);
+  }
+
+  .contact-heading {
+    font-size: clamp(3.8rem, 13vw, 6rem);
+
+    line-height: 0.88;
+  }
+
+  .contact-description {
+    margin-top: var(--space-md);
+
+    font-size: var(--text-md);
+  }
+
+  .contact-button {
+    width: 100%;
+
+    gap: 1rem;
+
+    margin-top: var(--space-lg);
+  }
+
+  .contact-bottom {
+    flex-direction: column;
+
+    gap: var(--space-xs);
+  }
+
+  .contact-background-number {
+    font-size: 55vw;
+
+    right: -5vw;
+
+    bottom: -2vw;
+  }
+}/* =========================================
+   CONTACT — MOBILE REFINADO
+========================================= */
+
+@media (max-width: 768px) {
+
+  .contact-section {
+    min-height: 100svh;
+  }
+
+  .contact-container {
+    min-height: 100svh;
+    padding-block: 1.25rem;
+  }
+
+  /* TOPO */
+
+  .contact-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+
+    padding-bottom: 0.8rem;
+
+    font-size: 0.58rem;
+    letter-spacing: 0.12em;
+    line-height: 1.4;
+  }
+
+  .contact-label {
+    flex-shrink: 0;
+  }
+
+  .contact-category {
+    max-width: 65%;
+    text-align: right;
+  }
+
+  /* CONTEÚDO */
+
+  .contact-main {
+    width: 100%;
+    max-width: none;
+
+    padding-block: 4rem 3rem;
+
+    justify-content: center;
+  }
+
+  .contact-kicker {
+    margin-bottom: 1.25rem;
+
+    font-size: 0.65rem;
+    letter-spacing: 0.16em;
+  }
+
+  /* TÍTULO */
+
+  .contact-heading {
+    width: 100%;
+
+    font-size: clamp(3.15rem, 13vw, 5rem);
+    line-height: 0.88;
+    letter-spacing: -0.045em;
+  }
+
+  .contact-heading-muted {
+    margin-top: 0.08em;
+  }
+
+  .contact-heading-accent {
+    margin-top: 0.1em;
+  }
+
+  /* DESCRIÇÃO */
+
+  .contact-description {
+    max-width: 100%;
+
+    margin-top: 1.5rem;
+
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  /* BOTÃO */
+
+  .contact-button {
+    width: 100%;
+    min-height: 56px;
+
+    box-sizing: border-box;
+
+    justify-content: space-between;
+
+    gap: 1rem;
+
+    margin-top: 2rem;
+
+    padding: 1rem 1.1rem;
+
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+  }
+
+  .contact-button span:last-child {
+    font-size: 1.25rem;
+  }
+
+  /* RODAPÉ */
+
+  .contact-bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    gap: 0.5rem;
+
+    padding-top: 0.8rem;
+
+    font-size: 0.58rem;
+    line-height: 1.4;
+  }
+
+  /* NÚMERO DE FUNDO */
+
+  .contact-background-number {
+    font-size: 50vw;
+
+    right: -4vw;
+    bottom: -1vw;
+
+    line-height: 0.65;
+  }
+
+}

@@ -1,0 +1,830 @@
+/* =========================================
+   PROCESS — BASE
+========================================= */
+
+.process-section {
+  position: relative;
+  min-height: 100vh;
+
+  background: var(--bg-secondary);
+
+  border-top: 1px solid var(--border-color);
+
+  overflow: hidden;
+}
+
+.process-container {
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+
+  padding-block: var(--space-lg);
+
+  position: relative;
+  z-index: 2;
+}
+
+/* =========================================
+   TOPO
+========================================= */
+
+.process-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding-bottom: var(--space-sm);
+
+  border-bottom: 1px solid var(--border-color);
+
+  font-family: var(--font-title);
+  font-size: var(--text-xs);
+
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+
+  color: var(--text-muted);
+
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.process-label {
+  color: var(--text-main);
+}
+
+.process-category {
+  text-align: right;
+}
+
+/* =========================================
+   CONTEÚDO
+========================================= */
+
+.process-main {
+  flex: 1;
+
+  display: grid;
+
+  grid-template-columns: 0.9fr 1.1fr;
+
+  gap: var(--space-xl);
+
+  align-items: center;
+
+  padding-block: var(--space-xl);
+}
+
+/* =========================================
+   INTRO
+========================================= */
+
+.process-intro {
+  max-width: 650px;
+
+  opacity: 0;
+  transform: translateY(50px);
+}
+
+.process-kicker {
+  display: block;
+
+  margin-bottom: var(--space-md);
+
+  font-family: var(--font-title);
+  font-size: var(--text-sm);
+
+  letter-spacing: 0.18em;
+
+  text-transform: uppercase;
+
+  color: var(--accent-primary);
+}
+
+.process-heading {
+  display: flex;
+  flex-direction: column;
+
+  margin: 0;
+
+  font-family: var(--font-title);
+
+  font-size: clamp(5rem, 7vw, 9rem);
+
+  font-weight: var(--weight-bold);
+
+  line-height: 0.86;
+
+  letter-spacing: -0.045em;
+
+  color: var(--text-main);
+
+  text-transform: uppercase;
+}
+
+.process-heading span:nth-child(2) {
+  color: var(--text-muted);
+
+  margin-top: 0.08em;
+}
+
+.process-heading-accent {
+  color: var(--accent-primary);
+
+  margin-top: 0.12em;
+}
+
+.process-description {
+  max-width: 520px;
+
+  margin-top: var(--space-lg);
+
+  font-family: var(--font-body);
+
+  font-size: var(--text-lg);
+
+  line-height: 1.5;
+
+  color: var(--text-secondary);
+}
+
+/* =========================================
+   TIMELINE
+========================================= */
+
+.process-timeline {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+
+  padding-left: 70px;
+}
+
+.process-line {
+  position: absolute;
+
+  left: 18px;
+  top: 20px;
+  bottom: 20px;
+
+  width: 1px;
+
+  background: var(--border-color);
+
+  transform: scaleY(0);
+
+  transform-origin: top;
+
+  transition:
+    transform 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.process-line::after {
+  content: '';
+
+  position: absolute;
+
+  left: 0;
+  top: 0;
+
+  width: 1px;
+  height: 100%;
+
+  background: var(--accent-primary);
+
+  transform: scaleY(0);
+
+  transform-origin: top;
+
+  transition:
+    transform 1.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s;
+}
+
+/* =========================================
+   ETAPAS
+========================================= */
+
+.process-step {
+  position: relative;
+
+  min-height: 120px;
+
+  display: block;
+
+  padding-block: var(--space-md);
+
+  border-bottom: 1px solid var(--border-color);
+
+  opacity: 0;
+
+  transform: translateX(40px);
+
+  transition:
+    padding-left 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    background 0.4s ease;
+}
+
+/* =========================================
+   NÚMERO
+========================================= */
+
+.process-step-number {
+  position: absolute;
+
+  left: -70px;
+
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid var(--border-color);
+
+  border-radius: 50%;
+
+  background: var(--bg-secondary);
+
+  font-family: var(--font-title);
+
+  font-size: var(--text-xs);
+
+  color: var(--text-muted);
+
+  z-index: 2;
+
+  transition:
+    border-color 0.3s ease,
+    color 0.3s ease,
+    background 0.3s ease,
+    transform 0.4s ease;
+}
+
+/* =========================================
+   CONTEÚDO DA ETAPA
+========================================= */
+
+.process-step-content {
+  width: 100%;
+  max-width: 650px;
+
+  margin: 0;
+
+  font-family: var(--font-body);
+
+  font-size: var(--text-sm);
+
+  line-height: 1.5;
+
+  color: var(--text-muted);
+}
+
+.process-step-content h3 {
+  margin: 0;
+
+  font-family: var(--font-title);
+
+  font-size: var(--text-xl);
+
+  font-weight: var(--weight-bold);
+
+  letter-spacing: 0.03em;
+
+  color: var(--text-main);
+
+  transition:
+    transform 0.4s ease,
+    color 0.3s ease;
+}
+
+.process-step-content p {
+  margin-top: 0.8rem;
+
+  color: var(--text-muted);
+}
+
+/* =========================================
+   ÍNDICE
+========================================= */
+
+.process-step-index {
+  position: absolute;
+
+  right: 0;
+  top: var(--space-md);
+
+  font-family: var(--font-title);
+
+  font-size: var(--text-xs);
+
+  letter-spacing: 0.12em;
+
+  color: var(--text-muted);
+
+  text-align: right;
+}
+
+/* =========================================
+   HOVER
+========================================= */
+
+.process-step:hover {
+  padding-left: var(--space-sm);
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.025),
+      transparent
+    );
+}
+
+.process-step:hover .process-step-number {
+  border-color: var(--accent-primary);
+
+  color: var(--accent-primary);
+
+  transform: scale(1.15);
+
+  background: var(--bg-main);
+}
+
+.process-step:hover .process-step-content h3 {
+  color: var(--accent-primary);
+
+  transform: translateX(8px);
+}
+
+.process-step:hover .process-step-index {
+  color: var(--accent-primary);
+}
+
+/* =========================================
+   RODAPÉ
+========================================= */
+
+.process-bottom {
+  display: flex;
+
+  justify-content: space-between;
+
+  padding-top: var(--space-sm);
+
+  border-top: 1px solid var(--border-color);
+
+  font-family: var(--font-title);
+
+  font-size: var(--text-xs);
+
+  letter-spacing: 0.14em;
+
+  color: var(--text-muted);
+
+  opacity: 0;
+}
+
+/* =========================================
+   NÚMERO GIGANTE
+========================================= */
+
+.process-background-number {
+  position: absolute;
+
+  right: -3vw;
+  bottom: -8vw;
+
+  font-family: var(--font-title);
+
+  font-size: clamp(20rem, 35vw, 50rem);
+
+  font-weight: var(--weight-black);
+
+  line-height: 0.7;
+
+  color: rgba(255, 255, 255, 0.018);
+
+  pointer-events: none;
+
+  user-select: none;
+
+  z-index: 0;
+}
+
+/* =========================================
+   ANIMAÇÕES
+========================================= */
+
+.process-section.is-visible .process-top {
+  animation:
+    processFade
+    0.8s
+    ease
+    forwards;
+}
+
+.process-section.is-visible .process-intro {
+  animation:
+    processIntro
+    1s
+    cubic-bezier(0.16, 1, 0.3, 1)
+    0.2s
+    forwards;
+}
+
+.process-section.is-visible .process-line {
+  transform: scaleY(1);
+}
+
+.process-section.is-visible .process-line::after {
+  transform: scaleY(1);
+}
+
+.process-section.is-visible .process-step {
+  animation:
+    processStep
+    0.8s
+    cubic-bezier(0.16, 1, 0.3, 1)
+    forwards;
+}
+
+.process-section.is-visible .process-step:nth-child(2) {
+  animation-delay: 0.55s;
+}
+
+.process-section.is-visible .process-step:nth-child(3) {
+  animation-delay: 0.8s;
+}
+
+.process-section.is-visible .process-step:nth-child(4) {
+  animation-delay: 1.05s;
+}
+
+.process-section.is-visible .process-step:nth-child(5) {
+  animation-delay: 1.3s;
+}
+
+.process-section.is-visible .process-bottom {
+  animation:
+    processFade
+    0.8s
+    ease
+    1.5s
+    forwards;
+}
+
+/* =========================================
+   KEYFRAMES
+========================================= */
+
+@keyframes processFade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes processIntro {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes processStep {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 1024px) {
+
+  .process-main {
+    grid-template-columns: 0.75fr 1.25fr;
+
+    gap: var(--space-lg);
+  }
+
+  .process-heading {
+    font-size: clamp(5rem, 10vw, 8rem);
+  }
+
+  .process-intro {
+    max-width: 800px;
+  }
+}
+
+/* =========================================
+   MOBILE — REFEITO
+========================================= */
+
+@media (max-width: 768px) {
+
+  .process-section {
+    min-height: auto;
+  }
+
+  .process-container {
+    min-height: auto;
+
+    padding-top: var(--space-xl);
+    padding-bottom: var(--space-lg);
+  }
+
+  /* -----------------------------------------
+     TOPO
+  ----------------------------------------- */
+
+  .process-top {
+    align-items: flex-start;
+
+    gap: 1rem;
+
+    padding-bottom: 1rem;
+  }
+
+  .process-label {
+    flex-shrink: 0;
+  }
+
+  .process-category {
+    max-width: 190px;
+
+    text-align: right;
+
+    line-height: 1.4;
+  }
+
+  /* -----------------------------------------
+     MAIN
+  ----------------------------------------- */
+
+  .process-main {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 3rem;
+
+    padding-block: 3rem;
+
+    align-items: stretch;
+  }
+
+  /* -----------------------------------------
+     INTRO
+  ----------------------------------------- */
+
+  .process-intro {
+    width: 100%;
+
+    max-width: none;
+
+    transform: translateY(30px);
+  }
+
+  .process-kicker {
+    margin-bottom: 1.2rem;
+
+    font-size: 0.72rem;
+
+    letter-spacing: 0.16em;
+  }
+
+  .process-heading {
+    font-size: clamp(3.25rem, 13.5vw, 5.3rem);
+
+    line-height: 0.88;
+
+    letter-spacing: -0.045em;
+  }
+
+  .process-heading-accent {
+    margin-top: 0.12em;
+  }
+
+  .process-description {
+    width: 100%;
+
+    max-width: 100%;
+
+    margin-top: 1.5rem;
+
+    font-size: 1rem;
+
+    line-height: 1.55;
+  }
+
+  /* -----------------------------------------
+     TIMELINE
+  ----------------------------------------- */
+
+  .process-timeline {
+    width: 100%;
+
+    padding-left: 48px;
+
+    margin: 0;
+  }
+
+  /* Linha */
+
+  .process-line {
+    left: 14px;
+
+    top: 15px;
+    bottom: 15px;
+  }
+
+  /* -----------------------------------------
+     ETAPA
+  ----------------------------------------- */
+
+  .process-step {
+    min-height: 0;
+
+    padding: 1.5rem 0;
+
+    padding-right: 2rem;
+
+    border-bottom: 1px solid var(--border-color);
+
+    transform: translateX(25px);
+  }
+
+  .process-step:first-of-type {
+    border-top: 1px solid var(--border-color);
+  }
+
+  .process-step:hover {
+    padding-left: 0;
+
+    background: transparent;
+  }
+
+  /* -----------------------------------------
+     NÚMERO
+  ----------------------------------------- */
+
+  .process-step-number {
+    left: -48px;
+
+    top: 1.5rem;
+
+    width: 30px;
+    height: 30px;
+
+    font-size: 0.68rem;
+  }
+
+  .process-step:hover .process-step-number {
+    transform: none;
+
+    background: var(--bg-secondary);
+  }
+
+  /* -----------------------------------------
+     TEXTO DA ETAPA
+  ----------------------------------------- */
+
+  .process-step-content {
+    width: 100%;
+
+    max-width: none;
+  }
+
+  .process-step-content h3 {
+    font-size: clamp(1.45rem, 6vw, 2rem);
+
+    line-height: 1.05;
+
+    letter-spacing: 0.01em;
+  }
+
+  .process-step-content p {
+    max-width: 100%;
+
+    margin-top: 0.7rem;
+
+    font-size: 0.95rem;
+
+    line-height: 1.55;
+  }
+
+  .process-step:hover .process-step-content h3 {
+    transform: none;
+  }
+
+  /* -----------------------------------------
+     ÍNDICE
+  ----------------------------------------- */
+
+  .process-step-index {
+    right: 0;
+
+    top: 1.5rem;
+
+    font-size: 0.65rem;
+  }
+
+  /* -----------------------------------------
+     RODAPÉ
+  ----------------------------------------- */
+
+  .process-bottom {
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 0.5rem;
+
+    padding-top: 1rem;
+
+    line-height: 1.4;
+  }
+
+  /* -----------------------------------------
+     NÚMERO DE FUNDO
+  ----------------------------------------- */
+
+  .process-background-number {
+    right: -8vw;
+
+    bottom: -1vw;
+
+    font-size: 55vw;
+
+    line-height: 0.7;
+  }
+}
+
+/* =========================================
+   MOBILE PEQUENO
+========================================= */
+
+@media (max-width: 380px) {
+
+  .process-container {
+    padding-inline: 1rem;
+  }
+
+  .process-heading {
+    font-size: 3.15rem;
+  }
+
+  .process-main {
+    gap: 2.5rem;
+  }
+
+  .process-timeline {
+    padding-left: 43px;
+  }
+
+  .process-line {
+    left: 12px;
+  }
+
+  .process-step-number {
+    left: -43px;
+
+    width: 28px;
+    height: 28px;
+  }
+
+  .process-step {
+    padding-right: 1.5rem;
+  }
+
+  .process-step-index {
+    display: none;
+  }
+
+  .process-step-content h3 {
+    font-size: 1.4rem;
+  }
+
+  .process-step-content p {
+    font-size: 0.9rem;
+  }
+}

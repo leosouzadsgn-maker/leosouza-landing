@@ -1,0 +1,599 @@
+/* =========================================
+POSITIONING — BASE
+========================================= */
+
+.positioning-section {
+  position: relative;
+  min-height: 100vh;
+
+  background: var(--bg-main);
+
+  border-top: 1px solid var(--border-color);
+
+  overflow: hidden;
+}
+
+.positioning-container {
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+
+  padding-block: var(--space-lg);
+
+  position: relative;
+  z-index: 2;
+}
+
+
+/* =========================================
+TOPO
+========================================= */
+
+.positioning-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding-bottom: var(--space-sm);
+
+  border-bottom: 1px solid var(--border-color);
+
+  font-family: var(--font-title);
+  font-size: var(--text-xs);
+
+  letter-spacing: 0.16em;
+
+  text-transform: uppercase;
+
+  color: var(--text-muted);
+
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.positioning-label {
+  color: var(--text-main);
+}
+
+
+/* =========================================
+INTRO
+========================================= */
+
+.positioning-intro {
+  padding-block: var(--space-xl);
+
+  opacity: 0;
+  transform: translateY(50px);
+}
+
+.positioning-kicker {
+  display: block;
+
+  margin-bottom: var(--space-md);
+
+  font-family: var(--font-title);
+
+  font-size: var(--text-sm);
+
+  letter-spacing: 0.18em;
+
+  text-transform: uppercase;
+
+  color: var(--accent-primary);
+}
+
+.positioning-heading {
+  display: flex;
+  flex-direction: column;
+
+  margin: 0;
+
+  font-family: var(--font-title);
+
+  font-size: clamp(4.5rem, 8vw, 10rem);
+
+  font-weight: var(--weight-bold);
+
+  line-height: 0.84;
+
+  letter-spacing: -0.045em;
+
+  color: var(--text-main);
+
+  text-transform: uppercase;
+}
+
+.positioning-heading-muted {
+  color: var(--text-muted);
+}
+
+.positioning-heading-accent {
+  color: var(--accent-primary);
+}
+
+
+/* =========================================
+PILARES
+========================================= */
+
+.positioning-pillars {
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  border-top: 1px solid var(--border-color);
+
+  border-bottom: 1px solid var(--border-color);
+}
+
+
+/* =========================================
+PILAR
+========================================= */
+
+.positioning-pillar {
+  position: relative;
+
+  min-height: 300px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  padding: var(--space-md);
+
+  border-right: 1px solid var(--border-color);
+
+  cursor: pointer;
+
+  opacity: 0;
+
+  transform: translateY(40px);
+
+  transition:
+    background 0.5s ease,
+    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.positioning-pillar:last-child {
+  border-right: none;
+}
+
+
+/* =========================================
+NÚMERO
+========================================= */
+
+.positioning-pillar-number {
+  font-family: var(--font-title);
+
+  font-size: var(--text-xs);
+
+  letter-spacing: 0.12em;
+
+  color: var(--text-muted);
+
+  transition:
+    color 0.3s ease,
+    transform 0.4s ease;
+}
+
+
+/* =========================================
+CONTEÚDO
+========================================= */
+
+.positioning-pillar-content {
+  position: relative;
+
+  z-index: 2;
+}
+
+.positioning-pillar-content h3 {
+  margin: 0;
+
+  font-family: var(--font-title);
+
+  font-size: clamp(1.5rem, 2vw, 2.4rem);
+
+  font-weight: var(--weight-bold);
+
+  letter-spacing: 0.02em;
+
+  color: var(--text-main);
+
+  transition:
+    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    color 0.3s ease;
+}
+
+.positioning-pillar-content p {
+  max-width: 360px;
+
+  margin: 1rem 0 0;
+
+  font-family: var(--font-body);
+
+  font-size: var(--text-sm);
+
+  line-height: 1.5;
+
+  color: var(--text-muted);
+
+  opacity: 0;
+
+  transform: translateY(15px);
+
+  transition:
+    opacity 0.4s ease,
+    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+
+/* =========================================
+SETA
+========================================= */
+
+.positioning-pillar-arrow {
+  position: absolute;
+
+  right: var(--space-md);
+  bottom: var(--space-md);
+
+  font-family: var(--font-title);
+
+  font-size: var(--text-lg);
+
+  color: var(--text-muted);
+
+  transition:
+    transform 0.4s ease,
+    color 0.3s ease;
+}
+
+
+/* =========================================
+HOVER
+========================================= */
+
+.positioning-pillar:hover,
+.positioning-pillar.is-active {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.035),
+      transparent
+    );
+}
+
+.positioning-pillar:hover .positioning-pillar-number,
+.positioning-pillar.is-active .positioning-pillar-number {
+  color: var(--accent-primary);
+
+  transform: translateX(5px);
+}
+
+.positioning-pillar:hover .positioning-pillar-content h3,
+.positioning-pillar.is-active .positioning-pillar-content h3 {
+  color: var(--accent-primary);
+
+  transform: translateX(8px);
+}
+
+.positioning-pillar:hover .positioning-pillar-content p,
+.positioning-pillar.is-active .positioning-pillar-content p {
+  opacity: 1;
+
+  transform: translateY(0);
+}
+
+.positioning-pillar:hover .positioning-pillar-arrow,
+.positioning-pillar.is-active .positioning-pillar-arrow {
+  color: var(--accent-primary);
+
+  transform: translate(5px, -5px);
+}
+
+
+/* =========================================
+LINHA VERMELHA
+========================================= */
+
+.positioning-pillar::after {
+  content: '';
+
+  position: absolute;
+
+  left: 0;
+  bottom: 0;
+
+  width: 0;
+  height: 2px;
+
+  background: var(--accent-primary);
+
+  transition:
+    width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.positioning-pillar:hover::after,
+.positioning-pillar.is-active::after {
+  width: 100%;
+}
+
+
+/* =========================================
+RODAPÉ
+========================================= */
+
+.positioning-bottom {
+  display: flex;
+
+  justify-content: space-between;
+
+  padding-top: var(--space-sm);
+
+  font-family: var(--font-title);
+
+  font-size: var(--text-xs);
+
+  letter-spacing: 0.14em;
+
+  color: var(--text-muted);
+
+  opacity: 0;
+}
+
+
+/* =========================================
+PALAVRA GIGANTE
+========================================= */
+
+.positioning-background-word {
+  position: absolute;
+
+  right: -4vw;
+  bottom: -8vw;
+
+  font-family: var(--font-title);
+
+  font-size: clamp(15rem, 30vw, 40rem);
+
+  font-weight: var(--weight-black);
+
+  line-height: 0.7;
+
+  letter-spacing: -0.06em;
+
+  color: rgba(255, 255, 255, 0.018);
+
+  pointer-events: none;
+
+  user-select: none;
+
+  z-index: 0;
+}
+
+
+/* =========================================
+ANIMAÇÕES
+========================================= */
+
+.positioning-section.is-visible .positioning-top {
+  animation:
+    positioningFade
+    0.8s
+    ease
+    forwards;
+}
+
+.positioning-section.is-visible .positioning-intro {
+  animation:
+    positioningIntro
+    1s
+    cubic-bezier(0.16, 1, 0.3, 1)
+    0.2s
+    forwards;
+}
+
+.positioning-section.is-visible .positioning-pillar {
+  animation:
+    positioningPillar
+    0.8s
+    cubic-bezier(0.16, 1, 0.3, 1)
+    forwards;
+}
+
+.positioning-section.is-visible .positioning-pillar:nth-child(1) {
+  animation-delay: 0.45s;
+}
+
+.positioning-section.is-visible .positioning-pillar:nth-child(2) {
+  animation-delay: 0.6s;
+}
+
+.positioning-section.is-visible .positioning-pillar:nth-child(3) {
+  animation-delay: 0.75s;
+}
+
+.positioning-section.is-visible .positioning-bottom {
+  animation:
+    positioningFade
+    0.8s
+    ease
+    1s
+    forwards;
+}
+
+
+/* =========================================
+KEYFRAMES
+========================================= */
+
+@keyframes positioningFade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes positioningIntro {
+  from {
+    opacity: 0;
+
+    transform: translateY(50px);
+  }
+
+  to {
+    opacity: 1;
+
+    transform: translateY(0);
+  }
+}
+
+@keyframes positioningPillar {
+  from {
+    opacity: 0;
+
+    transform: translateY(40px);
+  }
+
+  to {
+    opacity: 1;
+
+    transform: translateY(0);
+  }
+}
+
+
+/* =========================================
+RESPONSIVIDADE
+========================================= */
+
+@media (max-width: 1024px) {
+
+  .positioning-heading {
+    font-size: clamp(4.5rem, 10vw, 8rem);
+  }
+
+  .positioning-pillars {
+    grid-template-columns: 1fr;
+  }
+
+  .positioning-pillar {
+    min-height: 220px;
+
+    border-right: none;
+
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .positioning-pillar:last-child {
+    border-bottom: none;
+  }
+
+  .positioning-pillar-content p {
+    max-width: 600px;
+  }
+}
+
+
+@media (max-width: 768px) {
+
+  .positioning-container {
+    min-height: auto;
+
+    padding-block: var(--space-xl);
+  }
+
+  .positioning-top {
+    align-items: flex-start;
+
+    gap: var(--space-sm);
+  }
+
+  .positioning-heading {
+    font-size: clamp(3.8rem, 13vw, 6rem);
+
+    line-height: 0.88;
+  }
+
+  .positioning-intro {
+    padding-block: var(--space-lg);
+  }
+
+  .positioning-pillar {
+    min-height: 230px;
+
+    padding: var(--space-sm);
+  }
+
+  .positioning-pillar-content h3 {
+    font-size: var(--text-lg);
+  }
+
+  .positioning-pillar-content p {
+    opacity: 1;
+
+    transform: none;
+
+    max-width: 100%;
+  }
+
+  .positioning-bottom {
+    flex-direction: column;
+
+    gap: var(--space-xs);
+  }
+
+  .positioning-background-word {
+    font-size: 50vw;
+
+    right: -5vw;
+
+    bottom: -2vw;
+  }
+}/* =========================================
+VÍDEO DE FUNDO — AJUSTE
+========================================= */
+
+.positioning-background-video {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  opacity: 0.25;
+
+  filter: brightness(0.65);
+
+  z-index: 0;
+
+  pointer-events: none;
+}
+
+
+.positioning-video-overlay {
+  position: absolute;
+  inset: 0;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.92) 0%,
+      rgba(0, 0, 0, 0.65) 50%,
+      rgba(0, 0, 0, 0.78) 100%
+    );
+
+  z-index: 1;
+
+  pointer-events: none;
+}
