@@ -19,7 +19,7 @@ const projects = [
     title: 'IMAGEM DE ATLETA',
     category: 'DIREÇÃO · CONTEÚDO · BRANDING',
     type: 'video',
-    video: luisMiguelVideo,
+   
   },
   {
     number: '03',
