@@ -53,17 +53,7 @@ const Positioning = () => {
       ref={positioningRef}
       
     >
-        <video
-  className="positioning-background-video"
-  src={positioningVideo}
-  autoPlay
-  muted
-  loop
-  playsInline
-  aria-hidden="true"
-/>
 
-<div className="positioning-video-overlay"></div>
         
       <div className="container positioning-container">
 
