@@ -518,10 +518,12 @@ RESPONSIVIDADE
   }
 
   .positioning-heading {
-    font-size: clamp(3.8rem, 13vw, 6rem);
+  font-size: clamp(4.5rem, 16vw, 7rem);
 
-    line-height: 0.88;
-  }
+  line-height: 0.84;
+}
+}
+  
 
   .positioning-intro {
     padding-block: var(--space-lg);
