@@ -449,11 +449,11 @@
 @media (max-width: 768px) {
 
   .manifesto-section {
-    min-height: 100svh;
+    min-height: auto;
   }
 
   .manifesto-container {
-    min-height: 100svh;
+    in-height: auto;
     padding-block: 1.5rem;
   }
 
@@ -480,7 +480,7 @@
 
   .manifesto-main {
     padding-block: 2.5rem 1.5rem;
-    justify-content: space-between;
+    justify-content: flex-start;
   }
 
   /* HEADLINE */
