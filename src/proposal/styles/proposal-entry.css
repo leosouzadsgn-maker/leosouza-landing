@@ -1,0 +1,2813 @@
+/* =========================================================
+   LEO SOUZA DSGN
+   PRIVATE PROPOSAL
+   ACCESS EXPERIENCE — V4
+========================================================= */
+
+.proposal-entry {
+  --black: #050505;
+  --black-deep: #020202;
+
+  --white: #f3f1ec;
+  --muted: rgba(243, 241, 236, 0.42);
+  --dim: rgba(243, 241, 236, 0.16);
+  --line: rgba(243, 241, 236, 0.12);
+
+  --red: #ef3038;
+
+  position: relative;
+
+  width: 100%;
+  min-height: 100svh;
+
+  overflow: hidden;
+
+  background:
+    var(--black);
+
+  color: var(--white);
+
+  font-family:
+    Inter,
+    Helvetica Neue,
+    Helvetica,
+    Arial,
+    sans-serif;
+
+  isolation: isolate;
+
+  opacity: 0;
+
+  transform: scale(1.025);
+
+  transition:
+    opacity 1s ease,
+    transform 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.proposal-entry.is-loaded {
+  opacity: 1;
+
+  transform: scale(1);
+}
+
+
+/* =========================================================
+   EXIT
+========================================================= */
+
+.proposal-entry.is-leaving {
+  opacity: 1;
+
+  transform: scale(1);
+}
+
+.proposal-entry.is-leaving .proposal-exit {
+  transform: scaleY(1);
+
+  transition:
+    transform 0.85s cubic-bezier(
+      0.77,
+      0,
+      0.18,
+      1
+    );
+}
+
+
+/* =========================================================
+   BACKGROUND
+========================================================= */
+
+.proposal-bg {
+  position: absolute;
+
+  inset: 0;
+
+  z-index: -10;
+
+  background:
+    radial-gradient(
+      circle at var(--mouse-x) var(--mouse-y),
+      rgba(255, 255, 255, 0.055),
+      transparent 27rem
+    ),
+    radial-gradient(
+      circle at 20% 35%,
+      rgba(255, 255, 255, 0.022),
+      transparent 35rem
+    ),
+    linear-gradient(
+      135deg,
+      #050505 0%,
+      #060606 50%,
+      #030303 100%
+    );
+
+  transition:
+    background 0.6s ease;
+}
+
+
+/* =========================================================
+   GRID
+========================================================= */
+
+.proposal-grid {
+  position: absolute;
+
+  inset: 0;
+
+  z-index: -8;
+
+  opacity: 0.3;
+
+  pointer-events: none;
+
+  background-image:
+    linear-gradient(
+      rgba(255, 255, 255, 0.025) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.025) 1px,
+      transparent 1px
+    );
+
+  background-size:
+    100px 100px;
+
+  transform:
+    translate(
+      calc((var(--mouse-x) - 50%) * -0.018),
+      calc((var(--mouse-y) - 50%) * -0.018)
+    );
+
+  transition:
+    transform 0.8s cubic-bezier(
+      0.22,
+      1,
+      0.36,
+      1
+    );
+
+  mask-image:
+    radial-gradient(
+      ellipse at center,
+      black 0%,
+      transparent 78%
+    );
+}
+
+
+/* =========================================================
+   NOISE
+========================================================= */
+
+.proposal-noise {
+  position: absolute;
+
+  inset: 0;
+
+  z-index: 50;
+
+  pointer-events: none;
+
+  opacity: 0.04;
+
+  background-image:
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='.8'/%3E%3C/svg%3E");
+}
+
+
+/* =========================================================
+   MOUSE LIGHT
+========================================================= */
+
+.proposal-light {
+  position: absolute;
+
+  left: var(--mouse-x);
+  top: var(--mouse-y);
+
+  width: 34rem;
+  height: 34rem;
+
+  transform:
+    translate(-50%, -50%);
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.07) 0%,
+      rgba(255, 255, 255, 0.025) 25%,
+      transparent 70%
+    );
+
+  filter: blur(20px);
+
+  z-index: -4;
+
+  pointer-events: none;
+
+  opacity: 0;
+
+  transition:
+    left 0.5s cubic-bezier(
+      0.22,
+      1,
+      0.36,
+      1
+    ),
+    top 0.5s cubic-bezier(
+      0.22,
+      1,
+      0.36,
+      1
+    ),
+    opacity 0.5s ease;
+}
+
+.proposal-entry.mouse-active .proposal-light {
+  opacity: 1;
+}
+
+
+/* =========================================================
+   CURSOR RING
+========================================================= */
+
+.proposal-cursor-ring {
+  position: absolute;
+
+  left: var(--mouse-x);
+  top: var(--mouse-y);
+
+  width: 24px;
+  height: 24px;
+
+  transform:
+    translate(-50%, -50%);
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.25);
+
+  border-radius: 50%;
+
+  z-index: 45;
+
+  pointer-events: none;
+
+  opacity: 0;
+
+  transition:
+    left 0.12s ease-out,
+    top 0.12s ease-out,
+    opacity 0.4s ease;
+}
+
+.proposal-entry.mouse-active .proposal-cursor-ring {
+  opacity: 1;
+}
+
+
+/* =========================================================
+   FRAME
+========================================================= */
+
+.proposal-frame {
+  position: absolute;
+
+  inset: 15px;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.085);
+
+  pointer-events: none;
+
+  z-index: 40;
+}
+
+
+/* =========================================================
+   FRAME CORNERS
+========================================================= */
+
+.frame-corner {
+  position: absolute;
+
+  width: 13px;
+  height: 13px;
+
+  border-color:
+    rgba(255, 255, 255, 0.4);
+
+  border-style: solid;
+}
+
+.frame-corner--tl {
+  top: -1px;
+  left: -1px;
+
+  border-width:
+    2px 0 0 2px;
+}
+
+.frame-corner--tr {
+  top: -1px;
+  right: -1px;
+
+  border-width:
+    2px 2px 0 0;
+}
+
+.frame-corner--bl {
+  bottom: -1px;
+  left: -1px;
+
+  border-width:
+    0 0 2px 2px;
+}
+
+.frame-corner--br {
+  bottom: -1px;
+  right: -1px;
+
+  border-width:
+    0 2px 2px 0;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.proposal-header {
+  position: absolute;
+
+  top: 0;
+  left: 0;
+  right: 0;
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: flex-start;
+
+  padding:
+    42px
+    52px;
+
+  z-index: 41;
+
+  opacity: 0;
+
+  transform:
+    translateY(-18px);
+
+  transition:
+    opacity 0.8s ease 0.2s,
+    transform 0.8s cubic-bezier(
+      0.22,
+      1,
+      0.36,
+      1
+    ) 0.2s;
+}
+
+.is-loaded .proposal-header {
+  opacity: 1;
+
+  transform:
+    translateY(0);
+}
+
+
+/* =========================================================
+   LOGO
+========================================================= */
+
+.proposal-logo-reveal {
+  overflow: hidden;
+
+  padding:
+    10px
+    20px
+    10px
+    0;
+
+  clip-path:
+    inset(0 100% 0 0);
+
+  transition:
+    clip-path 1.15s cubic-bezier(
+      0.77,
+      0,
+      0.18,
+      1
+    );
+}
+
+.is-loaded .proposal-logo-reveal {
+  clip-path:
+    inset(0 0 0 0);
+
+  transition-delay:
+    0.25s;
+}
+
+.proposal-logo img {
+  display: block;
+
+  width: 225px;
+
+  height: auto;
+
+  max-height: 80px;
+
+  object-fit: contain;
+
+  object-position:
+    left center;
+
+  filter:
+    brightness(0)
+    invert(1)
+    contrast(1.12);
+
+  opacity: 0.95;
+
+  transition:
+    transform 0.5s cubic-bezier(
+      0.22,
+      1,
+      0.36,
+      1
+    );
+}
+
+.proposal-logo img:hover {
+  transform:
+    translateY(-2px);
+}
+
+
+/* =========================================================
+   HEADER RIGHT
+========================================================= */
+
+.proposal-header-right {
+  display: flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  padding-top: 8px;
+
+  color:
+    var(--muted);
+
+  font-size: 9px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.16em;
+}
+
+.proposal-header-right strong {
+  color:
+    var(--white);
+}
+
+
+/* =========================================================
+   BACKGROUND COMPANY
+========================================================= */
+
+.proposal-bg-company {
+  position: absolute;
+
+  left: 56%;
+  top: 51%;
+
+  width: max-content;
+
+  transform:
+    translate(-50%, -50%)
+    rotate(-90deg)
+    translate(
+      calc((var(--mouse-x) - 50%) * 0.05),
+      calc((var(--mouse-y) - 50%) * 0.05)
+    );
+
+  color:
+    rgba(255, 255, 255, 0.016);
+
+  font-size:
+    clamp(7rem, 16vw, 19rem);
+
+  font-weight: 900;
+
+  line-height: 0.75;
+
+  letter-spacing:
+    -0.09em;
+
+  white-space: nowrap;
+
+  text-transform:
+    uppercase;
+
+  user-select: none;
+
+  pointer-events: none;
+
+  z-index: -3;
+
+  transition:
+    transform 0.8s cubic-bezier(
+      0.22,
+      1,
+      0.36,
+      1
+    );
+}
+
+
+/* =========================================================
+   BACKGROUND INDEX
+========================================================= */
+
+.proposal-bg-index {
+  position: absolute;
+
+  right: 7vw;
+  bottom: 5vh;
+
+  color:
+    rgba(255, 255, 255, 0.022);
+
+  font-size:
+    clamp(12rem, 26vw, 32rem);
+
+  font-weight: 900;
+
+  line-height: 0.65;
+
+  letter-spacing:
+    -0.12em;
+
+  user-select: none;
+
+  pointer-events: none;
+
+  z-index: -3;
+
+  animation:
+    proposalIndexBreathing
+    7s
+    ease-in-out
+    infinite;
+}
+
+@keyframes proposalIndexBreathing {
+
+  0%,
+  100% {
+    opacity: 0.55;
+
+    transform:
+      scale(1)
+      translateY(0);
+  }
+
+  50% {
+    opacity: 0.9;
+
+    transform:
+      scale(1.018)
+      translateY(-7px);
+  }
+
+}
+
+
+/* =========================================================
+   MAIN
+========================================================= */
+
+.proposal-main {
+  position: relative;
+
+  min-height: 100svh;
+
+  display: flex;
+
+  align-items: center;
+
+  padding:
+    145px
+    52px
+    155px;
+}
+
+.proposal-content {
+  width:
+    min(100%, 1250px);
+
+  margin-left:
+    clamp(
+      5rem,
+      16vw,
+      16rem
+    );
+}
+
+
+/* =========================================================
+   META
+========================================================= */
+
+.proposal-meta {
+  display: flex;
+
+  align-items: center;
+
+  gap: 13px;
+
+  margin-bottom: 48px;
+
+  color:
+    var(--muted);
+
+  font-size: 9px;
+
+  font-weight: 700;
+
+  letter-spacing:
+    0.2em;
+
+  opacity: 0;
+
+  transform:
+    translateY(20px);
+
+  transition:
+    opacity 0.8s ease 0.42s,
+    transform 0.8s cubic-bezier(
+      0.22,
+      1,
+      0.36,
+      1
+    ) 0.42s;
+}
+
+.is-loaded .proposal-meta {
+  opacity: 1;
+
+  transform:
+    translateY(0);
+}
+
+.proposal-meta-line {
+  width: 52px;
+
+  height: 1px;
+
+  background:
+    rgba(255, 255, 255, 0.32);
+}
+
+.proposal-meta-page {
+  margin-left: 12px;
+
+  color:
+    rgba(255, 255, 255, 0.2);
+}
+
+
+/* =========================================================
+   OVERLINE
+========================================================= */
+
+.proposal-overline {
+  margin-bottom: 14px;
+
+  color:
+    rgba(255, 255, 255, 0.3);
+
+  font-size: 10px;
+
+  font-weight: 700;
+
+  letter-spacing:
+    0.22em;
+
+  opacity: 0;
+
+  transform:
+    translateY(25px);
+
+  transition:
+    opacity 0.8s ease 0.5s,
+    transform 0.8s cubic-bezier(
+      0.22,
+      1,
+      0.36,
+      1
+    ) 0.5s;
+}
+
+.is-loaded .proposal-overline {
+  opacity: 1;
+
+  transform:
+    translateY(0);
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.proposal-hero h1 {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 0;
+
+  margin: 0;
+
+  font-size:
+    clamp(
+      5rem,
+      9vw,
+      10rem
+    );
+
+  font-weight: 500;
+
+  line-height: 0.98;
+
+  letter-spacing:
+    -0.042em;
+
+  text-transform:
+    uppercase;
+}
+
+.hero-line {
+  display: block;
+
+  opacity: 0;
+
+  transform:
+    translateY(80px);
+
+  transition:
+    opacity 1s ease,
+    transform 1.1s cubic-bezier(
+      0.22,
+      1,
+      0.36,
+      1
+    );
+}
+
+.is-loaded .hero-line-1 {
+  opacity: 1;
+
+  transform:
+    translateY(0);
+
+  transition-delay:
+    0.55s;
+}
+
+.is-loaded .hero-line-2 {
+  opacity: 1;
+
+  transform:
+    translateY(0);
+
+  transition-delay:
+    0.68s;
+}
+
+.is-loaded .hero-line-3 {
+  opacity: 1;
+
+  transform:
+    translateY(0);
+
+  transition-delay:
+    0.81s;
+}
+
+.hero-line-2 {
+  margin-left:
+    0.04em;
+}
+
+.hero-line-3 {
+  margin-left:
+    0.04em;
+}
+
+.hero-line em {
+  color:
+    transparent;
+
+  font-style:
+    normal;
+
+  -webkit-text-stroke:
+    1px
+    rgba(243, 241, 236, 0.58);
+}
+
+
+/* =========================================================
+   CLIENT
+========================================================= */
+
+.proposal-client {
+  width:
+    min(100%, 850px);
+
+  margin-top:
+    72px;
+
+  opacity: 0;
+
+  transform:
+    translateY(28px);
+
+  transition:
+    opacity 0.9s ease 0.95s,
+    transform 0.9s cubic-bezier(
+      0.22,
+      1,
+      0.36,
+      1
+    ) 0.95s;
+}
+
+.is-loaded .proposal-client {
+  opacity: 1;
+
+  transform:
+    translateY(0);
+}
+
+.proposal-client-heading {
+  display: flex;
+
+  align-items: center;
+
+  justify-content:
+    space-between;
+
+  max-width: 650px;
+
+  margin-bottom:
+    13px;
+
+  color:
+    var(--muted);
+
+  font-size: 8px;
+
+  font-weight: 700;
+
+  letter-spacing:
+    0.2em;
+}
+
+.proposal-client-number {
+  color:
+    rgba(255, 255, 255, 0.2);
+}
+
+.proposal-client h2 {
+  margin: 0;
+
+  color:
+    var(--white);
+
+  font-size:
+    clamp(
+      2.2rem,
+      4vw,
+      4.4rem
+    );
+
+  font-weight: 600;
+
+  line-height: 0.92;
+
+  letter-spacing:
+    -0.065em;
+
+  text-transform:
+    uppercase;
+}
+
+.proposal-client p {
+  max-width: 570px;
+
+  margin:
+    22px
+    0
+    0;
+
+  color:
+    rgba(243, 241, 236, 0.43);
+
+  font-size: 12px;
+
+  line-height: 1.7;
+}
+
+
+/* =========================================================
+   ACTION
+========================================================= */
+
+.proposal-action {
+  display: flex;
+
+  align-items: center;
+
+  gap: 22px;
+
+  margin-top: 40px;
+
+  opacity: 0;
+
+  transform:
+    translateY(22px);
+
+  transition:
+    opacity 0.8s ease 1.1s,
+    transform 0.8s cubic-bezier(
+      0.22,
+      1,
+      0.36,
+      1
+    ) 1.1s;
+}
+
+.is-loaded .proposal-action {
+  opacity: 1;
+
+  transform:
+    translateY(0);
+}
+
+
+/* =========================================================
+   BUTTON
+========================================================= */
+
+.proposal-button {
+  position: relative;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content:
+    space-between;
+
+  width: 310px;
+
+  min-height: 74px;
+
+  padding:
+    0
+    12px
+    0
+    25px;
+
+  overflow: hidden;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.32);
+
+  background:
+    rgba(255, 255, 255, 0.018);
+
+  color:
+    var(--white);
+
+  cursor:
+    pointer;
+
+  font-family:
+    inherit;
+
+  transition:
+    transform 0.45s cubic-bezier(
+      0.22,
+      1,
+      0.36,
+      1
+    ),
+    color 0.45s ease,
+    border-color 0.45s ease;
+}
+
+.proposal-button::before {
+  content: '';
+
+  position: absolute;
+
+  inset: 0;
+
+  background:
+    var(--white);
+
+  transform:
+    scaleX(0);
+
+  transform-origin:
+    left center;
+
+  transition:
+    transform 0.55s cubic-bezier(
+      0.22,
+      1,
+      0.36,
+      1
+    );
+
+  z-index: -1;
+}
+
+.proposal-button:hover {
+  color:
+    var(--black);
+
+  border-color:
+    var(--white);
+
+  transform:
+    translateY(-4px);
+}
+
+.proposal-button:hover::before {
+  transform:
+    scaleX(1);
+}
+
+.proposal-button-content {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items:
+    flex-start;
+
+  gap: 6px;
+}
+
+.proposal-button-content small {
+  color:
+    rgba(243, 241, 236, 0.38);
+
+  font-size: 7px;
+
+  font-weight: 700;
+
+  letter-spacing:
+    0.18em;
+
+  transition:
+    color 0.4s ease;
+}
+
+.proposal-button:hover small {
+  color:
+    rgba(0, 0, 0, 0.45);
+}
+
+.proposal-button-content strong {
+  font-size: 10px;
+
+  font-weight: 800;
+
+  letter-spacing:
+    0.15em;
+}
+
+.proposal-button-icon {
+  display: grid;
+
+  place-items: center;
+
+  width: 47px;
+  height: 47px;
+
+  border:
+    1px solid
+    currentColor;
+
+  font-size: 18px;
+
+  transition:
+    transform 0.5s cubic-bezier(
+      0.22,
+      1,
+      0.36,
+      1
+    );
+}
+
+.proposal-button:hover
+.proposal-button-icon {
+  transform:
+    rotate(45deg);
+}
+
+
+/* =========================================================
+   ACTION INFO
+========================================================= */
+
+.proposal-action-info {
+  display: flex;
+
+  align-items: center;
+
+  gap: 9px;
+
+  color:
+    rgba(255, 255, 255, 0.21);
+
+  font-size: 7px;
+
+  font-weight: 700;
+
+  letter-spacing:
+    0.18em;
+}
+
+.proposal-action-dot {
+  width: 5px;
+  height: 5px;
+
+  border-radius: 50%;
+
+  background:
+    var(--red);
+
+  box-shadow:
+    0 0 14px
+    rgba(239, 48, 56, 0.45);
+
+  animation:
+    statusPulse
+    2s
+    ease-in-out
+    infinite;
+}
+
+
+/* =========================================================
+   STATUS CARD
+========================================================= */
+
+.proposal-status {
+  position: absolute;
+
+  right: 125px;
+  bottom: 116px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 11px;
+
+  z-index: 38;
+
+  opacity: 0;
+
+  transform:
+    translateY(10px);
+
+  transition:
+    opacity 0.8s ease 1.3s,
+    transform 0.8s cubic-bezier(
+      0.22,
+      1,
+      0.36,
+      1
+    ) 1.3s;
+}
+
+.is-loaded .proposal-status {
+  opacity: 1;
+
+  transform:
+    translateY(0);
+}
+
+.proposal-status-dot {
+  position: relative;
+
+  width: 7px;
+  height: 7px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background:
+    var(--red);
+
+  box-shadow:
+    0 0 16px
+    rgba(239, 48, 56, 0.5);
+}
+
+.proposal-status-dot::after {
+  content: '';
+
+  position: absolute;
+
+  inset: -5px;
+
+  border:
+    1px solid
+    rgba(239, 48, 56, 0.25);
+
+  border-radius: 50%;
+
+  animation:
+    statusRing
+    2.4s
+    ease-out
+    infinite;
+}
+
+.proposal-status-copy {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 4px;
+}
+
+.proposal-status-copy span {
+  color:
+    rgba(255, 255, 255, 0.23);
+
+  font-size: 6px;
+
+  font-weight: 700;
+
+  letter-spacing:
+    0.18em;
+}
+
+.proposal-status-copy strong {
+  color:
+    rgba(255, 255, 255, 0.58);
+
+  font-size: 7px;
+
+  font-weight: 700;
+
+  letter-spacing:
+    0.15em;
+}
+
+
+/* =========================================================
+   MOVING TICKER
+========================================================= */
+
+.proposal-ticker {
+  position: absolute;
+
+  left: 0;
+  right: 0;
+
+  bottom: 76px;
+
+  width: 100%;
+
+  overflow: hidden;
+
+  z-index: 36;
+
+  pointer-events: none;
+
+  opacity: 0;
+
+  transition:
+    opacity 0.8s ease 1.15s;
+}
+
+.is-loaded .proposal-ticker {
+  opacity: 1;
+}
+
+
+/* =========================================================
+   TICKER MASK
+========================================================= */
+
+.proposal-ticker-mask {
+  position: relative;
+
+  width: 100%;
+
+  overflow: hidden;
+
+  padding:
+    13px
+    0;
+
+  border-top:
+    1px solid
+    rgba(255, 255, 255, 0.07);
+
+  border-bottom:
+    1px solid
+    rgba(255, 255, 255, 0.07);
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(5, 5, 5, 0.94),
+      rgba(5, 5, 5, 0.58),
+      rgba(5, 5, 5, 0.94)
+    );
+
+  backdrop-filter:
+    blur(9px);
+
+  -webkit-backdrop-filter:
+    blur(9px);
+
+  mask-image:
+    linear-gradient(
+      90deg,
+      transparent 0%,
+      black 7%,
+      black 93%,
+      transparent 100%
+    );
+}
+
+
+/* =========================================================
+   TICKER TRACK
+========================================================= */
+
+.proposal-ticker-track {
+  display: flex;
+
+  width: max-content;
+
+  will-change:
+    transform;
+
+  animation:
+    proposalTickerMove
+    36s
+    linear
+    infinite;
+}
+
+
+/* =========================================================
+   TICKER GROUP
+========================================================= */
+
+.proposal-ticker-group {
+  display: flex;
+
+  align-items: center;
+
+  flex-shrink: 0;
+
+  gap: 24px;
+
+  padding-right: 24px;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   TICKER ITEMS
+========================================================= */
+
+.proposal-ticker-item {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  color:
+    rgba(255, 255, 255, 0.31);
+
+  font-size: 8px;
+
+  font-weight: 700;
+
+  letter-spacing:
+    0.2em;
+}
+
+.ticker-highlight {
+  color:
+    rgba(255, 255, 255, 0.78);
+}
+
+.ticker-validity {
+  color:
+    rgba(255, 255, 255, 0.58);
+}
+
+
+/* =========================================================
+   TICKER DOT
+========================================================= */
+
+.proposal-ticker-item i {
+  display: block;
+
+  width: 5px;
+  height: 5px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background:
+    var(--red);
+
+  box-shadow:
+    0 0 12px
+    rgba(239, 48, 56, 0.55);
+
+  animation:
+    tickerDotPulse
+    2s
+    ease-in-out
+    infinite;
+}
+
+
+/* =========================================================
+   TICKER DIVIDER
+========================================================= */
+
+.proposal-ticker-divider {
+  color:
+    rgba(255, 255, 255, 0.1);
+
+  font-size: 10px;
+
+  font-weight: 400;
+}
+
+
+/* =========================================================
+   TICKER ANIMATION
+========================================================= */
+
+@keyframes proposalTickerMove {
+
+  from {
+    transform:
+      translate3d(0, 0, 0);
+  }
+
+  to {
+    transform:
+      translate3d(-50%, 0, 0);
+  }
+
+}
+
+@keyframes tickerDotPulse {
+
+  0%,
+  100% {
+    opacity: 0.35;
+
+    transform:
+      scale(0.8);
+  }
+
+  50% {
+    opacity: 1;
+
+    transform:
+      scale(1.15);
+  }
+
+}
+
+
+/* =========================================================
+   STATUS ANIMATION
+========================================================= */
+
+@keyframes statusPulse {
+
+  0%,
+  100% {
+    opacity: 0.45;
+
+    transform:
+      scale(0.8);
+  }
+
+  50% {
+    opacity: 1;
+
+    transform:
+      scale(1.12);
+  }
+
+}
+
+@keyframes statusRing {
+
+  0% {
+    opacity: 0.7;
+
+    transform:
+      scale(0.6);
+  }
+
+  100% {
+    opacity: 0;
+
+    transform:
+      scale(1.8);
+  }
+
+}
+
+@keyframes navigationPulse {
+
+  0%,
+  100% {
+    opacity: 0.45;
+
+    height: 20%;
+  }
+
+  50% {
+    opacity: 1;
+
+    height: 27%;
+  }
+
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.proposal-footer {
+  position: absolute;
+
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  display: grid;
+
+  grid-template-columns:
+    1fr
+    1.4fr
+    1fr
+    1.4fr
+    auto;
+
+  align-items: end;
+
+  gap: 30px;
+
+  padding:
+    0
+    52px
+    28px;
+
+  z-index: 41;
+
+  opacity: 0;
+
+  transform:
+    translateY(18px);
+
+  transition:
+    opacity 0.8s ease 1.2s,
+    transform 0.8s cubic-bezier(
+      0.22,
+      1,
+      0.36,
+      1
+    ) 1.2s;
+}
+
+.is-loaded .proposal-footer {
+  opacity: 1;
+
+  transform:
+    translateY(0);
+}
+
+.proposal-footer-block {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 5px;
+}
+
+.proposal-footer-block span {
+  color:
+    rgba(255, 255, 255, 0.24);
+
+  font-size: 7px;
+
+  font-weight: 700;
+
+  letter-spacing:
+    0.18em;
+}
+
+.proposal-footer-block strong,
+.proposal-footer-block a {
+  color:
+    var(--white);
+
+  font-size: 9px;
+
+  font-weight: 500;
+
+  text-decoration: none;
+}
+
+.proposal-footer-validity strong {
+  font-variant-numeric:
+    tabular-nums;
+}
+
+.proposal-footer-mark {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  color:
+    rgba(255, 255, 255, 0.22);
+
+  font-size: 7px;
+
+  font-weight: 700;
+
+  letter-spacing:
+    0.16em;
+}
+
+.proposal-footer-dot {
+  width: 5px;
+  height: 5px;
+
+  border-radius: 50%;
+
+  background:
+    var(--red);
+}
+
+
+
+/* =========================================================
+   EXIT
+========================================================= */
+
+.proposal-exit {
+  position: absolute;
+
+  inset: 0;
+
+  z-index: 100;
+
+  background:
+    var(--black);
+
+  transform:
+    scaleY(0);
+
+  transform-origin:
+    bottom;
+
+  pointer-events:
+    none;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 1200px) {
+
+  .proposal-content {
+    margin-left:
+      8vw;
+  }
+
+  .proposal-navigation {
+    right:
+      28px;
+  }
+
+  .proposal-chapters {
+    display:
+      none;
+  }
+
+  .proposal-status {
+    right:
+      45px;
+  }
+
+  .proposal-footer {
+    padding-left:
+      38px;
+
+    padding-right:
+      38px;
+
+    grid-template-columns:
+      1fr
+      1.2fr
+      1fr
+      1.2fr;
+  }
+
+  .proposal-footer-mark {
+    display:
+      none;
+  }
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
+
+  .proposal-entry {
+    min-height:
+      100svh;
+  }
+
+
+  /* FRAME */
+
+  .proposal-frame {
+    inset:
+      9px;
+  }
+
+
+  /* HEADER */
+
+  .proposal-header {
+    padding:
+      25px
+      24px;
+  }
+
+  .proposal-logo-reveal {
+    padding:
+      6px
+      12px
+      6px
+      0;
+  }
+
+  .proposal-logo img {
+    width:
+      170px;
+
+    max-height:
+      60px;
+  }
+
+  .proposal-header-right {
+    padding-top:
+      4px;
+
+    font-size:
+      7px;
+  }
+
+
+  /* BACKGROUND */
+
+  .proposal-bg-company {
+    left:
+      60%;
+
+    top:
+      54%;
+
+    font-size:
+      clamp(
+        4.5rem,
+        19vw,
+        8rem
+      );
+  }
+
+  .proposal-bg-index {
+    right:
+      0;
+
+    bottom:
+      13vh;
+
+    font-size:
+      clamp(
+        8rem,
+        37vw,
+        15rem
+      );
+  }
+
+
+  /* MAIN */
+
+  .proposal-main {
+    min-height:
+      100svh;
+
+    align-items:
+      flex-start;
+
+    padding:
+      135px
+      24px
+      220px;
+  }
+
+  .proposal-content {
+    width:
+      100%;
+
+    margin-left:
+      0;
+  }
+
+
+  /* META */
+
+  .proposal-meta {
+    gap:
+      8px;
+
+    margin-bottom:
+      32px;
+
+    font-size:
+      7px;
+
+    letter-spacing:
+      0.15em;
+  }
+
+  .proposal-meta-line {
+    width:
+      30px;
+  }
+
+  .proposal-meta-page {
+    margin-left:
+      3px;
+  }
+
+
+  /* OVERLINE */
+
+  .proposal-overline {
+    margin-bottom:
+      10px;
+
+    font-size:
+      7px;
+
+    letter-spacing:
+      0.17em;
+  }
+
+
+  /* HERO */
+
+  .proposal-hero h1 {
+    font-size:
+      clamp(
+        3.4rem,
+        15.5vw,
+        5.5rem
+      );
+
+    line-height:
+      0.9;
+
+    letter-spacing:
+      -0.075em;
+  }
+
+  .hero-line-2,
+  .hero-line-3 {
+    margin-left:
+      0.02em;
+  }
+
+  .hero-line em {
+    -webkit-text-stroke:
+      0.7px
+      rgba(243, 241, 236, 0.58);
+  }
+
+
+  /* CLIENT */
+
+  .proposal-client {
+    margin-top:
+      50px;
+  }
+
+  .proposal-client-heading {
+    margin-bottom:
+      10px;
+
+    font-size:
+      6px;
+
+    letter-spacing:
+      0.16em;
+  }
+
+  .proposal-client h2 {
+    font-size:
+      clamp(
+        1.8rem,
+        8vw,
+        2.8rem
+      );
+
+    line-height:
+      0.95;
+  }
+
+  .proposal-client p {
+    max-width:
+      330px;
+
+    margin-top:
+      16px;
+
+    font-size:
+      10px;
+
+    line-height:
+      1.65;
+  }
+
+
+  /* ACTION */
+
+  .proposal-action {
+    flex-direction:
+      column;
+
+    align-items:
+      flex-start;
+
+    gap:
+      12px;
+
+    margin-top:
+      29px;
+  }
+
+  .proposal-button {
+    width:
+      min(
+        100%,
+        340px
+      );
+
+    min-height:
+      63px;
+
+    padding-left:
+      19px;
+  }
+
+  .proposal-button-content small {
+    font-size:
+      6px;
+  }
+
+  .proposal-button-content strong {
+    font-size:
+      9px;
+  }
+
+  .proposal-button-icon {
+    width:
+      39px;
+
+    height:
+      39px;
+  }
+
+  .proposal-action-info {
+    font-size:
+      6px;
+  }
+
+
+  /* NAVIGATION */
+
+  .proposal-navigation {
+    display:
+      none;
+  }
+
+
+  /* STATUS */
+
+  .proposal-status {
+    left:
+      24px;
+
+    right:
+      auto;
+
+    bottom:
+      131px;
+
+    gap:
+      9px;
+  }
+
+  .proposal-status-copy span {
+    font-size:
+      5px;
+  }
+
+  .proposal-status-copy strong {
+    font-size:
+      6px;
+  }
+
+
+  /* TICKER */
+
+  .proposal-ticker {
+    bottom:
+      92px;
+  }
+
+  .proposal-ticker-mask {
+    padding:
+      10px
+      0;
+
+    mask-image:
+      linear-gradient(
+        90deg,
+        transparent 0%,
+        black 12%,
+        black 88%,
+        transparent 100%
+      );
+  }
+
+  .proposal-ticker-track {
+    animation-duration:
+      25s;
+  }
+
+  .proposal-ticker-group {
+    gap:
+      18px;
+
+    padding-right:
+      18px;
+  }
+
+  .proposal-ticker-item {
+    font-size:
+      6px;
+
+    letter-spacing:
+      0.16em;
+  }
+
+  .proposal-ticker-divider {
+    font-size:
+      8px;
+  }
+
+
+  /* FOOTER */
+
+  .proposal-footer {
+    grid-template-columns:
+      1fr
+      1fr;
+
+    gap:
+      13px
+      14px;
+
+    padding:
+      0
+      24px
+      24px;
+  }
+
+  .proposal-footer-block span {
+    font-size:
+      6px;
+  }
+
+  .proposal-footer-block strong,
+  .proposal-footer-block a {
+    font-size:
+      8px;
+  }
+
+  .proposal-footer-validity {
+    display:
+      none;
+  }
+
+  .proposal-footer-mark {
+    display:
+      none;
+  }
+
+
+  /* CHAPTERS */
+
+  .proposal-chapters {
+    display:
+      none;
+  }
+
+
+  /* CURSOR */
+
+  .proposal-cursor-ring {
+    display:
+      none;
+  }
+
+  .proposal-light {
+    width:
+      20rem;
+
+    height:
+      20rem;
+  }
+
+
+  /* GRID */
+
+  .proposal-grid {
+    background-size:
+      55px 55px;
+  }
+
+}
+
+
+/* =========================================================
+   TOUCH
+========================================================= */
+
+@media (
+  hover: none
+) and (
+  pointer: coarse
+) {
+
+  .proposal-light {
+    left:
+      50%;
+
+    top:
+      38%;
+  }
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (
+  prefers-reduced-motion: reduce
+) {
+
+  .proposal-entry,
+  .proposal-entry *,
+  .proposal-entry *::before,
+  .proposal-entry *::after {
+
+    animation:
+      none !important;
+
+    transition:
+      none !important;
+  }
+
+}
+/* =========================================================
+   MOBILE — RODAPÉ LIMPO
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+  /* -----------------------------------------
+     FOOTER
+  ----------------------------------------- */
+
+  .proposal-footer {
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    height: 76px;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    align-items: center;
+
+    gap: 20px;
+
+    padding: 0 24px;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+
+    background:
+      linear-gradient(
+        180deg,
+        rgba(5, 5, 5, 0.72),
+        rgba(5, 5, 5, 0.96)
+      );
+
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+
+    z-index: 41;
+  }
+
+
+  /* -----------------------------------------
+     INFORMAÇÕES DO FOOTER
+  ----------------------------------------- */
+
+  .proposal-footer-block {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 5px;
+
+    min-width: 0;
+  }
+
+  .proposal-footer-block span {
+    color: rgba(255, 255, 255, 0.28);
+
+    font-size: 6px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.16em;
+
+    white-space: nowrap;
+  }
+
+  .proposal-footer-block strong,
+  .proposal-footer-block a {
+    color: rgba(243, 241, 236, 0.88);
+
+    font-size: 8px;
+
+    font-weight: 600;
+
+    letter-spacing: 0.03em;
+
+    white-space: nowrap;
+
+    text-decoration: none;
+  }
+
+
+  /* -----------------------------------------
+     VALIDADE
+  ----------------------------------------- */
+
+  .proposal-footer-validity {
+    display: flex;
+
+    grid-column: 1;
+  }
+
+
+  /* -----------------------------------------
+     PREPARADO PARA
+  ----------------------------------------- */
+
+  .proposal-footer
+    .proposal-footer-block:nth-child(2) {
+    grid-column: 2;
+
+    align-items: flex-end;
+
+    text-align: right;
+  }
+
+
+  /* -----------------------------------------
+     CONTATO
+     DATA
+     MARCA
+     NÃO PRECISAM APARECER NO MOBILE
+  ----------------------------------------- */
+
+  .proposal-footer
+    .proposal-footer-block:nth-child(3),
+
+  .proposal-footer
+    .proposal-footer-block:nth-child(4),
+
+  .proposal-footer-mark {
+    display: none;
+  }
+
+
+  /* -----------------------------------------
+     TICKER
+  ----------------------------------------- */
+
+  .proposal-ticker {
+    position: absolute;
+
+    left: 0;
+    right: 0;
+
+    bottom: 76px;
+
+    height: 38px;
+
+    display: flex;
+
+    align-items: center;
+
+    padding: 0;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.055);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.055);
+
+    background:
+      rgba(5, 5, 5, 0.55);
+
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+
+    z-index: 35;
+  }
+
+  .proposal-ticker-track {
+    height: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    animation:
+      proposalTickerMove
+      32s
+      linear
+      infinite;
+  }
+
+  .proposal-ticker-group {
+    height: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 17px;
+
+    padding-right: 17px;
+
+    white-space: nowrap;
+  }
+
+  .proposal-ticker-item {
+    font-size: 6px;
+
+    letter-spacing: 0.14em;
+
+    color: rgba(255, 255, 255, 0.32);
+  }
+
+  .proposal-ticker-item--accent {
+    color: rgba(255, 255, 255, 0.65);
+  }
+
+  .proposal-ticker-item--validity {
+    color: rgba(255, 255, 255, 0.42);
+  }
+
+  .proposal-ticker-separator {
+    font-size: 8px;
+
+    color: rgba(255, 255, 255, 0.12);
+  }
+
+  .proposal-ticker-item i {
+    width: 4px;
+    height: 4px;
+  }
+
+
+  /* -----------------------------------------
+     CAPÍTULOS
+     REMOVE COMPLETAMENTE DO MOBILE
+  ----------------------------------------- */
+
+  .proposal-chapters {
+    display: none !important;
+  }
+
+
+  /* -----------------------------------------
+     GARANTE QUE O CONTEÚDO NÃO ENTRE
+     NA ÁREA INFERIOR
+  ----------------------------------------- */
+
+  .proposal-main {
+    padding-bottom: 140px;
+  }
+
+}
+/* =========================================================
+   MOBILE FINAL FIX — PROPOSAL COVER
+   ESTE BLOCO DEVE SER O ÚLTIMO DO CSS
+   ========================================================= */
+
+@media screen and (max-width: 700px) {
+
+  /* =======================================================
+     1. ESCONDER NAVEGAÇÃO LATERAL
+     ======================================================= */
+
+  .proposal-navigation {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+
+  /* =======================================================
+     2. ESCONDER CAPÍTULOS
+     ======================================================= */
+
+  .proposal-chapters {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+
+  /* =======================================================
+     3. FOOTER — POSIÇÃO DEFINITIVA
+     ======================================================= */
+
+  .proposal-footer {
+    position: absolute !important;
+
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+
+    width: 100% !important;
+    height: 70px !important;
+
+    display: grid !important;
+
+    grid-template-columns: 1fr 1fr !important;
+
+    align-items: center !important;
+
+    gap: 20px !important;
+
+    padding: 0 24px !important;
+
+    margin: 0 !important;
+
+    box-sizing: border-box !important;
+
+    border-top: 1px solid rgba(255,255,255,.08) !important;
+
+    background:
+      linear-gradient(
+        180deg,
+        rgba(5,5,5,.78),
+        rgba(5,5,5,.98)
+      ) !important;
+
+    backdrop-filter: blur(14px) !important;
+    -webkit-backdrop-filter: blur(14px) !important;
+
+    z-index: 90 !important;
+  }
+
+
+  /* =======================================================
+     4. LIMPAR BLOCOS DO FOOTER
+     ======================================================= */
+
+  .proposal-footer-block {
+    min-width: 0 !important;
+
+    display: flex !important;
+
+    flex-direction: column !important;
+
+    gap: 4px !important;
+  }
+
+
+  .proposal-footer-block span {
+    font-size: 6px !important;
+
+    line-height: 1 !important;
+
+    letter-spacing: .16em !important;
+
+    color: rgba(255,255,255,.28) !important;
+  }
+
+
+  .proposal-footer-block strong,
+  .proposal-footer-block a {
+    font-size: 8px !important;
+
+    line-height: 1 !important;
+
+    color: rgba(243,241,236,.88) !important;
+
+    white-space: nowrap !important;
+
+    text-decoration: none !important;
+  }
+
+
+  /* =======================================================
+     5. MOSTRAR SOMENTE:
+        VALIDADE + PREPARADO PARA
+     ======================================================= */
+
+  .proposal-footer-validity {
+    display: flex !important;
+
+    grid-column: 1 !important;
+
+    align-items: flex-start !important;
+
+    text-align: left !important;
+  }
+
+
+  .proposal-footer
+  .proposal-footer-block:nth-child(2) {
+
+    display: flex !important;
+
+    grid-column: 2 !important;
+
+    align-items: flex-end !important;
+
+    text-align: right !important;
+  }
+
+
+  /* CONTATO */
+  .proposal-footer
+  .proposal-footer-block:nth-child(3) {
+
+    display: none !important;
+  }
+
+
+  /* DATA */
+  .proposal-footer
+  .proposal-footer-block:nth-child(4) {
+
+    display: none !important;
+  }
+
+
+  /* MARCA */
+  .proposal-footer-mark {
+    display: none !important;
+  }
+
+
+  /* =======================================================
+     6. TICKER — POSIÇÃO DEFINITIVA
+     ======================================================= */
+
+  .proposal-ticker {
+
+    position: absolute !important;
+
+    left: 0 !important;
+    right: 0 !important;
+
+    bottom: 70px !important;
+
+    width: 100% !important;
+
+    height: 36px !important;
+
+    min-height: 36px !important;
+
+    max-height: 36px !important;
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    padding: 0 !important;
+
+    margin: 0 !important;
+
+    box-sizing: border-box !important;
+
+    overflow: hidden !important;
+
+    border-top:
+      1px solid rgba(255,255,255,.06) !important;
+
+    border-bottom:
+      1px solid rgba(255,255,255,.06) !important;
+
+    background:
+      rgba(5,5,5,.68) !important;
+
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+
+    z-index: 80 !important;
+  }
+
+
+  .proposal-ticker-track {
+
+    height: 36px !important;
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    width: max-content !important;
+
+    animation:
+      proposalTickerMove
+      32s
+      linear
+      infinite !important;
+  }
+
+
+  .proposal-ticker-group {
+
+    height: 36px !important;
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    gap: 16px !important;
+
+    padding-right: 16px !important;
+
+    white-space: nowrap !important;
+  }
+
+
+  .proposal-ticker-item {
+
+    font-size: 6px !important;
+
+    line-height: 1 !important;
+
+    letter-spacing: .14em !important;
+
+    color: rgba(255,255,255,.32) !important;
+  }
+
+
+  .proposal-ticker-item--accent {
+
+    color: rgba(255,255,255,.65) !important;
+  }
+
+
+  .proposal-ticker-item--validity {
+
+    color: rgba(255,255,255,.42) !important;
+  }
+
+
+  .proposal-ticker-separator {
+
+    font-size: 8px !important;
+
+    line-height: 1 !important;
+
+    color: rgba(255,255,255,.12) !important;
+  }
+
+
+  .proposal-ticker-item i {
+
+    width: 4px !important;
+    height: 4px !important;
+
+    flex-shrink: 0 !important;
+  }
+
+
+  /* =======================================================
+     7. ÁREA PRINCIPAL — NÃO DEIXAR CONTEÚDO
+        ENCOSTAR NAS BARRAS
+     ======================================================= */
+
+  .proposal-main {
+
+    padding-bottom: 125px !important;
+  }
+
+
+  /* =======================================================
+     8. GARANTIR QUE NADA FIQUE ABAIXO DO FOOTER
+     ======================================================= */
+
+  .proposal-entry {
+    overflow: hidden !important;
+  }
+
+}

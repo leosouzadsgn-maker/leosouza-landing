@@ -1,0 +1,2486 @@
+/* =========================================================
+   PROPOSAL — DIAGNÓSTICO
+   REFINADO / CLEAN EDITORIAL
+========================================================= */
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #050505;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* =========================================================
+   BASE
+========================================================= */
+
+.proposal-diagnostico {
+  --black: #050505;
+  --black-soft: #080808;
+
+  --white: #f1efe9;
+
+  --text: rgba(241,239,233,.78);
+  --muted: rgba(241,239,233,.48);
+  --soft: rgba(241,239,233,.30);
+  --dim: rgba(241,239,233,.16);
+
+  --line: rgba(241,239,233,.10);
+  --line-soft: rgba(241,239,233,.06);
+
+  --red: #ef3038;
+
+  position: relative;
+
+  width: 100%;
+  min-height: 100vh;
+
+  overflow-x: clip;
+
+  background: var(--black);
+  color: var(--white);
+
+  font-family:
+    Inter,
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  isolation: isolate;
+
+  opacity: 1;
+  transform: translateY(0);
+
+  transition:
+    opacity .6s ease,
+    transform .7s cubic-bezier(.22,1,.36,1);
+}
+
+.proposal-diagnostico.is-leaving {
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
+/* =========================================================
+   ATMOSFERA
+========================================================= */
+
+.diagnostico-bg {
+  position: fixed;
+  inset: 0;
+
+  z-index: -20;
+
+  pointer-events: none;
+
+  background:
+    radial-gradient(
+      circle at 18% 15%,
+      rgba(255,255,255,.045),
+      transparent 28rem
+    ),
+    radial-gradient(
+      circle at 82% 70%,
+      rgba(255,255,255,.018),
+      transparent 30rem
+    ),
+    linear-gradient(
+      135deg,
+      #050505,
+      #080808 55%,
+      #030303
+    );
+}
+
+.diagnostico-noise {
+  position: fixed;
+  inset: 0;
+
+  z-index: 50;
+
+  pointer-events: none;
+
+  opacity: .025;
+
+  background-image:
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.diagnostico-grid {
+  position: fixed;
+  inset: 0;
+
+  z-index: -10;
+
+  pointer-events: none;
+
+  opacity: .14;
+
+  background-image:
+    linear-gradient(
+      rgba(255,255,255,.025) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255,255,255,.025) 1px,
+      transparent 1px
+    );
+
+  background-size: 110px 110px;
+
+  mask-image:
+    radial-gradient(
+      ellipse at center,
+      black,
+      transparent 80%
+    );
+}
+
+/* =========================================================
+   FRAME
+========================================================= */
+
+.diagnostico-frame {
+  position: fixed;
+  inset: 14px;
+
+  z-index: 45;
+
+  pointer-events: none;
+
+  border:
+    1px solid
+    rgba(255,255,255,.07);
+}
+
+.diagnostico-corner {
+  position: absolute;
+
+  width: 15px;
+  height: 15px;
+}
+
+.diagnostico-corner::before,
+.diagnostico-corner::after {
+  content: "";
+
+  position: absolute;
+
+  background:
+    rgba(255,255,255,.48);
+}
+
+.diagnostico-corner::before {
+  width: 1px;
+  height: 15px;
+}
+
+.diagnostico-corner::after {
+  width: 15px;
+  height: 1px;
+}
+
+.diagnostico-corner--tl {
+  top: -1px;
+  left: -1px;
+}
+
+.diagnostico-corner--tr {
+  top: -1px;
+  right: -1px;
+  transform: rotate(90deg);
+}
+
+.diagnostico-corner--bl {
+  bottom: -1px;
+  left: -1px;
+  transform: rotate(-90deg);
+}
+
+.diagnostico-corner--br {
+  bottom: -1px;
+  right: -1px;
+  transform: rotate(180deg);
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.diagnostico-header {
+  position: relative;
+
+  z-index: 20;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding:
+    34px
+    clamp(30px, 6vw, 80px)
+    0;
+}
+
+.diagnostico-logo {
+  font-size: 12px;
+  font-weight: 800;
+
+  letter-spacing: .22em;
+}
+
+.diagnostico-logo small {
+  margin-left: 5px;
+
+  font-size: 7px;
+  letter-spacing: .12em;
+
+  opacity: .45;
+}
+
+.diagnostico-header-right {
+  display: flex;
+  gap: 7px;
+
+  color:
+    rgba(255,255,255,.38);
+
+  font-size: 8px;
+  font-weight: 800;
+
+  letter-spacing: .17em;
+}
+
+.diagnostico-header-right strong {
+  color: var(--white);
+}
+
+/* =========================================================
+   NÚMERO DE FUNDO
+========================================================= */
+
+.diagnostico-big-number {
+  position: absolute;
+
+  top: 80px;
+  right: 5vw;
+
+  z-index: -5;
+
+  color:
+    rgba(255,255,255,.018);
+
+  font-size:
+    clamp(
+      160px,
+      25vw,
+      400px
+    );
+
+  font-weight: 900;
+
+  line-height: .7;
+
+  letter-spacing: -.10em;
+
+  pointer-events: none;
+  user-select: none;
+}
+
+/* =========================================================
+   MAIN
+========================================================= */
+
+.diagnostico-main {
+  position: relative;
+
+  z-index: 5;
+
+  width: min(
+    calc(100% - 12vw),
+    1420px
+  );
+
+  margin: 0 auto;
+
+  padding:
+    105px
+    0
+    150px;
+}
+
+/* =========================================================
+   META
+========================================================= */
+
+.diagnostico-meta {
+  display: flex;
+  align-items: center;
+
+  gap: 13px;
+
+  margin-bottom: 60px;
+
+  color:
+    rgba(255,255,255,.38);
+
+  font-size: 8px;
+  font-weight: 800;
+
+  letter-spacing: .20em;
+}
+
+.diagnostico-meta-line {
+  width: 45px;
+  height: 1px;
+
+  background:
+    rgba(255,255,255,.35);
+}
+
+/* =========================================================
+   INTRO
+========================================================= */
+
+.diagnostico-intro-grid {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1.35fr)
+    minmax(280px, .65fr);
+
+  gap: 8vw;
+
+  align-items: end;
+}
+
+.diagnostico-eyebrow {
+  display: block;
+
+  margin-bottom: 22px;
+
+  color:
+    rgba(255,255,255,.34);
+
+  font-size: 9px;
+  font-weight: 800;
+
+  letter-spacing: .17em;
+}
+
+.diagnostico-intro h1 {
+  max-width: 900px;
+
+  margin: 0;
+
+  font-size:
+    clamp(
+      62px,
+      8vw,
+      118px
+    );
+
+  font-weight: 800;
+
+  line-height: .86;
+
+  letter-spacing: -.065em;
+}
+
+.diagnostico-intro h1 span,
+.diagnostico-intro h1 em {
+  color: transparent;
+
+  font-style: normal;
+
+  -webkit-text-stroke:
+    1px
+    rgba(255,255,255,.40);
+}
+
+.diagnostico-intro-right {
+  max-width: 440px;
+
+  padding-bottom: 5px;
+}
+
+.diagnostico-index {
+  margin-bottom: 22px;
+
+  color:
+    rgba(255,255,255,.14);
+
+  font-size: 52px;
+  font-weight: 900;
+
+  line-height: .8;
+
+  letter-spacing: -.07em;
+}
+
+.diagnostico-intro-right p {
+  max-width: 430px;
+
+  margin:
+    0 0 16px;
+
+  color:
+    rgba(255,255,255,.48);
+
+  font-size: 13px;
+
+  line-height: 1.75;
+}
+
+/* =========================================================
+   SECTION LABEL
+========================================================= */
+
+.diagnostico-section-label {
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+
+  margin-bottom: 34px;
+
+  color:
+    rgba(255,255,255,.34);
+
+  font-size: 8px;
+  font-weight: 800;
+
+  letter-spacing: .19em;
+}
+
+.diagnostico-section-label::after {
+  content: "";
+
+  flex: 1;
+
+  height: 1px;
+
+  background:
+    rgba(255,255,255,.08);
+}
+
+/* =========================================================
+   CENÁRIO
+========================================================= */
+
+.diagnostico-cenario {
+  margin-top: 125px;
+}
+
+.diagnostico-stats {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, 1fr);
+
+  border-top:
+    1px solid
+    var(--line);
+
+  border-bottom:
+    1px solid
+    var(--line);
+}
+
+.diagnostico-stat {
+  min-height: 225px;
+
+  padding:
+    32px
+    34px;
+
+  border-right:
+    1px solid
+    var(--line);
+}
+
+.diagnostico-stat:last-child {
+  border-right: 0;
+}
+
+.diagnostico-stat span {
+  display: block;
+
+  margin-bottom: 42px;
+
+  color:
+    rgba(255,255,255,.34);
+
+  font-size: 8px;
+  font-weight: 800;
+
+  letter-spacing: .17em;
+}
+
+.diagnostico-stat strong {
+  display: block;
+
+  font-size:
+    clamp(
+      58px,
+      6vw,
+      90px
+    );
+
+  font-weight: 800;
+
+  line-height: .82;
+
+  letter-spacing: -.07em;
+}
+
+.diagnostico-stat small {
+  display: block;
+
+  margin-top: 16px;
+
+  color:
+    rgba(255,255,255,.36);
+
+  font-size: 8px;
+  font-weight: 800;
+
+  letter-spacing: .15em;
+}
+
+/* =========================================================
+   PRIMEIRA LEITURA
+========================================================= */
+
+.diagnostico-reading {
+  margin-top: 135px;
+}
+
+.diagnostico-reading-grid {
+  display: grid;
+
+  grid-template-columns:
+    minmax(280px, .8fr)
+    minmax(0, 1.2fr);
+
+  gap: 9vw;
+
+  align-items: start;
+}
+
+.diagnostico-reading h2 {
+  margin: 0;
+
+  font-size:
+    clamp(
+      58px,
+      7vw,
+      100px
+    );
+
+  font-weight: 800;
+
+  line-height: .86;
+
+  letter-spacing: -.065em;
+}
+
+.diagnostico-reading h2 em {
+  color: transparent;
+
+  font-style: normal;
+
+  -webkit-text-stroke:
+    1px
+    rgba(255,255,255,.40);
+}
+
+.diagnostico-reading h3 {
+  margin:
+    0 0 22px;
+
+  max-width: 620px;
+
+  font-size: 25px;
+
+  font-weight: 600;
+
+  line-height: 1.15;
+
+  letter-spacing: -.025em;
+}
+
+.diagnostico-reading p {
+  max-width: 610px;
+
+  margin:
+    0 0 17px;
+
+  color:
+    rgba(255,255,255,.50);
+
+  font-size: 14px;
+
+  line-height: 1.8;
+}
+
+/* =========================================================
+   OPPORTUNITIES
+========================================================= */
+
+.diagnostico-opportunities {
+  margin-top: 135px;
+}
+
+.diagnostico-opportunity-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, 1fr);
+
+  border-top:
+    1px solid
+    var(--line);
+
+  border-bottom:
+    1px solid
+    var(--line);
+}
+
+.diagnostico-opportunity-grid article {
+  min-height: 235px;
+
+  padding:
+    28px;
+
+  border-right:
+    1px solid
+    var(--line);
+}
+
+.diagnostico-opportunity-grid article:last-child {
+  border-right: 0;
+}
+
+.diagnostico-opportunity-grid span {
+  color:
+    rgba(255,255,255,.26);
+
+  font-size: 9px;
+}
+
+.diagnostico-opportunity-grid h3 {
+  margin:
+    48px
+    0
+    13px;
+
+  font-size: 16px;
+  font-weight: 700;
+
+  line-height: 1.15;
+}
+
+.diagnostico-opportunity-grid p {
+  margin: 0;
+
+  color:
+    rgba(255,255,255,.43);
+
+  font-size: 11px;
+
+  line-height: 1.65;
+}
+
+/* =========================================================
+   ANALYSIS
+========================================================= */
+
+.diagnostico-analysis {
+  margin-top: 145px;
+}
+
+.diagnostico-analysis-header {
+  display: grid;
+
+  grid-template-columns:
+    .7fr
+    1.3fr;
+
+  gap: 8vw;
+
+  align-items: start;
+}
+
+.diagnostico-analysis-header > span {
+  color:
+    rgba(255,255,255,.34);
+
+  font-size: 9px;
+  font-weight: 800;
+
+  letter-spacing: .17em;
+}
+
+.diagnostico-analysis h2 {
+  max-width: 900px;
+
+  margin: 0;
+
+  font-size:
+    clamp(
+      58px,
+      7vw,
+      105px
+    );
+
+  font-weight: 800;
+
+  line-height: .88;
+
+  letter-spacing: -.065em;
+}
+
+.diagnostico-analysis h2 em {
+  color: transparent;
+
+  -webkit-text-stroke:
+    1px
+    rgba(255,255,255,.38);
+
+  font-style: normal;
+}
+
+.diagnostico-analysis-content {
+  max-width: 690px;
+
+  margin:
+    65px
+    0
+    0
+    auto;
+}
+
+.diagnostico-analysis-content p {
+  margin:
+    0 0 18px;
+
+  color:
+    rgba(255,255,255,.49);
+
+  font-size: 14px;
+
+  line-height: 1.8;
+}
+
+/* =========================================================
+   POSITIONING
+========================================================= */
+
+.diagnostico-positioning {
+  margin-top: 145px;
+}
+
+.diagnostico-positioning-top {
+  max-width: 1050px;
+}
+
+.diagnostico-positioning-top > span {
+  display: block;
+
+  margin-bottom: 25px;
+
+  color:
+    rgba(255,255,255,.34);
+
+  font-size: 9px;
+  font-weight: 800;
+
+  letter-spacing: .17em;
+}
+
+.diagnostico-positioning h2 {
+  margin: 0;
+
+  font-size:
+    clamp(
+      58px,
+      7.5vw,
+      110px
+    );
+
+  font-weight: 800;
+
+  line-height: .87;
+
+  letter-spacing: -.065em;
+}
+
+.diagnostico-positioning h2 em {
+  color: transparent;
+
+  -webkit-text-stroke:
+    1px
+    rgba(255,255,255,.40);
+
+  font-style: normal;
+}
+
+.diagnostico-question-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, 1fr);
+
+  margin-top: 75px;
+
+  border-top:
+    1px solid
+    var(--line);
+}
+
+.diagnostico-question-grid article {
+  display: flex;
+
+  gap: 25px;
+
+  padding:
+    25px
+    0;
+
+  border-bottom:
+    1px solid
+    var(--line);
+}
+
+.diagnostico-question-grid article:nth-child(odd) {
+  margin-right: 45px;
+}
+
+.diagnostico-question-grid article span {
+  flex-shrink: 0;
+
+  color:
+    rgba(255,255,255,.25);
+
+  font-size: 9px;
+}
+
+.diagnostico-question-grid strong {
+  max-width: 330px;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  line-height: 1.5;
+
+  letter-spacing: .02em;
+}
+
+/* =========================================================
+   VISUAL
+========================================================= */
+
+.diagnostico-visual {
+  margin-top: 145px;
+}
+
+.diagnostico-visual-grid {
+  display: grid;
+
+  grid-template-columns:
+    minmax(280px, .8fr)
+    minmax(0, 1.2fr);
+
+  gap: 9vw;
+}
+
+.diagnostico-visual-grid h2 {
+  margin: 0;
+
+  font-size:
+    clamp(
+      58px,
+      7vw,
+      105px
+    );
+
+  font-weight: 800;
+
+  line-height: .88;
+
+  letter-spacing: -.065em;
+}
+
+.diagnostico-visual-grid h2 em {
+  color: transparent;
+
+  -webkit-text-stroke:
+    1px
+    rgba(255,255,255,.40);
+
+  font-style: normal;
+}
+
+.diagnostico-visual-list {
+  border-top:
+    1px solid
+    var(--line);
+}
+
+.diagnostico-visual-list div {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding:
+    20px
+    0;
+
+  border-bottom:
+    1px solid
+    var(--line);
+}
+
+.diagnostico-visual-list span {
+  color:
+    rgba(255,255,255,.28);
+
+  font-size: 9px;
+}
+
+.diagnostico-visual-list strong {
+  color:
+    rgba(255,255,255,.72);
+
+  font-size: 10px;
+
+  letter-spacing: .11em;
+}
+
+/* =========================================================
+   PRODUCT
+========================================================= */
+
+.diagnostico-product {
+  margin-top: 145px;
+}
+
+.diagnostico-product-intro span {
+  color:
+    rgba(255,255,255,.35);
+
+  font-size: 9px;
+  font-weight: 800;
+
+  letter-spacing: .17em;
+}
+
+.diagnostico-product-intro h2 {
+  max-width: 1000px;
+
+  margin:
+    24px
+    0
+    65px;
+
+  font-size:
+    clamp(
+      72px,
+      10vw,
+      145px
+    );
+
+  font-weight: 800;
+
+  line-height: .78;
+
+  letter-spacing: -.075em;
+}
+
+.diagnostico-product-intro h2 em {
+  color: transparent;
+
+  -webkit-text-stroke:
+    1px
+    rgba(255,255,255,.40);
+
+  font-style: normal;
+}
+
+.diagnostico-product-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, 1fr);
+
+  border-top:
+    1px solid
+    var(--line);
+}
+
+.diagnostico-product-grid article {
+  min-height: 165px;
+
+  padding:
+    28px;
+
+  border-right:
+    1px solid
+    var(--line);
+
+  border-bottom:
+    1px solid
+    var(--line);
+}
+
+.diagnostico-product-grid article:nth-child(3n) {
+  border-right: 0;
+}
+
+.diagnostico-product-grid strong {
+  display: block;
+
+  margin-bottom: 9px;
+
+  color:
+    rgba(255,255,255,.80);
+
+  font-size: 14px;
+
+  letter-spacing: .06em;
+}
+
+.diagnostico-product-grid span {
+  color:
+    rgba(255,255,255,.38);
+
+  font-size: 11px;
+
+  line-height: 1.5;
+}
+
+.diagnostico-experience {
+  margin-top: 65px;
+
+  padding:
+    48px;
+
+  border:
+    1px solid
+    rgba(255,255,255,.10);
+}
+
+.diagnostico-experience span {
+  color:
+    rgba(255,255,255,.34);
+
+  font-size: 9px;
+  font-weight: 800;
+
+  letter-spacing: .17em;
+}
+
+.diagnostico-experience h3 {
+  max-width: 800px;
+
+  margin:
+    35px
+    0
+    20px;
+
+  font-size:
+    clamp(
+      32px,
+      4vw,
+      58px
+    );
+
+  font-weight: 700;
+
+  line-height: 1;
+
+  letter-spacing: -.045em;
+}
+
+.diagnostico-experience p {
+  margin:
+    0 0 8px;
+
+  color:
+    rgba(255,255,255,.38);
+
+  font-size: 12px;
+}
+
+.diagnostico-experience > strong {
+  font-size: 19px;
+}
+
+/* =========================================================
+   LOCAL
+========================================================= */
+
+.diagnostico-local {
+  margin-top: 145px;
+}
+
+.diagnostico-local-grid {
+  display: grid;
+
+  grid-template-columns:
+    minmax(280px, .8fr)
+    minmax(0, 1.2fr);
+
+  gap: 9vw;
+}
+
+.diagnostico-local-grid h2 {
+  margin: 0;
+
+  font-size:
+    clamp(
+      58px,
+      7vw,
+      105px
+    );
+
+  font-weight: 800;
+
+  line-height: .88;
+
+  letter-spacing: -.065em;
+}
+
+.diagnostico-local-grid h2 em {
+  color: transparent;
+
+  -webkit-text-stroke:
+    1px
+    rgba(255,255,255,.40);
+
+  font-style: normal;
+}
+
+.diagnostico-local-grid p {
+  max-width: 610px;
+
+  margin:
+    0 0 32px;
+
+  color:
+    rgba(255,255,255,.48);
+
+  font-size: 14px;
+
+  line-height: 1.8;
+}
+
+.diagnostico-local-tags {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 7px;
+}
+
+.diagnostico-local-tags span {
+  padding:
+    9px
+    12px;
+
+  border:
+    1px solid
+    rgba(255,255,255,.10);
+
+  color:
+    rgba(255,255,255,.43);
+
+  font-size: 7px;
+  font-weight: 800;
+
+  letter-spacing: .13em;
+}
+
+/* =========================================================
+   CONVERSION
+========================================================= */
+
+.diagnostico-conversion {
+  margin-top: 145px;
+}
+
+.diagnostico-conversion-title {
+  display: grid;
+
+  grid-template-columns:
+    .45fr
+    1.55fr;
+
+  gap: 8vw;
+}
+
+.diagnostico-conversion-title > span {
+  color:
+    rgba(255,255,255,.32);
+
+  font-size: 9px;
+  font-weight: 800;
+
+  letter-spacing: .17em;
+}
+
+.diagnostico-conversion-title h2 {
+  margin: 0;
+
+  font-size:
+    clamp(
+      58px,
+      7.5vw,
+      110px
+    );
+
+  font-weight: 800;
+
+  line-height: .85;
+
+  letter-spacing: -.065em;
+}
+
+.diagnostico-conversion-title h2 em {
+  color: transparent;
+
+  -webkit-text-stroke:
+    1px
+    rgba(255,255,255,.40);
+
+  font-style: normal;
+}
+
+.diagnostico-funnel {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, 1fr);
+
+  margin-top: 70px;
+
+  border-top:
+    1px solid
+    var(--line);
+
+  border-bottom:
+    1px solid
+    var(--line);
+}
+
+.diagnostico-funnel div {
+  min-height: 185px;
+
+  padding:
+    26px;
+
+  border-right:
+    1px solid
+    var(--line);
+}
+
+.diagnostico-funnel div:last-child {
+  border-right: 0;
+}
+
+.diagnostico-funnel span {
+  color:
+    rgba(255,255,255,.26);
+
+  font-size: 9px;
+}
+
+.diagnostico-funnel strong {
+  display: block;
+
+  margin-top: 48px;
+
+  color:
+    rgba(255,255,255,.78);
+
+  font-size: 13px;
+
+  letter-spacing: .07em;
+}
+
+.diagnostico-funnel small {
+  display: block;
+
+  margin-top: 9px;
+
+  color:
+    rgba(255,255,255,.34);
+
+  font-size: 10px;
+
+  line-height: 1.45;
+}
+
+/* =========================================================
+   POSITIVE
+========================================================= */
+
+.diagnostico-positive {
+  margin-top: 145px;
+}
+
+.diagnostico-positive-header {
+  display: grid;
+
+  grid-template-columns:
+    .6fr
+    1.4fr;
+
+  gap: 8vw;
+}
+
+.diagnostico-positive-header > span {
+  color:
+    rgba(255,255,255,.32);
+
+  font-size: 9px;
+  font-weight: 800;
+
+  letter-spacing: .16em;
+}
+
+.diagnostico-positive-header h2 {
+  margin: 0;
+
+  font-size:
+    clamp(
+      58px,
+      7vw,
+      105px
+    );
+
+  font-weight: 800;
+
+  line-height: .87;
+
+  letter-spacing: -.065em;
+}
+
+.diagnostico-positive-header h2 em {
+  color: transparent;
+
+  -webkit-text-stroke:
+    1px
+    rgba(255,255,255,.40);
+
+  font-style: normal;
+}
+
+.diagnostico-positive-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, 1fr);
+
+  margin-top: 75px;
+
+  border-top:
+    1px solid
+    var(--line);
+}
+
+.diagnostico-positive-grid article {
+  min-height: 185px;
+
+  padding:
+    26px;
+
+  border-right:
+    1px solid
+    var(--line);
+
+  border-bottom:
+    1px solid
+    var(--line);
+}
+
+.diagnostico-positive-grid article:nth-child(3n) {
+  border-right: 0;
+}
+
+.diagnostico-positive-grid span {
+  color:
+    rgba(255,255,255,.25);
+
+  font-size: 9px;
+}
+
+.diagnostico-positive-grid strong {
+  display: block;
+
+  margin-top: 42px;
+
+  font-size: 13px;
+
+  letter-spacing: .07em;
+}
+
+.diagnostico-positive-grid p {
+  margin:
+    10px
+    0
+    0;
+
+  color:
+    rgba(255,255,255,.38);
+
+  font-size: 11px;
+
+  line-height: 1.6;
+}
+
+/* =========================================================
+   EVOLUTION
+========================================================= */
+
+.diagnostico-evolution {
+  margin-top: 145px;
+}
+
+.diagnostico-evolution-header {
+  display: grid;
+
+  grid-template-columns:
+    .6fr
+    1.4fr;
+
+  gap: 8vw;
+}
+
+.diagnostico-evolution-header span {
+  color:
+    rgba(255,255,255,.32);
+
+  font-size: 9px;
+  font-weight: 800;
+
+  letter-spacing: .16em;
+}
+
+.diagnostico-evolution-header h2 {
+  margin: 0;
+
+  font-size:
+    clamp(
+      58px,
+      7vw,
+      105px
+    );
+
+  font-weight: 800;
+
+  line-height: .87;
+
+  letter-spacing: -.065em;
+}
+
+.diagnostico-evolution-list {
+  margin-top: 70px;
+
+  border-top:
+    1px solid
+    var(--line);
+}
+
+.diagnostico-evolution-list div {
+  display: flex;
+
+  align-items: center;
+
+  gap: 35px;
+
+  padding:
+    20px
+    0;
+
+  border-bottom:
+    1px solid
+    var(--line);
+}
+
+.diagnostico-evolution-list span {
+  width: 30px;
+
+  flex-shrink: 0;
+
+  color:
+    rgba(255,255,255,.25);
+
+  font-size: 9px;
+}
+
+.diagnostico-evolution-list strong {
+  color:
+    rgba(255,255,255,.70);
+
+  font-size: 11px;
+
+  letter-spacing: .07em;
+}
+
+/* =========================================================
+   GRANDE OPORTUNIDADE
+========================================================= */
+
+.diagnostico-opportunity {
+  margin-top: 165px;
+}
+
+.diagnostico-opportunity-main {
+  max-width: 950px;
+}
+
+.diagnostico-opportunity-main > span {
+  color:
+    rgba(255,255,255,.32);
+
+  font-size: 9px;
+  font-weight: 800;
+
+  letter-spacing: .16em;
+}
+
+.diagnostico-opportunity-main h2 {
+  margin:
+    35px
+    0;
+
+  font-size:
+    clamp(
+      58px,
+      7vw,
+      105px
+    );
+
+  font-weight: 800;
+
+  line-height: .87;
+
+  letter-spacing: -.065em;
+}
+
+.diagnostico-opportunity-main h2 em {
+  color: transparent;
+
+  -webkit-text-stroke:
+    1px
+    rgba(255,255,255,.40);
+
+  font-style: normal;
+}
+
+.diagnostico-opportunity-main p {
+  max-width: 650px;
+
+  margin: 0;
+
+  color:
+    rgba(255,255,255,.48);
+
+  font-size: 14px;
+
+  line-height: 1.8;
+}
+
+.diagnostico-opportunity-quote {
+  margin-top: 85px;
+
+  padding:
+    45px
+    0;
+
+  border-top:
+    1px solid
+    rgba(255,255,255,.11);
+
+  border-bottom:
+    1px solid
+    rgba(255,255,255,.11);
+}
+
+.diagnostico-opportunity-quote span {
+  display: block;
+
+  max-width: 850px;
+
+  font-size:
+    clamp(
+      25px,
+      3.3vw,
+      46px
+    );
+
+  font-weight: 700;
+
+  line-height: 1.05;
+
+  letter-spacing: -.025em;
+}
+
+/* =========================================================
+   END
+========================================================= */
+
+.diagnostico-end {
+  min-height: 65vh;
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: center;
+
+  margin-top: 140px;
+
+  text-align: center;
+}
+
+.diagnostico-end-number {
+  margin-bottom: 22px;
+
+  color:
+    rgba(255,255,255,.25);
+
+  font-size: 9px;
+
+  letter-spacing: .20em;
+}
+
+.diagnostico-end > span {
+  color:
+    rgba(255,255,255,.34);
+
+  font-size: 9px;
+  font-weight: 800;
+
+  letter-spacing: .18em;
+}
+
+.diagnostico-end h2 {
+  max-width: 950px;
+
+  margin:
+    35px
+    auto;
+
+  font-size:
+    clamp(
+      55px,
+      7vw,
+      105px
+    );
+
+  font-weight: 800;
+
+  line-height: .87;
+
+  letter-spacing: -.065em;
+}
+
+.diagnostico-end h2 em {
+  color: transparent;
+
+  -webkit-text-stroke:
+    1px
+    rgba(255,255,255,.40);
+
+  font-style: normal;
+}
+
+.diagnostico-end p {
+  max-width: 460px;
+
+  margin:
+    0
+    auto
+    35px;
+
+  color:
+    rgba(255,255,255,.42);
+
+  font-size: 13px;
+
+  line-height: 1.7;
+}
+
+.diagnostico-end button {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  width: 290px;
+
+  margin: 0 auto;
+
+  padding: 18px 20px;
+
+  border:
+    1px solid
+    rgba(255,255,255,.20);
+
+  background: transparent;
+
+  color: var(--white);
+
+  cursor: pointer;
+
+  text-align: left;
+
+  transition:
+    background .3s ease,
+    color .3s ease,
+    transform .3s ease;
+}
+
+.diagnostico-end button:hover {
+  background: var(--white);
+
+  color: var(--black);
+
+  transform:
+    translateY(-3px);
+}
+
+.diagnostico-end button span {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 5px;
+
+  font-size: 7px;
+
+  letter-spacing: .15em;
+}
+
+.diagnostico-end button strong {
+  font-size: 10px;
+
+  letter-spacing: .08em;
+}
+
+.diagnostico-end button b {
+  font-size: 23px;
+
+  font-weight: 400;
+}
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.diagnostico-footer {
+  position: relative;
+
+  z-index: 10;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, 1fr);
+
+  width: min(
+    calc(100% - 12vw),
+    1420px
+  );
+
+  margin:
+    0
+    auto
+    80px;
+
+  border-top:
+    1px solid
+    var(--line);
+}
+
+.diagnostico-footer div {
+  padding:
+    22px
+    0;
+
+  border-right:
+    1px solid
+    var(--line);
+}
+
+.diagnostico-footer div:first-child {
+  padding-left: 0;
+}
+
+.diagnostico-footer div:last-child {
+  border-right: 0;
+
+  padding-left: 25px;
+}
+
+.diagnostico-footer span,
+.diagnostico-footer strong {
+  display: block;
+}
+
+.diagnostico-footer span {
+  margin-bottom: 7px;
+
+  color:
+    rgba(255,255,255,.27);
+
+  font-size: 7px;
+  font-weight: 800;
+
+  letter-spacing: .15em;
+}
+
+.diagnostico-footer strong {
+  color:
+    rgba(255,255,255,.70);
+
+  font-size: 9px;
+
+  letter-spacing: .04em;
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+
+  .diagnostico-header {
+    padding:
+      25px
+      35px
+      0;
+  }
+
+  .diagnostico-main {
+    width:
+      calc(100% - 70px);
+
+    padding:
+      90px
+      0
+      130px;
+  }
+
+  .diagnostico-intro-grid,
+  .diagnostico-reading-grid,
+  .diagnostico-analysis-header,
+  .diagnostico-visual-grid,
+  .diagnostico-local-grid,
+  .diagnostico-conversion-title,
+  .diagnostico-positive-header,
+  .diagnostico-evolution-header {
+
+    grid-template-columns: 1fr;
+
+    gap: 50px;
+  }
+
+  .diagnostico-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .diagnostico-stat {
+    min-height: auto;
+
+    border-right: 0;
+
+    border-bottom:
+      1px solid
+      var(--line);
+  }
+
+  .diagnostico-stat:last-child {
+    border-bottom: 0;
+  }
+
+  .diagnostico-opportunity-grid,
+  .diagnostico-funnel {
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+
+  .diagnostico-product-grid,
+  .diagnostico-positive-grid {
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+
+  .diagnostico-opportunity-grid article:nth-child(2n),
+  .diagnostico-product-grid article:nth-child(2n),
+  .diagnostico-positive-grid article:nth-child(2n) {
+    border-right: 0;
+  }
+
+  .diagnostico-footer {
+    width:
+      calc(100% - 70px);
+  }
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+  .diagnostico-frame {
+    inset: 8px;
+  }
+
+  .diagnostico-header {
+    padding:
+      22px
+      22px
+      0;
+  }
+
+  .diagnostico-logo {
+    font-size: 10px;
+  }
+
+  .diagnostico-header-right {
+    font-size: 6px;
+  }
+
+  .diagnostico-main {
+    width:
+      calc(100% - 44px);
+
+    padding:
+      85px
+      0
+      100px;
+  }
+
+  .diagnostico-big-number {
+    top: 100px;
+    right: -25px;
+
+    font-size: 190px;
+  }
+
+  .diagnostico-meta {
+    margin-bottom: 45px;
+
+    font-size: 7px;
+  }
+
+  .diagnostico-meta-line {
+    width: 28px;
+  }
+
+  .diagnostico-intro-grid {
+    gap: 45px;
+  }
+
+  .diagnostico-eyebrow {
+    margin-bottom: 17px;
+
+    font-size: 7px;
+  }
+
+  .diagnostico-intro h1 {
+    font-size:
+      clamp(
+        52px,
+        16vw,
+        72px
+      );
+
+    line-height: .90;
+  }
+
+  .diagnostico-intro-right {
+    max-width: 100%;
+  }
+
+  .diagnostico-index {
+    margin-bottom: 18px;
+
+    font-size: 43px;
+  }
+
+  .diagnostico-intro-right p {
+    font-size: 11px;
+
+    line-height: 1.75;
+  }
+
+  /* SEÇÕES */
+
+  .diagnostico-cenario,
+  .diagnostico-reading,
+  .diagnostico-opportunities,
+  .diagnostico-analysis,
+  .diagnostico-positioning,
+  .diagnostico-visual,
+  .diagnostico-product,
+  .diagnostico-local,
+  .diagnostico-conversion,
+  .diagnostico-positive,
+  .diagnostico-evolution,
+  .diagnostico-opportunity {
+
+    margin-top: 100px;
+  }
+
+  .diagnostico-section-label {
+    margin-bottom: 27px;
+
+    font-size: 7px;
+  }
+
+  /* STATS */
+
+  .diagnostico-stat {
+    padding:
+      25px
+      22px;
+  }
+
+  .diagnostico-stat span {
+    margin-bottom: 30px;
+
+    font-size: 7px;
+  }
+
+  .diagnostico-stat strong {
+    font-size: 62px;
+  }
+
+  /* TEXTOS */
+
+  .diagnostico-reading h2,
+  .diagnostico-analysis h2,
+  .diagnostico-positioning h2,
+  .diagnostico-visual-grid h2,
+  .diagnostico-local-grid h2,
+  .diagnostico-conversion-title h2,
+  .diagnostico-positive-header h2,
+  .diagnostico-evolution-header h2,
+  .diagnostico-opportunity-main h2 {
+
+    font-size:
+      clamp(
+        48px,
+        15vw,
+        68px
+      );
+
+    line-height: .91;
+  }
+
+  .diagnostico-reading h3 {
+    font-size: 21px;
+  }
+
+  .diagnostico-reading p,
+  .diagnostico-analysis-content p,
+  .diagnostico-local-grid p,
+  .diagnostico-opportunity-main p {
+    font-size: 11px;
+
+    line-height: 1.75;
+  }
+
+  /* OPPORTUNITIES */
+
+  .diagnostico-opportunity-grid,
+  .diagnostico-funnel,
+  .diagnostico-product-grid,
+  .diagnostico-positive-grid {
+
+    grid-template-columns: 1fr;
+  }
+
+  .diagnostico-opportunity-grid article,
+  .diagnostico-funnel div,
+  .diagnostico-product-grid article,
+  .diagnostico-positive-grid article {
+
+    min-height: auto;
+
+    padding:
+      25px
+      22px;
+
+    border-right: 0;
+  }
+
+  .diagnostico-opportunity-grid h3 {
+    margin:
+      32px
+      0
+      10px;
+  }
+
+  .diagnostico-funnel strong {
+    margin-top: 35px;
+  }
+
+  .diagnostico-product-grid article {
+    min-height: 135px;
+  }
+
+  .diagnostico-product-intro h2 {
+    font-size:
+      clamp(
+        60px,
+        18vw,
+        88px
+      );
+
+    margin-bottom: 45px;
+  }
+
+  /* QUESTIONS */
+
+  .diagnostico-question-grid {
+    grid-template-columns: 1fr;
+
+    margin-top: 55px;
+  }
+
+  .diagnostico-question-grid article {
+    gap: 18px;
+
+    padding:
+      20px
+      0;
+  }
+
+  .diagnostico-question-grid article:nth-child(odd) {
+    margin-right: 0;
+  }
+
+  .diagnostico-question-grid strong {
+    font-size: 11px;
+  }
+
+  /* EXPERIENCE */
+
+  .diagnostico-experience {
+    margin-top: 45px;
+
+    padding:
+      30px
+      22px;
+  }
+
+  .diagnostico-experience h3 {
+    margin:
+      25px
+      0
+      18px;
+
+    font-size: 29px;
+  }
+
+  /* QUOTE */
+
+  .diagnostico-opportunity-quote {
+    margin-top: 60px;
+
+    padding:
+      35px
+      0;
+  }
+
+  .diagnostico-opportunity-quote span {
+    font-size: 25px;
+  }
+
+  /* FINAL */
+
+  .diagnostico-end {
+    min-height: 65vh;
+
+    margin-top: 100px;
+  }
+
+  .diagnostico-end h2 {
+    margin:
+      25px
+      auto;
+
+    font-size:
+      clamp(
+        48px,
+        15vw,
+        68px
+      );
+  }
+
+  .diagnostico-end p {
+    font-size: 11px;
+  }
+
+  .diagnostico-end button {
+    width: 100%;
+  }
+
+  /* FOOTER */
+
+  .diagnostico-footer {
+    grid-template-columns: 1fr;
+
+    width:
+      calc(100% - 44px);
+
+    margin-bottom: 50px;
+  }
+
+  .diagnostico-footer div,
+  .diagnostico-footer div:last-child {
+
+    padding:
+      18px
+      0;
+
+    border-right: 0;
+
+    border-bottom:
+      1px solid
+      var(--line);
+  }
+
+  .diagnostico-footer div:last-child {
+    padding-left: 0;
+
+    border-bottom: 0;
+  }
+}
+
+/* =========================================================
+   MOBILE PEQUENO
+========================================================= */
+
+@media (max-width: 380px) {
+
+  .diagnostico-main {
+    width:
+      calc(100% - 36px);
+  }
+
+  .diagnostico-intro h1 {
+    font-size: 48px;
+  }
+
+  .diagnostico-reading h2,
+  .diagnostico-analysis h2,
+  .diagnostico-positioning h2,
+  .diagnostico-visual-grid h2,
+  .diagnostico-local-grid h2,
+  .diagnostico-conversion-title h2,
+  .diagnostico-positive-header h2,
+  .diagnostico-evolution-header h2,
+  .diagnostico-opportunity-main h2,
+  .diagnostico-end h2 {
+
+    font-size: 44px;
+  }
+
+  .diagnostico-stat strong {
+    font-size: 55px;
+  }
+
+  .diagnostico-footer {
+    width:
+      calc(100% - 36px);
+  }
+}
+
+/* =========================================================
+   ACESSIBILIDADE
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+
+    transition: none !important;
+
+    scroll-behavior: auto !important;
+  }
+}
+
+/* =========================================================
+   REFINO 02 — HIERARQUIA VISUAL
+   Menos rótulos. Mais protagonismo para os títulos.
+========================================================= */
+
+/* Esconde rótulos de seção quando o H2 já identifica o bloco */
+.diagnostico-reading > .diagnostico-section-label,
+.diagnostico-analysis > .diagnostico-section-label,
+.diagnostico-positioning > .diagnostico-section-label,
+.diagnostico-visual > .diagnostico-section-label,
+.diagnostico-product > .diagnostico-section-label,
+.diagnostico-local > .diagnostico-section-label,
+.diagnostico-conversion > .diagnostico-section-label,
+.diagnostico-positive > .diagnostico-section-label,
+.diagnostico-evolution > .diagnostico-section-label,
+.diagnostico-opportunity > .diagnostico-section-label {
+  display: none;
+}
+
+/* Remove os pequenos nomes que ficam imediatamente acima dos títulos */
+.diagnostico-analysis-header > span,
+.diagnostico-positioning-top > span,
+.diagnostico-product-intro > span,
+.diagnostico-conversion-title > span,
+.diagnostico-positive-header > span,
+.diagnostico-evolution-header > span,
+.diagnostico-opportunity-main > span {
+  display: none;
+}
+
+/* O primeiro título não precisa de outro rótulo antes dele */
+.diagnostico-intro .diagnostico-eyebrow {
+  display: none;
+}
+
+/* CENÁRIO mantém apenas um identificador discreto */
+.diagnostico-cenario > .diagnostico-section-label {
+  margin-bottom: 24px;
+  font-size: 7px;
+  opacity: .60;
+}
+
+/* Cards: menos distância entre índice e nome */
+.diagnostico-opportunity-grid article h3,
+.diagnostico-positive-grid article strong {
+  margin-top: 24px;
+}
+
+/* Funil: o nome da etapa é suficiente */
+.diagnostico-funnel div > span {
+  display: none;
+}
+
+.diagnostico-funnel strong {
+  margin-top: 0;
+}
+
+/* Experiência: remove o rótulo auxiliar */
+.diagnostico-experience > span {
+  display: none;
+}
+
+.diagnostico-experience h3 {
+  margin-top: 0;
+}
+
+/* Números secundários ficam mais discretos */
+.diagnostico-visual-list span,
+.diagnostico-evolution-list span {
+  opacity: .40;
+}
+
+/* Menos espaço vazio entre blocos */
+.diagnostico-reading,
+.diagnostico-analysis,
+.diagnostico-positioning,
+.diagnostico-visual,
+.diagnostico-product,
+.diagnostico-local,
+.diagnostico-conversion,
+.diagnostico-positive,
+.diagnostico-evolution,
+.diagnostico-opportunity {
+  margin-top: 115px;
+}
+
+/* H2 assume oficialmente o papel de título */
+.diagnostico-reading h2,
+.diagnostico-analysis h2,
+.diagnostico-positioning h2,
+.diagnostico-visual-grid h2,
+.diagnostico-product-intro h2,
+.diagnostico-local-grid h2,
+.diagnostico-conversion-title h2,
+.diagnostico-positive-header h2,
+.diagnostico-evolution-header h2,
+.diagnostico-opportunity-main h2 {
+  margin-top: 0;
+}
+
+/* MOBILE */
+@media (max-width: 600px) {
+
+  .diagnostico-reading > .diagnostico-section-label,
+  .diagnostico-analysis > .diagnostico-section-label,
+  .diagnostico-positioning > .diagnostico-section-label,
+  .diagnostico-visual > .diagnostico-section-label,
+  .diagnostico-product > .diagnostico-section-label,
+  .diagnostico-local > .diagnostico-section-label,
+  .diagnostico-conversion > .diagnostico-section-label,
+  .diagnostico-positive > .diagnostico-section-label,
+  .diagnostico-evolution > .diagnostico-section-label,
+  .diagnostico-opportunity > .diagnostico-section-label {
+    display: none;
+  }
+
+  .diagnostico-intro .diagnostico-eyebrow {
+    display: none;
+  }
+
+  .diagnostico-cenario > .diagnostico-section-label {
+    display: flex;
+    margin-bottom: 20px;
+  }
+
+  .diagnostico-analysis,
+  .diagnostico-positioning,
+  .diagnostico-visual,
+  .diagnostico-product,
+  .diagnostico-local,
+  .diagnostico-conversion,
+  .diagnostico-positive,
+  .diagnostico-evolution,
+  .diagnostico-opportunity {
+    margin-top: 90px;
+  }
+
+  .diagnostico-opportunity-grid article h3,
+  .diagnostico-positive-grid article strong {
+    margin-top: 18px;
+  }
+}

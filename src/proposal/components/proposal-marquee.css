@@ -1,0 +1,343 @@
+/* =========================================================
+   PROPOSAL MARQUEE
+========================================================= */
+
+.proposal-marquee {
+  position: relative;
+
+  width: 100%;
+
+  height: 74px;
+
+  overflow: hidden;
+
+  border-top:
+    1px solid
+    rgba(255,255,255,.09);
+
+  border-bottom:
+    1px solid
+    rgba(255,255,255,.09);
+
+  background:
+    rgba(255,255,255,.018);
+
+  z-index: 5;
+}
+
+
+/* =========================================================
+   LINHA CENTRAL
+========================================================= */
+
+.proposal-marquee::before {
+  content: '';
+
+  position: absolute;
+
+  top: 50%;
+  left: 0;
+
+  width: 100%;
+  height: 1px;
+
+  background:
+    rgba(255,255,255,.035);
+
+  transform:
+    translateY(-50%);
+
+  pointer-events: none;
+
+  z-index: 0;
+}
+
+
+/* =========================================================
+   FADE NAS EXTREMIDADES
+========================================================= */
+
+.proposal-marquee::after {
+  content: '';
+
+  position: absolute;
+
+  inset: 0;
+
+  pointer-events: none;
+
+  z-index: 4;
+
+  background:
+    linear-gradient(
+      90deg,
+      #050505 0%,
+      transparent 10%,
+      transparent 90%,
+      #050505 100%
+    );
+}
+
+
+/* =========================================================
+   VIEWPORT
+========================================================= */
+
+.proposal-marquee__viewport {
+  width: 100%;
+  height: 100%;
+
+  overflow: hidden;
+
+  display: flex;
+
+  align-items: center;
+}
+
+
+/* =========================================================
+   TRACK
+========================================================= */
+
+.proposal-marquee__track {
+  display: flex;
+
+  width: max-content;
+
+  flex-shrink: 0;
+
+  animation:
+    proposalMarquee
+    28s
+    linear
+    infinite;
+}
+
+
+/* =========================================================
+   ITEM
+========================================================= */
+
+.proposal-marquee__item {
+  display: flex;
+
+  align-items: center;
+
+  gap: 18px;
+
+  flex-shrink: 0;
+
+  padding:
+    0 32px;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   NÚMERO
+========================================================= */
+
+.proposal-marquee__number {
+  color:
+    rgba(255,255,255,.2);
+
+  font-size:
+    9px;
+
+  font-weight:
+    800;
+
+  letter-spacing:
+    .08em;
+}
+
+
+/* =========================================================
+   EMPRESA
+========================================================= */
+
+.proposal-marquee__company {
+  color:
+    rgba(255,255,255,.72);
+
+  font-size:
+    10px;
+
+  font-weight:
+    800;
+
+  letter-spacing:
+    .16em;
+}
+
+
+/* =========================================================
+   SEPARADOR
+========================================================= */
+
+.proposal-marquee__separator {
+  color:
+    rgba(255,255,255,.18);
+
+  font-size:
+    12px;
+}
+
+
+/* =========================================================
+   SEÇÃO
+========================================================= */
+
+.proposal-marquee__section {
+  color:
+    rgba(255,255,255,.38);
+
+  font-size:
+    10px;
+
+  font-weight:
+    700;
+
+  letter-spacing:
+    .2em;
+}
+
+
+/* =========================================================
+   ESTRELA
+========================================================= */
+
+.proposal-marquee__star {
+  margin-left:
+    12px;
+
+  color:
+    rgba(255,255,255,.3);
+
+  font-size:
+    10px;
+
+  transform:
+    translateY(-1px);
+}
+
+
+/* =========================================================
+   ANIMAÇÃO
+========================================================= */
+
+@keyframes proposalMarquee {
+
+  from {
+    transform:
+      translateX(0);
+  }
+
+  to {
+    transform:
+      translateX(-50%);
+  }
+
+}
+
+
+/* =========================================================
+   DIREÇÃO ALTERNATIVA
+========================================================= */
+
+.proposal-marquee--reverse
+.proposal-marquee__track {
+  animation-name:
+    proposalMarqueeReverse;
+}
+
+
+@keyframes proposalMarqueeReverse {
+
+  from {
+    transform:
+      translateX(-50%);
+  }
+
+  to {
+    transform:
+      translateX(0);
+  }
+
+}
+
+
+/* =========================================================
+   HOVER
+========================================================= */
+
+.proposal-marquee:hover
+.proposal-marquee__track {
+  animation-play-state:
+    paused;
+}
+
+.proposal-marquee:hover
+.proposal-marquee__company {
+  color:
+    rgba(255,255,255,.95);
+}
+
+.proposal-marquee:hover
+.proposal-marquee__section {
+  color:
+    rgba(255,255,255,.6);
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
+
+  .proposal-marquee {
+    height:
+      60px;
+  }
+
+  .proposal-marquee__item {
+    gap:
+      12px;
+
+    padding:
+      0 22px;
+  }
+
+  .proposal-marquee__company,
+  .proposal-marquee__section {
+    font-size:
+      8px;
+  }
+
+  .proposal-marquee__number {
+    font-size:
+      7px;
+  }
+
+  .proposal-marquee__star {
+    margin-left:
+      5px;
+  }
+
+}
+
+
+/* =========================================================
+   REDUÇÃO DE MOVIMENTO
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .proposal-marquee__track {
+    animation:
+      none;
+  }
+
+}
