@@ -39,7 +39,6 @@ function ProposalDiagnostico() {
 
   const proposal = {
     ...DEFAULT_PROPOSAL,
-
     company:
       companySlug === 'marechal'
         ? DEFAULT_PROPOSAL.company
@@ -76,17 +75,9 @@ function ProposalDiagnostico() {
       `}
     >
 
-      {/* =====================================================
-          ATMOSFERA
-      ===================================================== */}
-
       <div className="diagnostico-bg" />
       <div className="diagnostico-noise" />
       <div className="diagnostico-grid" />
-
-      {/* =====================================================
-          FRAME
-      ===================================================== */}
 
       <div className="diagnostico-frame">
         <span className="diagnostico-corner diagnostico-corner--tl" />
@@ -95,12 +86,7 @@ function ProposalDiagnostico() {
         <span className="diagnostico-corner diagnostico-corner--br" />
       </div>
 
-      {/* =====================================================
-          HEADER
-      ===================================================== */}
-
       <header className="diagnostico-header">
-
         <div className="diagnostico-logo">
           LEO SOUZA
           <small>DSGN</small>
@@ -110,12 +96,7 @@ function ProposalDiagnostico() {
           <span>PROPOSTA</span>
           <strong>/ {proposal.number}</strong>
         </div>
-
       </header>
-
-      {/* =====================================================
-          BACKGROUND NUMBER
-      ===================================================== */}
 
       <div
         className="diagnostico-big-number"
@@ -124,30 +105,18 @@ function ProposalDiagnostico() {
         03
       </div>
 
-      {/* =====================================================
-          MAIN
-      ===================================================== */}
-
       <main className="diagnostico-main">
 
-        {/* ===================================================
-            INTRO
-        =================================================== */}
+        {/* =====================================================
+            CAPÍTULO 01
+        ===================================================== */}
 
         <section className="diagnostico-intro">
 
           <div className="diagnostico-meta">
-
             <span className="diagnostico-meta-line" />
-
-            <span>
-              03 / 08
-            </span>
-
-            <span>
-              DIAGNÓSTICO
-            </span>
-
+            <span>03 / 08</span>
+            <span>DIAGNÓSTICO</span>
           </div>
 
           <div className="diagnostico-intro-grid">
@@ -161,19 +130,11 @@ function ProposalDiagnostico() {
               <h1>
                 EXISTE
                 <br />
-
-                <span>
-                  PRESENÇA.
-                </span>
-
+                <span>PRESENÇA.</span>
                 <br />
-
                 EXISTE
                 <br />
-
-                <em>
-                  ESPAÇO.
-                </em>
+                <em>ESPAÇO.</em>
               </h1>
 
             </div>
@@ -204,9 +165,9 @@ function ProposalDiagnostico() {
 
         </section>
 
-        {/* ===================================================
-            CENÁRIO
-        =================================================== */}
+        {/* =====================================================
+            02 — CENÁRIO ATUAL
+        ===================================================== */}
 
         <section className="diagnostico-cenario">
 
@@ -238,9 +199,9 @@ function ProposalDiagnostico() {
 
         </section>
 
-        {/* ===================================================
-            PRIMEIRA LEITURA
-        =================================================== */}
+        {/* =====================================================
+            03 — PRIMEIRA LEITURA
+        ===================================================== */}
 
         <section className="diagnostico-reading">
 
@@ -292,9 +253,9 @@ function ProposalDiagnostico() {
 
         </section>
 
-        {/* ===================================================
-            OPORTUNIDADES
-        =================================================== */}
+        {/* =====================================================
+            04 — OPORTUNIDADES
+        ===================================================== */}
 
         <section className="diagnostico-opportunities">
 
@@ -344,9 +305,9 @@ function ProposalDiagnostico() {
 
         </section>
 
-        {/* ===================================================
-            COMUNICAÇÃO
-        =================================================== */}
+        {/* =====================================================
+            05 — COMUNICAÇÃO
+        ===================================================== */}
 
         <section className="diagnostico-analysis">
 
@@ -394,9 +355,9 @@ function ProposalDiagnostico() {
 
         </section>
 
-        {/* ===================================================
-            POSICIONAMENTO
-        =================================================== */}
+        {/* =====================================================
+            06 — POSICIONAMENTO
+        ===================================================== */}
 
         <section className="diagnostico-positioning">
 
@@ -445,9 +406,9 @@ function ProposalDiagnostico() {
 
         </section>
 
-        {/* ===================================================
-            VISUAL
-        =================================================== */}
+        {/* =====================================================
+            07 — ANÁLISE VISUAL
+        ===================================================== */}
 
         <section className="diagnostico-visual">
 
@@ -506,9 +467,9 @@ function ProposalDiagnostico() {
 
         </section>
 
-        {/* ===================================================
-            PRODUTO + EXPERIÊNCIA
-        =================================================== */}
+        {/* =====================================================
+            08 — PRODUTO & EXPERIÊNCIA
+        ===================================================== */}
 
         <section className="diagnostico-product">
 
@@ -587,9 +548,9 @@ function ProposalDiagnostico() {
 
         </section>
 
-        {/* ===================================================
-            PRESENÇA LOCAL
-        =================================================== */}
+        {/* =====================================================
+            09 — PRESENÇA LOCAL
+        ===================================================== */}
 
         <section className="diagnostico-local">
 
@@ -628,13 +589,11 @@ function ProposalDiagnostico() {
               </p>
 
               <div className="diagnostico-local-tags">
-
                 <span>ONDE COMER</span>
                 <span>ONDE SAIR</span>
                 <span>REUNIR AMIGOS</span>
                 <span>COMEMORAR</span>
                 <span>EXPERIMENTAR</span>
-
               </div>
 
             </div>
@@ -643,9 +602,9 @@ function ProposalDiagnostico() {
 
         </section>
 
-        {/* ===================================================
-            CONVERSÃO
-        =================================================== */}
+        {/* =====================================================
+            10 — CONVERSÃO
+        ===================================================== */}
 
         <section className="diagnostico-conversion">
 
@@ -701,9 +660,9 @@ function ProposalDiagnostico() {
 
         </section>
 
-        {/* ===================================================
-            O QUE FUNCIONA
-        =================================================== */}
+        {/* =====================================================
+            11 — O QUE JÁ FUNCIONA
+        ===================================================== */}
 
         <section className="diagnostico-positive">
 
@@ -782,9 +741,9 @@ function ProposalDiagnostico() {
 
         </section>
 
-        {/* ===================================================
-            PONTOS DE EVOLUÇÃO
-        =================================================== */}
+        {/* =====================================================
+            12 — PONTOS DE EVOLUÇÃO
+        ===================================================== */}
 
         <section className="diagnostico-evolution">
 
@@ -852,9 +811,9 @@ function ProposalDiagnostico() {
 
         </section>
 
-        {/* ===================================================
-            GRANDE OPORTUNIDADE
-        =================================================== */}
+        {/* =====================================================
+            13 — A GRANDE OPORTUNIDADE
+        ===================================================== */}
 
         <section className="diagnostico-opportunity">
 
@@ -900,9 +859,9 @@ function ProposalDiagnostico() {
 
         </section>
 
-        {/* ===================================================
-            FECHAMENTO DO DIAGNÓSTICO
-        =================================================== */}
+        {/* =====================================================
+            FECHAMENTO
+        ===================================================== */}
 
         <section className="diagnostico-end">
 
@@ -943,10 +902,6 @@ function ProposalDiagnostico() {
 
       </main>
 
-      {/* =====================================================
-          FOOTER
-      ===================================================== */}
-
       <footer className="diagnostico-footer">
 
         <div>
@@ -965,10 +920,6 @@ function ProposalDiagnostico() {
         </div>
 
       </footer>
-
-      {/* =====================================================
-          TICKER
-      ===================================================== */}
 
       <ProposalTicker
         company={proposal.company}
