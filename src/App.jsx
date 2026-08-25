@@ -16,6 +16,8 @@ import ProposalDirection from './proposal/pages/ProposalDirection';
 import ProposalPlans from './proposal/pages/ProposalPlans';
 import ProposalAdmin from './proposal/pages/ProposalAdmin';
 
+import TreinamentoKreative from './treinamento/TreinamentoKreative';
+
 function MainSite() {
   return (
     <main>
@@ -33,6 +35,17 @@ function MainSite() {
 
 function App() {
   const path = window.location.pathname;
+
+  /* =====================================================
+     TREINAMENTO COMERCIAL KREATIVE
+  ===================================================== */
+
+  if (
+    path === '/treinamentokreative' ||
+    path === '/treinamentokreative/'
+  ) {
+    return <TreinamentoKreative />;
+  }
 
   /* =====================================================
      ADMIN
