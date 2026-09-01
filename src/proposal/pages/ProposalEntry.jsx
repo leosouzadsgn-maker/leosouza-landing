@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import '../styles/proposal-entry.css';
+import { getProposalByCurrentRoute, getProposalSlug, getProposalHashSuffix } from '../data/proposalShare';
 
 const DEFAULT_PROPOSAL = {
   number: '001',
@@ -12,23 +13,14 @@ const DEFAULT_PROPOSAL = {
 };
 
 function getCompanyFromPath() {
-  const parts = window.location.pathname
-    .split('/')
-    .filter(Boolean);
-
-  return parts[1] || 'empresa-teste';
+  return getProposalSlug();
 }
 
 function formatCompanyName(slug) {
   return slug
     .split('-')
     .filter(Boolean)
-    .map((word) => {
-      return (
-        word.charAt(0).toUpperCase() +
-        word.slice(1)
-      );
-    })
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
 }
 
@@ -44,14 +36,16 @@ function ProposalEntry() {
   const [mouseActive, setMouseActive] = useState(false);
 
   const companySlug = getCompanyFromPath();
+  const sharedProposal = getProposalByCurrentRoute();
 
   const proposal = {
     ...DEFAULT_PROPOSAL,
-
+    ...(sharedProposal || {}),
     company:
-      companySlug === 'empresa-teste'
+      sharedProposal?.company ||
+      (companySlug === 'empresa-teste'
         ? DEFAULT_PROPOSAL.company
-        : formatCompanyName(companySlug).toUpperCase(),
+        : formatCompanyName(companySlug).toUpperCase()),
   };
 
   /*
@@ -146,7 +140,7 @@ function ProposalEntry() {
 
     window.setTimeout(() => {
       window.location.href =
-        `/proposta/${companySlug}/contexto`;
+        `/proposta/${companySlug}/contexto${getProposalHashSuffix()}`;
     }, 850);
   };
 

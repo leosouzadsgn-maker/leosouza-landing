@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import '../styles/proposal-diagnostico.css';
 import ProposalTicker from '../components/ProposalTicker';
+import { getProposalByCurrentRoute, getProposalSlug, getProposalHashSuffix } from '../data/proposalShare';
 
 const DEFAULT_PROPOSAL = {
   number: '001',
@@ -11,23 +12,14 @@ const DEFAULT_PROPOSAL = {
 };
 
 function getCompanyFromPath() {
-  const parts = window.location.pathname
-    .split('/')
-    .filter(Boolean);
-
-  return parts[1] || 'marechal';
+  return getProposalSlug();
 }
 
 function formatCompanyName(slug) {
   return slug
     .split('-')
     .filter(Boolean)
-    .map((word) => {
-      return (
-        word.charAt(0).toUpperCase() +
-        word.slice(1)
-      );
-    })
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
 }
 
@@ -36,13 +28,16 @@ function ProposalDiagnostico() {
   const [isLeaving, setIsLeaving] = useState(false);
 
   const companySlug = getCompanyFromPath();
+  const sharedProposal = getProposalByCurrentRoute();
 
   const proposal = {
     ...DEFAULT_PROPOSAL,
+    ...(sharedProposal || {}),
     company:
-      companySlug === 'marechal'
+      sharedProposal?.company ||
+      (companySlug === 'marechal'
         ? DEFAULT_PROPOSAL.company
-        : formatCompanyName(companySlug).toUpperCase(),
+        : formatCompanyName(companySlug).toUpperCase()),
   };
 
   useEffect(() => {
@@ -62,7 +57,7 @@ function ProposalDiagnostico() {
 
     window.setTimeout(() => {
       window.location.href =
-        `/proposta/${companySlug}/direcao`;
+        `/proposta/${companySlug}/direcao${getProposalHashSuffix()}`;
     }, 650);
   };
 

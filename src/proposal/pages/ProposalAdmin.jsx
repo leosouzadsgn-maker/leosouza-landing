@@ -5,6 +5,7 @@ import {
   createProposal,
   archiveProposal
 } from '../data/proposals';
+import { buildProposalLink } from '../data/proposalShare';
 
 import '../styles/proposal-admin.css';
 
@@ -114,7 +115,7 @@ function ProposalAdmin() {
     setProposals(updated);
 
     const link =
-      `${window.location.origin}/proposta/${proposal.id}`;
+      buildProposalLink(proposal);
 
     setCreatedLink(link);
 
@@ -280,7 +281,7 @@ function ProposalAdmin() {
               <div className="proposal-admin__actions">
 
                 <a
-                  href={`/proposta/${proposal.id}`}
+                  href={buildProposalLink(proposal)}
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -582,7 +583,7 @@ Cole aqui todo o conteúdo da análise.`}
                       name="recommendedPrice"
                       value={form.recommendedPrice}
                       onChange={handleChange}
-                      placeholder="R$ 1.397 / MÊS"
+                      placeholder="R$ 1.497 / MÊS"
                     />
 
                   </label>
@@ -758,7 +759,7 @@ Valor e prazo definidos conforme necessidade da empresa.`}
                           number === 1
                             ? 'R$ 997 / MÊS'
                             : number === 2
-                            ? 'R$ 1.397 / MÊS'
+                            ? 'R$ 1.497 / MÊS'
                             : 'R$ 1.997 / MÊS'
                         }
                       />

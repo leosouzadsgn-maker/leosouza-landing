@@ -15,6 +15,7 @@ import ProposalDiagnostico from './proposal/pages/ProposalDiagnostico';
 import ProposalDirection from './proposal/pages/ProposalDirection';
 import ProposalPlans from './proposal/pages/ProposalPlans';
 import ProposalAdmin from './proposal/pages/ProposalAdmin';
+import ProposalFernando from './proposal/pages/ProposalFernando';
 
 import TreinamentoKreative from './treinamento/TreinamentoKreative';
 
@@ -53,6 +54,14 @@ function App() {
 
   if (path.startsWith('/admin/propostas')) {
     return <ProposalAdmin />;
+  }
+
+  /* =====================================================
+     PROPOSTA FERNANDO BARTENDER
+  ===================================================== */
+
+  if (path === '/proposta/fernando-veiga' || path === '/proposta/fernando-veiga/') {
+    return <ProposalFernando />;
   }
 
   /* =====================================================

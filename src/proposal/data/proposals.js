@@ -79,12 +79,20 @@ export function createProposal(data) {
   const nextNumber =
     String(proposals.length + 1).padStart(3, '0');
 
-  const id = data.company
+  const baseId = data.company
     .toLowerCase()
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '');
+
+  let id = baseId || `proposta-${Date.now()}`;
+  let suffix = 2;
+
+  while (proposals.some(item => item.id === id)) {
+    id = `${baseId}-${suffix}`;
+    suffix += 1;
+  }
 
   const proposal = {
     ...data,

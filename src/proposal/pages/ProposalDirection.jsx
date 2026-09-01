@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import '../styles/proposal-direction.css';
+import { getProposalByCurrentRoute, getProposalSlug, getProposalHashSuffix } from '../data/proposalShare';
 
 function getCompanyFromPath() {
-  const parts = window.location.pathname.split('/').filter(Boolean);
-  return parts[1] || 'marechal';
+  return getProposalSlug();
 }
 
 function formatCompanyName(slug) {
@@ -19,10 +19,12 @@ function ProposalDirection() {
   const [isLeaving, setIsLeaving] = useState(false);
 
   const companySlug = getCompanyFromPath();
-  const company =
-    companySlug === 'marechal'
+  const sharedProposal = getProposalByCurrentRoute();
+  const company = sharedProposal?.company
+    ? sharedProposal.company.toUpperCase()
+    : (companySlug === 'marechal'
       ? 'MARECHAL'
-      : formatCompanyName(companySlug).toUpperCase();
+      : formatCompanyName(companySlug).toUpperCase());
 
   useEffect(() => {
     const timer = window.setTimeout(() => setIsLoaded(true), 80);
@@ -35,7 +37,7 @@ function ProposalDirection() {
     setIsLeaving(true);
 
     window.setTimeout(() => {
-      window.location.href = `/proposta/${companySlug}/planos`;
+      window.location.href = `/proposta/${companySlug}/planos${getProposalHashSuffix()}`;
     }, 600);
   };
 

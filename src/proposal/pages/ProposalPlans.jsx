@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import '../styles/proposal-plans.css';
+import { getProposalByCurrentRoute, getProposalSlug } from '../data/proposalShare';
 
 function getCompanyFromPath() {
-  const parts = window.location.pathname.split('/').filter(Boolean);
-  return parts[1] || 'marechal';
+  return getProposalSlug();
 }
 
 function formatCompanyName(slug) {
@@ -142,10 +142,45 @@ function ProposalPlans() {
   const [selected, setSelected] = useState('marechal');
 
   const companySlug = getCompanyFromPath();
-  const company =
-    companySlug === 'marechal'
+  const sharedProposal = getProposalByCurrentRoute();
+  const company = sharedProposal?.company
+    ? sharedProposal.company.toUpperCase()
+    : (companySlug === 'marechal'
       ? 'MARECHAL'
-      : formatCompanyName(companySlug).toUpperCase();
+      : formatCompanyName(companySlug).toUpperCase());
+
+  const recommendationName = (sharedProposal?.recommendation || '').trim().toLowerCase();
+
+  const dynamicPlans = sharedProposal?.packages?.length
+    ? sharedProposal.packages.map((item, index) => {
+        const descriptionLines = (item.description || '')
+          .split(/\r?\n/)
+          .map(line => line.trim())
+          .filter(Boolean);
+
+        const isRecommended = recommendationName
+          ? (item.name || '').trim().toLowerCase() === recommendationName
+          : index === 1;
+
+        return {
+          id: `custom-${index + 1}`,
+          number: String(index + 1).padStart(2, '0'),
+          name: item.name || `PLANO ${index + 1}`,
+          price: (item.price || '').replace(/\s*\/\s*MÊS/i, ''),
+          suffix: '/ MÊS',
+          label: isRecommended ? 'PLANO RECOMENDADO' : 'ESTRUTURA DE PRESENÇA DIGITAL',
+          description: descriptionLines[0] || 'Estrutura personalizada conforme a proposta.',
+          pieces: '—',
+          stories: '—',
+          campaigns: '—',
+          metrics: '—',
+          report: '—',
+          meeting: '—',
+          recommended: isRecommended,
+          features: descriptionLines.slice(1)
+        };
+      })
+    : plans;
 
   useEffect(() => {
     const timer = window.setTimeout(() => setIsLoaded(true), 80);
@@ -229,7 +264,7 @@ function ProposalPlans() {
         </div>
 
         <section className="plans-cards">
-          {plans.map((plan) => (
+          {dynamicPlans.map((plan) => (
             <article
               key={plan.id}
               className={`plan-card ${plan.recommended ? 'is-recommended' : ''} ${selected === plan.id ? 'is-selected' : ''}`}
@@ -267,7 +302,7 @@ function ProposalPlans() {
               </div>
 
               <ul>
-                {plan.features.map((feature) => (
+                {(plan.features.length ? plan.features : ['Descrição detalhada conforme o escopo informado no cadastro da proposta.']).map((feature) => (
                   <li key={feature}>
                     <i>✓</i>
                     <span>{feature}</span>
