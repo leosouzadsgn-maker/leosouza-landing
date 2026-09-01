@@ -1,19 +1,1280 @@
-*{box-sizing:border-box}
-.proposal-fernando{--bg:#050505;--paper:#f3f1ec;--muted:rgba(243,241,236,.46);--line:rgba(243,241,236,.11);--red:#ef3038;min-height:100vh;background:var(--bg);color:var(--paper);font-family:Arial,Helvetica,sans-serif;overflow-x:hidden;opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .8s ease}
-.proposal-fernando.is-loaded{opacity:1;transform:none}
-.pf-bg,.pf-grid,.pf-noise{position:fixed;inset:0;pointer-events:none}
-.pf-bg{z-index:0;background:radial-gradient(circle at 75% 15%,rgba(239,48,56,.045),transparent 25%),radial-gradient(circle at 20% 80%,rgba(255,255,255,.035),transparent 30%),linear-gradient(145deg,#080808,#020202)}
-.pf-grid{z-index:1;opacity:.14;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:120px 120px}
-.pf-noise{z-index:2;opacity:.03;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.8' numOctaves='3' stitchTiles='stitch' type='fractalNoise'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-.pf-header{position:relative;z-index:10;display:flex;justify-content:space-between;padding:34px 6vw 0}.pf-brand{font-size:12px;font-weight:800;letter-spacing:.18em}.pf-brand small{display:block;margin-top:8px;color:rgba(243,241,236,.28);font-size:7px;letter-spacing:.14em}.pf-meta{display:flex;gap:8px;font-size:8px;font-weight:800;letter-spacing:.16em;color:rgba(243,241,236,.35)}.pf-meta strong{color:var(--paper)}
-.pf-side{position:fixed;z-index:10;left:2vw;top:42%;display:flex;flex-direction:column;align-items:center;gap:10px;color:rgba(243,241,236,.28);font-size:8px;font-weight:800}.pf-side i{width:1px;height:100px;background:linear-gradient(var(--red),rgba(255,255,255,.08))}.pf-side small{writing-mode:vertical-rl;font-size:6px;letter-spacing:.2em;margin-top:5px}
-.pf-shell{position:relative;z-index:5;width:min(1200px,82vw);margin:0 auto}
-.pf-hero{min-height:86vh;display:flex;flex-direction:column;justify-content:center;padding:80px 0 100px}.pf-kicker,.pf-divider span{font-size:8px;font-weight:800;letter-spacing:.2em;color:rgba(243,241,236,.35)}.pf-kicker span{display:inline-block;width:45px;height:1px;margin-right:12px;background:rgba(243,241,236,.3);vertical-align:middle}.pf-hero-grid{display:grid;grid-template-columns:1.4fr .6fr;gap:8vw;align-items:end;margin-top:70px}.pf-eyebrow{display:block;color:rgba(243,241,236,.38);font-size:8px;font-weight:800;letter-spacing:.18em;margin-bottom:22px}.pf-hero h1{font-size:clamp(4rem,9vw,9rem);line-height:.84;letter-spacing:-.06em;margin:0;font-weight:800}.pf-hero h1 em,.pf-copy h2 em,.pf-investment h2 em,.pf-development h2 em,.pf-terms h2 em{font-style:normal;color:transparent;-webkit-text-stroke:1px rgba(243,241,236,.4)}.pf-hero-note{border-left:1px solid var(--line);padding-left:28px}.pf-hero-note strong{display:block;font-size:5rem;line-height:.8;letter-spacing:-.08em;margin-bottom:24px}.pf-hero-note p,.pf-copy p,.pf-terms p{font-size:12px;line-height:1.8;color:var(--muted);margin:0 0 16px}.pf-client-strip{display:grid;grid-template-columns:repeat(3,1fr);margin-top:75px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.pf-client-strip div{padding:20px 0;border-right:1px solid var(--line);padding-left:20px}.pf-client-strip div:first-child{padding-left:0}.pf-client-strip div:last-child{border-right:0}.pf-client-strip span{display:block;font-size:7px;letter-spacing:.18em;color:rgba(243,241,236,.25);margin-bottom:8px}.pf-client-strip strong{font-size:10px;letter-spacing:.08em}
-.pf-divider{position:relative;z-index:5;display:flex;align-items:center;gap:18px;width:min(1200px,82vw);margin:0 auto;padding:18px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.pf-divider i{flex:1;height:1px;background:var(--line)}
-.pf-section{display:grid;grid-template-columns:180px 1fr;gap:70px;padding:140px 0}.pf-number{color:rgba(243,241,236,.1);font-size:8rem;font-weight:900;line-height:.7;letter-spacing:-.09em}.pf-copy h2{font-size:clamp(3.5rem,6.8vw,7rem);line-height:.86;letter-spacing:-.06em;margin:0 0 35px;font-weight:800}.pf-copy h3{font-size:11px;letter-spacing:.15em;margin:45px 0 18px}.pf-list{border-top:1px solid var(--line)}.pf-list div{display:grid;grid-template-columns:50px 1fr;gap:20px;padding:16px 0;border-bottom:1px solid var(--line)}.pf-list b{color:rgba(243,241,236,.23);font-size:8px}.pf-list span{font-size:11px;color:rgba(243,241,236,.68);line-height:1.5}.pf-callout,.pf-quote{margin-top:45px;padding:30px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:19px;line-height:1.15}.pf-flow{display:flex;flex-wrap:wrap;align-items:center;gap:11px;margin:35px 0}.pf-flow span{padding:12px 14px;border:1px solid var(--line);font-size:8px;letter-spacing:.07em}.pf-flow b{color:var(--red)}.pf-tags,.pf-status{display:flex;flex-wrap:wrap;gap:8px}.pf-tags span,.pf-status span{padding:10px 12px;border:1px solid var(--line);font-size:7px;color:rgba(243,241,236,.45);letter-spacing:.1em}.pf-url{display:inline-block;margin:25px 0 30px;padding:14px 18px;border:1px solid rgba(239,48,56,.35);color:rgba(243,241,236,.7);font-size:9px;letter-spacing:.1em}.pf-proposal-card{padding:30px;border:1px solid var(--line);background:rgba(255,255,255,.018);display:flex;flex-direction:column;gap:14px}.pf-proposal-card strong{font-size:9px;letter-spacing:.18em}.pf-proposal-card span{font-size:12px}.pf-proposal-card small{color:var(--muted);line-height:1.6}.pf-proposal-card b{font-size:2rem}.pf-card-actions{display:flex;gap:8px}.pf-card-actions span{border:1px solid var(--line);padding:12px 14px;font-size:7px;letter-spacing:.12em}.pf-device-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:35px 0}.pf-device-grid span{padding:25px;border:1px solid var(--line);font-size:24px}.pf-device-grid b{display:block;margin-top:14px;font-size:9px;letter-spacing:.12em}.pf-result-grid{display:grid;grid-template-columns:repeat(2,1fr);border-top:1px solid var(--line)}.pf-result-grid div{padding:25px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}.pf-result-grid div:nth-child(even){border-right:0}.pf-result-grid b{display:block;font-size:9px;letter-spacing:.12em;margin-bottom:12px}.pf-result-grid span{font-size:10px;color:var(--muted);line-height:1.6}
-.pf-investment{position:relative;z-index:5;padding:160px 0;background:rgba(255,255,255,.018);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.pf-investment>div>span,.pf-development>div>div>span,.pf-terms>div>span,.pf-final .pf-shell>span{display:block;font-size:8px;font-weight:800;letter-spacing:.18em;color:rgba(243,241,236,.35);margin-bottom:25px}.pf-investment h2,.pf-development h2,.pf-terms h2{font-size:clamp(4rem,8vw,8rem);line-height:.84;letter-spacing:-.07em;margin:0}.pf-investment>div>strong{display:block;margin-top:50px;font-size:clamp(4rem,8vw,8rem);letter-spacing:-.08em}.pf-payment{display:grid;grid-template-columns:1fr 1fr;gap:40px;border-top:1px solid var(--line);margin-top:70px;padding-top:25px}.pf-payment div{display:flex;flex-direction:column;gap:12px}.pf-payment b{font-size:9px;letter-spacing:.1em}.pf-payment span{font-size:11px;color:var(--muted);line-height:1.6}
-.pf-development{position:relative;z-index:5;padding:150px 0;border-bottom:1px solid var(--line)}.pf-development>div{display:grid;grid-template-columns:180px 1fr;gap:70px}.pf-steps{margin-top:70px;border-top:1px solid var(--line)}.pf-steps div{display:grid;grid-template-columns:60px 1fr;padding:18px 0;border-bottom:1px solid var(--line)}.pf-steps b{color:rgba(243,241,236,.22);font-size:8px}.pf-steps span{font-size:11px;color:rgba(243,241,236,.65)}
-.pf-terms{display:grid;grid-template-columns:1fr 1fr;gap:60px;padding:150px 0}.pf-terms p{max-width:520px;margin:0}.pf-terms>p:nth-of-type(1){grid-column:2}.pf-terms>p:nth-of-type(2){grid-column:2}
-.pf-final{position:relative;z-index:5;padding:160px 0 180px;border-top:1px solid var(--line)}.pf-final h2{font-size:clamp(5rem,12vw,12rem);line-height:.78;letter-spacing:-.08em;margin:0 0 40px}.pf-final>div>p{max-width:560px;color:var(--muted);font-size:12px;line-height:1.8}.pf-close{margin-top:120px;padding-top:45px;border-top:1px solid var(--line)}.pf-close span{font-size:8px;letter-spacing:.18em;color:rgba(243,241,236,.35)}.pf-close h3{font-size:clamp(2.8rem,5vw,5rem);line-height:.9;letter-spacing:-.05em;margin:25px 0}.pf-whatsapp{margin-top:50px;display:inline-flex;align-items:center;justify-content:space-between;gap:70px;min-width:280px;padding:0 12px 0 22px;height:64px;border:1px solid rgba(243,241,236,.25);color:var(--paper);text-decoration:none;transition:.3s}.pf-whatsapp:hover{background:var(--paper);color:#050505}.pf-whatsapp span{font-size:8px;font-weight:800;letter-spacing:.16em}.pf-whatsapp b{display:grid;place-items:center;width:40px;height:40px;border:1px solid currentColor;font-size:16px}.pf-signature{display:flex;flex-direction:column;gap:7px;margin-top:80px;padding-top:25px;border-top:1px solid var(--line)}.pf-signature strong{font-size:11px;letter-spacing:.16em}.pf-signature span{font-size:7px;letter-spacing:.14em;color:rgba(243,241,236,.28)}
-.pf-ticker{position:fixed;z-index:100;left:0;right:0;bottom:0;height:40px;background:rgba(4,4,4,.92);border-top:1px solid var(--line);backdrop-filter:blur(12px);overflow:hidden}.pf-ticker-track{display:flex;width:max-content;height:100%;animation:pfTicker 28s linear infinite}.pf-ticker-group{display:flex;align-items:center;flex-shrink:0;white-space:nowrap}.pf-ticker-group span{padding:0 24px;font-size:7px;font-weight:800;letter-spacing:.16em;color:rgba(243,241,236,.4)}.pf-ticker-group span:first-child{color:var(--paper)}.pf-ticker-group b{color:rgba(243,241,236,.18)}@keyframes pfTicker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-@media(max-width:800px){.pf-header{padding:24px 24px 0}.pf-meta{display:none}.pf-side{display:none}.pf-shell{width:calc(100% - 48px)}.pf-hero{min-height:auto;padding:100px 0}.pf-hero-grid,.pf-client-strip,.pf-payment,.pf-terms{grid-template-columns:1fr}.pf-hero h1{font-size:clamp(3.5rem,15vw,6.5rem)}.pf-hero-note{margin-top:45px}.pf-client-strip div,.pf-client-strip div:last-child{padding:18px 0;border-right:0;border-bottom:1px solid var(--line)}.pf-client-strip div:last-child{border-bottom:0}.pf-divider{width:calc(100% - 48px)}.pf-section{grid-template-columns:1fr;gap:40px;padding:90px 0}.pf-number{font-size:5rem}.pf-copy h2{font-size:clamp(3.2rem,14vw,5rem)}.pf-result-grid,.pf-device-grid{grid-template-columns:1fr}.pf-result-grid div{border-right:0}.pf-investment,.pf-development,.pf-final{padding:100px 0}.pf-development>div{grid-template-columns:1fr;gap:40px}.pf-terms{gap:35px}.pf-terms>p:nth-of-type(1),.pf-terms>p:nth-of-type(2){grid-column:auto}.pf-final h2{font-size:clamp(4rem,16vw,7rem)}.pf-whatsapp{width:100%;min-width:0}.pf-ticker{height:36px}}
+/* =========================================================
+   PROPOSTA FERNANDO — PREMIUM
+========================================================= */
+
+.proposal-fernando {
+  --pf-bg: #0b0b0b;
+  --pf-bg-soft: #101010;
+  --pf-panel: #131313;
+  --pf-paper: #f4f1eb;
+  --pf-text: #eeeae3;
+  --pf-muted: rgba(238, 234, 227, 0.64);
+  --pf-soft: rgba(238, 234, 227, 0.42);
+  --pf-faint: rgba(238, 234, 227, 0.2);
+  --pf-line: rgba(238, 234, 227, 0.12);
+  --pf-line-strong: rgba(238, 234, 227, 0.2);
+  --pf-red: #ef3038;
+
+  position: relative;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background:
+    radial-gradient(
+      circle at 78% 8%,
+      rgba(255, 255, 255, 0.045),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 15% 32%,
+      rgba(255, 255, 255, 0.02),
+      transparent 26%
+    ),
+    var(--pf-bg);
+  color: var(--pf-text);
+  font-family: inherit;
+  isolation: isolate;
+  padding-bottom: 40px;
+}
+
+.proposal-fernando *,
+.proposal-fernando *::before,
+.proposal-fernando *::after {
+  box-sizing: border-box;
+}
+
+.proposal-fernando::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.018) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      rgba(255, 255, 255, 0.014) 1px,
+      transparent 1px
+    );
+  background-size: 96px 96px;
+  mask-image: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.5),
+    transparent 80%
+  );
+}
+
+/* =========================================================
+   FUNDO
+========================================================= */
+
+.pf-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      circle at 70% 18%,
+      rgba(255, 255, 255, 0.035),
+      transparent 24%
+    ),
+    radial-gradient(
+      circle at 35% 65%,
+      rgba(255, 255, 255, 0.018),
+      transparent 22%
+    );
+}
+
+.pf-grid {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.25;
+  background:
+    linear-gradient(
+      90deg,
+      transparent 49.9%,
+      rgba(255, 255, 255, 0.045) 50%,
+      transparent 50.1%
+    );
+}
+
+.pf-noise {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* =========================================================
+   CONTAINER
+========================================================= */
+
+.pf-shell {
+  position: relative;
+  z-index: 5;
+  width: min(1180px, calc(100% - 120px));
+  margin: 0 auto;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.pf-header {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  width: min(1360px, calc(100% - 96px));
+  margin: 0 auto;
+  padding-top: 34px;
+}
+
+.pf-brand {
+  color: var(--pf-paper);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+}
+
+.pf-brand small {
+  display: block;
+  margin-top: 8px;
+  color: rgba(238, 234, 227, 0.38);
+  font-size: 7px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+}
+
+.pf-meta {
+  display: flex;
+  gap: 8px;
+  color: rgba(238, 234, 227, 0.45);
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+}
+
+.pf-meta strong {
+  color: var(--pf-paper);
+}
+
+/* =========================================================
+   LATERAL
+========================================================= */
+
+.pf-side {
+  position: fixed;
+  z-index: 10;
+  left: 22px;
+  top: 42%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 11px;
+  color: rgba(238, 234, 227, 0.28);
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  pointer-events: none;
+}
+
+.pf-side i {
+  width: 1px;
+  height: 110px;
+  background:
+    linear-gradient(
+      to bottom,
+      var(--pf-red),
+      rgba(255, 255, 255, 0.08)
+    );
+}
+
+.pf-side small {
+  writing-mode: vertical-rl;
+  margin-top: 6px;
+  color: rgba(238, 234, 227, 0.25);
+  font-size: 6px;
+  letter-spacing: 0.2em;
+}
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.pf-hero {
+  min-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 110px 0 90px;
+}
+
+.pf-kicker {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: rgba(238, 234, 227, 0.46);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+}
+
+.pf-kicker span {
+  width: 52px;
+  height: 1px;
+  background: rgba(238, 234, 227, 0.28);
+}
+
+.pf-hero-main {
+  margin-top: 82px;
+  max-width: 920px;
+}
+
+.pf-eyebrow {
+  display: block;
+  max-width: 720px;
+  margin-bottom: 24px;
+  color: rgba(238, 234, 227, 0.52);
+  font-size: 9px;
+  font-weight: 800;
+  line-height: 1.7;
+  letter-spacing: 0.17em;
+}
+
+.pf-hero h1 {
+  max-width: 980px;
+  margin: 0;
+  color: var(--pf-paper);
+  font-size: clamp(4.4rem, 8vw, 8.6rem);
+  font-weight: 800;
+  line-height: 0.94;
+  letter-spacing: -0.045em;
+}
+
+.pf-hero h1 em,
+.pf-copy h2 em,
+.pf-investment h2 em,
+.pf-development h2 em,
+.pf-terms h2 em {
+  color: transparent;
+  font-style: normal;
+  -webkit-text-stroke: 1px rgba(238, 234, 227, 0.36);
+}
+
+.pf-hero-description {
+  max-width: 590px;
+  margin: 38px 0 0;
+  color: var(--pf-muted);
+  font-size: 14px;
+  line-height: 1.85;
+}
+
+.pf-client-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: 76px;
+  border-top: 1px solid var(--pf-line);
+  border-bottom: 1px solid var(--pf-line);
+}
+
+.pf-client-strip div {
+  min-height: 88px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  padding: 0 26px;
+  border-right: 1px solid var(--pf-line);
+}
+
+.pf-client-strip div:first-child {
+  padding-left: 0;
+}
+
+.pf-client-strip div:last-child {
+  border-right: 0;
+}
+
+.pf-client-strip span {
+  color: rgba(238, 234, 227, 0.38);
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+}
+
+.pf-client-strip strong {
+  color: var(--pf-paper);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+/* =========================================================
+   DIVISORES
+========================================================= */
+
+.pf-divider {
+  position: relative;
+  z-index: 5;
+  width: min(1180px, calc(100% - 120px));
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin: 0 auto;
+  padding: 16px 0;
+  border-top: 1px solid var(--pf-line);
+  border-bottom: 1px solid var(--pf-line);
+}
+
+.pf-divider span {
+  flex: 0 0 auto;
+  color: rgba(238, 234, 227, 0.42);
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+}
+
+.pf-divider i {
+  flex: 1;
+  height: 1px;
+  background: var(--pf-line);
+}
+
+/* =========================================================
+   SEÇÕES
+========================================================= */
+
+.pf-section {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 90px;
+  padding: 130px 0;
+}
+
+.pf-number {
+  color: rgba(238, 234, 227, 0.075);
+  font-size: 7rem;
+  font-weight: 900;
+  line-height: 0.8;
+  letter-spacing: -0.09em;
+}
+
+.pf-copy {
+  min-width: 0;
+}
+
+.pf-copy h2 {
+  max-width: 900px;
+  margin: 0 0 42px;
+  color: var(--pf-paper);
+  font-size: clamp(3.7rem, 6.2vw, 6.9rem);
+  font-weight: 800;
+  line-height: 0.94;
+  letter-spacing: -0.045em;
+}
+
+.pf-copy p {
+  max-width: 700px;
+  margin: 0 0 22px;
+  color: var(--pf-muted);
+  font-size: 14px;
+  line-height: 1.95;
+}
+
+.pf-copy p strong {
+  color: var(--pf-paper);
+  font-weight: 700;
+}
+
+.pf-copy h3 {
+  margin: 50px 0 20px;
+  color: var(--pf-paper);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+}
+
+/* =========================================================
+   LISTAS
+========================================================= */
+
+.pf-list {
+  border-top: 1px solid var(--pf-line);
+}
+
+.pf-list div {
+  display: grid;
+  grid-template-columns: 54px minmax(0, 1fr);
+  gap: 20px;
+  align-items: center;
+  min-height: 62px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--pf-line);
+}
+
+.pf-list b {
+  color: rgba(238, 234, 227, 0.28);
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.pf-list span {
+  color: rgba(238, 234, 227, 0.72);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+/* =========================================================
+   CALLOUT
+========================================================= */
+
+.pf-callout,
+.pf-quote {
+  margin-top: 48px;
+  padding: 32px 0;
+  border-top: 1px solid var(--pf-line);
+  border-bottom: 1px solid var(--pf-line);
+  color: rgba(238, 234, 227, 0.78);
+  font-size: 20px;
+  line-height: 1.45;
+}
+
+.pf-callout strong {
+  color: var(--pf-paper);
+}
+
+/* =========================================================
+   FLUXO
+========================================================= */
+
+.pf-flow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 38px 0;
+}
+
+.pf-flow span {
+  padding: 13px 15px;
+  border: 1px solid var(--pf-line-strong);
+  background: rgba(255, 255, 255, 0.018);
+  color: rgba(238, 234, 227, 0.72);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.pf-flow b {
+  color: var(--pf-red);
+  font-size: 13px;
+}
+
+/* =========================================================
+   TAGS / STATUS
+========================================================= */
+
+.pf-tags,
+.pf-status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.pf-tags span,
+.pf-status span {
+  padding: 11px 13px;
+  border: 1px solid var(--pf-line-strong);
+  background: rgba(255, 255, 255, 0.018);
+  color: rgba(238, 234, 227, 0.56);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+}
+
+/* =========================================================
+   URL
+========================================================= */
+
+.pf-url {
+  display: inline-flex;
+  align-items: center;
+  margin: 30px 0;
+  padding: 15px 18px;
+  border: 1px solid rgba(239, 48, 56, 0.28);
+  background: rgba(239, 48, 56, 0.025);
+  color: rgba(238, 234, 227, 0.74);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+/* =========================================================
+   CARD DE PROPOSTA
+========================================================= */
+
+.pf-proposal-card {
+  margin-top: 42px;
+  padding: 34px;
+  border: 1px solid var(--pf-line-strong);
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.035),
+      rgba(255, 255, 255, 0.012)
+    );
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.22);
+}
+
+.pf-proposal-card strong {
+  display: block;
+  margin-bottom: 20px;
+  color: var(--pf-paper);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+}
+
+.pf-proposal-card > span {
+  display: block;
+  margin-bottom: 15px;
+  color: rgba(238, 234, 227, 0.82);
+  font-size: 13px;
+}
+
+.pf-proposal-card small {
+  display: block;
+  color: var(--pf-muted);
+  font-size: 11px;
+  line-height: 1.8;
+}
+
+.pf-proposal-card > b {
+  display: block;
+  margin-top: 30px;
+  color: var(--pf-paper);
+  font-size: 2.5rem;
+  letter-spacing: -0.04em;
+}
+
+.pf-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+.pf-card-actions span {
+  padding: 13px 15px;
+  border: 1px solid var(--pf-line-strong);
+  color: rgba(238, 234, 227, 0.7);
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+/* =========================================================
+   DISPOSITIVOS
+========================================================= */
+
+.pf-device-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin: 38px 0;
+}
+
+.pf-device-grid span {
+  min-height: 130px;
+  padding: 24px;
+  border: 1px solid var(--pf-line-strong);
+  background: rgba(255, 255, 255, 0.016);
+  color: var(--pf-paper);
+  font-size: 28px;
+}
+
+.pf-device-grid b {
+  display: block;
+  margin-top: 18px;
+  color: rgba(238, 234, 227, 0.58);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+/* =========================================================
+   RESULTADO
+========================================================= */
+
+.pf-result-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid var(--pf-line);
+}
+
+.pf-result-grid div {
+  min-height: 155px;
+  padding: 28px;
+  border-right: 1px solid var(--pf-line);
+  border-bottom: 1px solid var(--pf-line);
+  background: rgba(255, 255, 255, 0.01);
+}
+
+.pf-result-grid div:nth-child(even) {
+  border-right: 0;
+}
+
+.pf-result-grid div:last-child {
+  grid-column: 1 / -1;
+  border-right: 0;
+}
+
+.pf-result-grid b {
+  display: block;
+  margin-bottom: 14px;
+  color: var(--pf-paper);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.pf-result-grid span {
+  display: block;
+  max-width: 420px;
+  color: var(--pf-muted);
+  font-size: 11px;
+  line-height: 1.75;
+}
+
+/* =========================================================
+   INVESTIMENTO
+========================================================= */
+
+.pf-investment {
+  position: relative;
+  z-index: 5;
+  padding: 145px 0;
+  background:
+    linear-gradient(
+      180deg,
+      #111111 0%,
+      #151515 50%,
+      #101010 100%
+    );
+  border-top: 1px solid var(--pf-line);
+  border-bottom: 1px solid var(--pf-line);
+}
+
+.pf-investment > div > span,
+.pf-development > div > div > span,
+.pf-terms > div > span,
+.pf-final .pf-shell > span {
+  display: block;
+  margin-bottom: 24px;
+  color: rgba(238, 234, 227, 0.44);
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+}
+
+.pf-investment h2,
+.pf-development h2,
+.pf-terms h2 {
+  margin: 0;
+  color: var(--pf-paper);
+  font-size: clamp(4.2rem, 7.4vw, 8rem);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.045em;
+}
+
+.pf-investment > div > strong {
+  display: block;
+  margin-top: 62px;
+  color: var(--pf-paper);
+  font-size: clamp(4rem, 8vw, 8rem);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.06em;
+}
+
+.pf-payment {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 36px;
+  margin-top: 74px;
+  padding-top: 28px;
+  border-top: 1px solid var(--pf-line);
+}
+
+.pf-payment div {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pf-payment b {
+  color: rgba(238, 234, 227, 0.76);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.pf-payment span {
+  color: var(--pf-muted);
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+/* =========================================================
+   DESENVOLVIMENTO
+========================================================= */
+
+.pf-development {
+  position: relative;
+  z-index: 5;
+  padding: 145px 0;
+  border-bottom: 1px solid var(--pf-line);
+}
+
+.pf-development > div {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 90px;
+}
+
+.pf-steps {
+  margin-top: 68px;
+  border-top: 1px solid var(--pf-line);
+}
+
+.pf-steps div {
+  display: grid;
+  grid-template-columns: 60px minmax(0, 1fr);
+  gap: 20px;
+  min-height: 65px;
+  align-items: center;
+  border-bottom: 1px solid var(--pf-line);
+}
+
+.pf-steps b {
+  color: rgba(238, 234, 227, 0.25);
+  font-size: 8px;
+}
+
+.pf-steps span {
+  color: rgba(238, 234, 227, 0.68);
+  font-size: 11px;
+}
+
+/* =========================================================
+   TERMOS
+========================================================= */
+
+.pf-terms {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 80px;
+  padding-top: 145px;
+  padding-bottom: 145px;
+}
+
+.pf-terms > p {
+  align-self: end;
+  max-width: 520px;
+  color: var(--pf-muted);
+  font-size: 13px;
+  line-height: 1.9;
+  margin: 0;
+}
+
+.pf-terms > p:nth-of-type(1) {
+  grid-column: 2;
+}
+
+.pf-terms > p:nth-of-type(2) {
+  grid-column: 2;
+}
+
+/* =========================================================
+   FINAL
+========================================================= */
+
+.pf-final {
+  position: relative;
+  z-index: 5;
+  padding: 150px 0 175px;
+  border-top: 1px solid var(--pf-line);
+  background:
+    radial-gradient(
+      circle at 50% 20%,
+      rgba(255, 255, 255, 0.035),
+      transparent 28%
+    );
+}
+
+.pf-final h2 {
+  max-width: 1000px;
+  margin: 0 0 38px;
+  color: var(--pf-paper);
+  font-size: clamp(5rem, 11vw, 11rem);
+  font-weight: 800;
+  line-height: 0.88;
+  letter-spacing: -0.055em;
+}
+
+.pf-final > .pf-shell > p {
+  max-width: 600px;
+  margin: 0;
+  color: var(--pf-muted);
+  font-size: 13px;
+  line-height: 1.9;
+}
+
+.pf-close {
+  margin-top: 115px;
+  padding-top: 44px;
+  border-top: 1px solid var(--pf-line);
+}
+
+.pf-close > span {
+  display: block;
+  color: rgba(238, 234, 227, 0.42);
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+}
+
+.pf-close h3 {
+  max-width: 760px;
+  margin: 30px 0;
+  color: var(--pf-paper);
+  font-size: clamp(2.7rem, 5vw, 5.2rem);
+  font-weight: 800;
+  line-height: 0.96;
+  letter-spacing: -0.045em;
+}
+
+.pf-close p {
+  max-width: 650px;
+  margin: 0;
+  color: var(--pf-muted);
+  font-size: 13px;
+  line-height: 1.9;
+}
+
+.pf-close p strong {
+  color: var(--pf-paper);
+}
+
+/* =========================================================
+   WHATSAPP
+========================================================= */
+
+.pf-whatsapp {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 70px;
+  min-width: 310px;
+  min-height: 68px;
+  margin-top: 52px;
+  padding: 0 12px 0 22px;
+  border: 1px solid var(--pf-line-strong);
+  color: var(--pf-paper);
+  text-decoration: none;
+  transition:
+    background 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease,
+    transform 0.3s ease;
+}
+
+.pf-whatsapp span {
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+}
+
+.pf-whatsapp b {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid currentColor;
+  font-size: 17px;
+  font-weight: 400;
+}
+
+.pf-whatsapp:hover {
+  background: var(--pf-paper);
+  border-color: var(--pf-paper);
+  color: #0b0b0b;
+  transform: translateY(-2px);
+}
+
+/* =========================================================
+   ASSINATURA
+========================================================= */
+
+.pf-signature {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: 82px;
+  padding-top: 25px;
+  border-top: 1px solid var(--pf-line);
+}
+
+.pf-signature strong {
+  color: rgba(238, 234, 227, 0.82);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+}
+
+.pf-signature span {
+  color: rgba(238, 234, 227, 0.3);
+  font-size: 7px;
+  letter-spacing: 0.14em;
+}
+
+/* =========================================================
+   TICKER
+========================================================= */
+
+.pf-ticker {
+  position: fixed;
+  z-index: 100;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 40px;
+  overflow: hidden;
+  background: rgba(11, 11, 11, 0.94);
+  border-top: 1px solid var(--pf-line);
+  backdrop-filter: blur(14px);
+}
+
+.pf-ticker-track {
+  display: flex;
+  width: max-content;
+  height: 100%;
+  animation: pfTicker 34s linear infinite;
+}
+
+.pf-ticker-group {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.pf-ticker-group span {
+  padding: 0 24px;
+  color: rgba(238, 234, 227, 0.42);
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+}
+
+.pf-ticker-group span:first-child {
+  color: var(--pf-paper);
+}
+
+.pf-ticker-group b {
+  color: rgba(238, 234, 227, 0.18);
+}
+
+@keyframes pfTicker {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* =========================================================
+   ANIMAÇÃO INICIAL
+========================================================= */
+
+.proposal-fernando .pf-hero-main,
+.proposal-fernando .pf-client-strip,
+.proposal-fernando .pf-divider,
+.proposal-fernando .pf-section,
+.proposal-fernando .pf-investment,
+.proposal-fernando .pf-development,
+.proposal-fernando .pf-terms,
+.proposal-fernando .pf-final {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.8s ease,
+    transform 0.8s ease;
+}
+
+.proposal-fernando.is-loaded .pf-hero-main,
+.proposal-fernando.is-loaded .pf-client-strip,
+.proposal-fernando.is-loaded .pf-divider,
+.proposal-fernando.is-loaded .pf-section,
+.proposal-fernando.is-loaded .pf-investment,
+.proposal-fernando.is-loaded .pf-development,
+.proposal-fernando.is-loaded .pf-terms,
+.proposal-fernando.is-loaded .pf-final {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* =========================================================
+   RESPONSIVO
+========================================================= */
+
+@media (max-width: 1000px) {
+  .pf-shell,
+  .pf-divider {
+    width: min(100% - 64px, 1180px);
+  }
+
+  .pf-header {
+    width: calc(100% - 64px);
+  }
+
+  .pf-side {
+    display: none;
+  }
+
+  .pf-section {
+    grid-template-columns: 100px minmax(0, 1fr);
+    gap: 45px;
+  }
+
+  .pf-development > div {
+    grid-template-columns: 100px minmax(0, 1fr);
+    gap: 45px;
+  }
+
+  .pf-hero-main {
+    max-width: 800px;
+  }
+
+  .pf-hero h1 {
+    font-size: clamp(4rem, 9vw, 7rem);
+  }
+
+  .pf-copy h2 {
+    font-size: clamp(3.3rem, 7vw, 6rem);
+  }
+}
+
+@media (max-width: 760px) {
+  .proposal-fernando {
+    padding-bottom: 36px;
+  }
+
+  .pf-header {
+    width: calc(100% - 40px);
+    padding-top: 22px;
+  }
+
+  .pf-brand {
+    font-size: 10px;
+  }
+
+  .pf-brand small {
+    font-size: 6px;
+  }
+
+  .pf-meta {
+    display: none;
+  }
+
+  .pf-shell,
+  .pf-divider {
+    width: calc(100% - 40px);
+  }
+
+  .pf-hero {
+    min-height: auto;
+    padding: 105px 0 72px;
+  }
+
+  .pf-hero-main {
+    margin-top: 54px;
+  }
+
+  .pf-eyebrow {
+    font-size: 7px;
+    line-height: 1.7;
+  }
+
+  .pf-hero h1 {
+    font-size: clamp(3.2rem, 15vw, 6rem);
+    line-height: 0.95;
+  }
+
+  .pf-hero-description {
+    margin-top: 30px;
+    font-size: 12px;
+  }
+
+  .pf-client-strip {
+    grid-template-columns: 1fr;
+    margin-top: 52px;
+  }
+
+  .pf-client-strip div,
+  .pf-client-strip div:first-child,
+  .pf-client-strip div:last-child {
+    min-height: 74px;
+    padding: 18px 0;
+    border-right: 0;
+    border-bottom: 1px solid var(--pf-line);
+  }
+
+  .pf-client-strip div:last-child {
+    border-bottom: 0;
+  }
+
+  .pf-divider {
+    padding: 13px 0;
+  }
+
+  .pf-divider span {
+    font-size: 7px;
+    letter-spacing: 0.15em;
+  }
+
+  .pf-section {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 88px 0;
+  }
+
+  .pf-number {
+    font-size: 4.7rem;
+  }
+
+  .pf-copy h2 {
+    font-size: clamp(3rem, 13vw, 5rem);
+    line-height: 0.96;
+    margin-bottom: 30px;
+  }
+
+  .pf-copy p {
+    font-size: 12px;
+    line-height: 1.85;
+  }
+
+  .pf-copy h3 {
+    margin-top: 40px;
+  }
+
+  .pf-list div {
+    grid-template-columns: 38px minmax(0, 1fr);
+    gap: 14px;
+    min-height: auto;
+    padding: 15px 0;
+  }
+
+  .pf-list span {
+    font-size: 10px;
+  }
+
+  .pf-flow {
+    gap: 8px;
+  }
+
+  .pf-flow span {
+    font-size: 7px;
+  }
+
+  .pf-callout,
+  .pf-quote {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  .pf-device-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pf-result-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pf-result-grid div,
+  .pf-result-grid div:nth-child(even),
+  .pf-result-grid div:last-child {
+    border-right: 0;
+    grid-column: auto;
+  }
+
+  .pf-investment,
+  .pf-development,
+  .pf-final {
+    padding: 95px 0;
+  }
+
+  .pf-investment h2,
+  .pf-development h2,
+  .pf-terms h2 {
+    font-size: clamp(3.5rem, 15vw, 6rem);
+  }
+
+  .pf-investment > div > strong {
+    margin-top: 45px;
+    font-size: clamp(3.6rem, 15vw, 6.5rem);
+  }
+
+  .pf-payment {
+    grid-template-columns: 1fr;
+    gap: 26px;
+    margin-top: 54px;
+  }
+
+  .pf-development > div {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .pf-terms {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    padding-top: 95px;
+    padding-bottom: 95px;
+  }
+
+  .pf-terms > p:nth-of-type(1),
+  .pf-terms > p:nth-of-type(2) {
+    grid-column: auto;
+  }
+
+  .pf-final h2 {
+    font-size: clamp(4rem, 18vw, 7rem);
+  }
+
+  .pf-whatsapp {
+    width: 100%;
+    min-width: 0;
+    gap: 20px;
+  }
+
+  .pf-ticker {
+    height: 36px;
+  }
+
+  .pf-ticker-group span {
+    padding: 0 15px;
+    font-size: 6px;
+  }
+}
