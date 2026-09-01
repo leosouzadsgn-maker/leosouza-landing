@@ -1,89 +1,115 @@
 /* =========================================================
-   PROPOSTA FERNANDO — PREMIUM / GOLD EDITION
+   FERNANDO BARTENDER — PREMIUM GOLD / ELEGANT MOTION
 ========================================================= */
 
 .proposal-fernando {
-  --pf-bg: #171717;
-  --pf-bg-deep: #111111;
-  --pf-bg-soft: #1d1d1d;
-  --pf-panel: #222222;
+  --bg: #171615;
+  --bg-2: #201e1b;
+  --bg-3: #292621;
 
-  --pf-paper: #f4efe4;
-  --pf-text: #e7e1d6;
-  --pf-muted: #bdb6aa;
-  --pf-soft: #989187;
-  --pf-faint: rgba(244, 239, 228, 0.22);
+  --paper: #f7f1e5;
+  --text: #e6dfd3;
+  --muted: #b9b1a4;
+  --soft: #8f887c;
 
-  --pf-line: rgba(244, 239, 228, 0.11);
-  --pf-line-strong: rgba(244, 239, 228, 0.2);
+  --gold: #c9a45b;
+  --gold-light: #e2c27d;
+  --gold-bright: #f0d99b;
+  --gold-soft: rgba(201, 164, 91, 0.22);
+  --gold-faint: rgba(201, 164, 91, 0.08);
 
-  --pf-gold: #c9a45b;
-  --pf-gold-light: #e1c27a;
-  --pf-gold-soft: rgba(201, 164, 91, 0.28);
-  --pf-gold-faint: rgba(201, 164, 91, 0.1);
+  --line: rgba(247, 241, 229, 0.1);
+  --line-strong: rgba(247, 241, 229, 0.18);
 
   position: relative;
   min-height: 100vh;
   overflow-x: hidden;
+  padding-bottom: 42px;
+
+  color: var(--text);
 
   background:
     radial-gradient(
-      circle at 75% 5%,
-      rgba(201, 164, 91, 0.08),
+      circle at 15% 15%,
+      rgba(201, 164, 91, 0.12),
+      transparent 26%
+    ),
+    radial-gradient(
+      circle at 82% 22%,
+      rgba(231, 216, 184, 0.07),
       transparent 24%
     ),
     radial-gradient(
-      circle at 15% 38%,
-      rgba(255, 255, 255, 0.025),
-      transparent 25%
+      circle at 50% 70%,
+      rgba(255, 255, 255, 0.035),
+      transparent 34%
     ),
     linear-gradient(
-      180deg,
-      #191919 0%,
-      #141414 52%,
-      #101010 100%
+      135deg,
+      #141311 0%,
+      #1c1916 38%,
+      #211e1a 66%,
+      #141311 100%
     );
 
-  color: var(--pf-text);
   isolation: isolate;
-  padding-bottom: 42px;
-}
-
-.proposal-fernando *,
-.proposal-fernando *::before,
-.proposal-fernando *::after {
-  box-sizing: border-box;
 }
 
 /* =========================================================
-   CAMADAS DE FUNDO
+   MOVIMENTO DE FUNDO
 ========================================================= */
 
-.proposal-fernando::before {
+.proposal-fernando::before,
+.proposal-fernando::after {
   content: "";
   position: fixed;
-  inset: 0;
-  z-index: 0;
   pointer-events: none;
+  z-index: 0;
+}
 
+.proposal-fernando::before {
+  inset: -20%;
   background:
-    linear-gradient(
-      90deg,
-      transparent 49.9%,
-      rgba(201, 164, 91, 0.08) 50%,
-      transparent 50.1%
+    radial-gradient(
+      circle at 30% 40%,
+      rgba(201, 164, 91, 0.09),
+      transparent 20%
     ),
-    linear-gradient(
-      rgba(255, 255, 255, 0.012) 1px,
-      transparent 1px
+    radial-gradient(
+      circle at 70% 60%,
+      rgba(255, 245, 222, 0.05),
+      transparent 18%
     );
 
-  background-size:
-    100% 100%,
-    100% 90px;
+  filter: blur(30px);
+
+  animation:
+    pfAmbient
+    16s
+    ease-in-out
+    infinite
+    alternate;
+}
+
+.proposal-fernando::after {
+  top: 0;
+  left: 50%;
+  width: 1px;
+  height: 100%;
+  background:
+    linear-gradient(
+      to bottom,
+      transparent,
+      rgba(201, 164, 91, 0.28),
+      transparent
+    );
 
   opacity: 0.35;
 }
+
+/* =========================================================
+   FUNDO
+========================================================= */
 
 .pf-bg {
   position: fixed;
@@ -93,15 +119,23 @@
 
   background:
     radial-gradient(
-      circle at 86% 16%,
-      rgba(201, 164, 91, 0.045),
-      transparent 20%
+      ellipse at 50% 0%,
+      rgba(255, 255, 255, 0.035),
+      transparent 38%
     ),
-    radial-gradient(
-      circle at 26% 72%,
-      rgba(255, 255, 255, 0.025),
-      transparent 20%
+    linear-gradient(
+      115deg,
+      transparent 20%,
+      rgba(201, 164, 91, 0.025) 50%,
+      transparent 80%
     );
+
+  animation:
+    pfGlow
+    14s
+    ease-in-out
+    infinite
+    alternate;
 }
 
 .pf-grid {
@@ -113,13 +147,21 @@
   background:
     linear-gradient(
       90deg,
-      transparent 0,
+      transparent 0%,
       transparent 49.8%,
-      rgba(255, 255, 255, 0.018) 50%,
+      rgba(255, 255, 255, 0.025) 50%,
       transparent 50.2%
+    ),
+    linear-gradient(
+      rgba(255, 255, 255, 0.01) 1px,
+      transparent 1px
     );
 
-  opacity: 0.5;
+  background-size:
+    100% 100%,
+    100% 110px;
+
+  opacity: 0.28;
 }
 
 .pf-noise {
@@ -134,7 +176,7 @@
 }
 
 /* =========================================================
-   SHELL
+   CONTAINER
 ========================================================= */
 
 .pf-shell {
@@ -164,10 +206,15 @@
 }
 
 .pf-brand {
-  color: var(--pf-paper);
+  color: var(--paper);
+
   font-size: 12px;
   font-weight: 800;
+
   letter-spacing: 0.2em;
+
+  text-shadow:
+    0 0 25px rgba(201, 164, 91, 0.08);
 }
 
 .pf-brand small {
@@ -175,10 +222,11 @@
 
   margin-top: 8px;
 
-  color: var(--pf-soft);
+  color: var(--soft);
 
   font-size: 7px;
   font-weight: 600;
+
   letter-spacing: 0.14em;
 }
 
@@ -186,19 +234,20 @@
   display: flex;
   gap: 8px;
 
-  color: var(--pf-soft);
+  color: var(--soft);
 
   font-size: 8px;
   font-weight: 800;
+
   letter-spacing: 0.16em;
 }
 
 .pf-meta strong {
-  color: var(--pf-gold-light);
+  color: var(--gold-light);
 }
 
 /* =========================================================
-   LATERAL
+   NAVEGAÇÃO LATERAL
 ========================================================= */
 
 .pf-side {
@@ -218,21 +267,49 @@
 
   font-size: 8px;
   font-weight: 800;
+
   letter-spacing: 0.08em;
 
   pointer-events: none;
 }
 
 .pf-side i {
+  position: relative;
+
   width: 1px;
   height: 110px;
 
   background:
     linear-gradient(
       to bottom,
-      var(--pf-gold),
+      var(--gold),
       rgba(201, 164, 91, 0.08)
     );
+
+  overflow: hidden;
+}
+
+.pf-side i::after {
+  content: "";
+
+  position: absolute;
+
+  left: -1px;
+  top: -40px;
+
+  width: 3px;
+  height: 34px;
+
+  background: var(--gold-bright);
+
+  box-shadow:
+    0 0 15px rgba(240, 217, 155, 0.65);
+
+  animation:
+    pfSideLine
+    2.8s
+    ease-in-out
+    infinite;
 }
 
 .pf-side small {
@@ -240,9 +317,10 @@
 
   margin-top: 6px;
 
-  color: rgba(231, 225, 214, 0.28);
+  color: rgba(231, 225, 214, 0.3);
 
   font-size: 6px;
+
   letter-spacing: 0.2em;
 }
 
@@ -266,60 +344,92 @@
 
   gap: 12px;
 
-  color: var(--pf-gold);
+  color: var(--gold);
 
   font-size: 9px;
   font-weight: 800;
+
   letter-spacing: 0.2em;
 }
 
 .pf-kicker span {
-  width: 55px;
+  width: 58px;
   height: 1px;
 
   background:
     linear-gradient(
       90deg,
-      var(--pf-gold),
-      rgba(201, 164, 91, 0.16)
+      var(--gold-light),
+      rgba(201, 164, 91, 0.08)
     );
 }
 
 .pf-hero-main {
-  margin-top: 75px;
+  position: relative;
 
-  max-width: 930px;
+  margin-top: 78px;
+
+  max-width: 970px;
+}
+
+.pf-hero-main::before {
+  content: "";
+
+  position: absolute;
+
+  left: -50px;
+  top: -40px;
+
+  width: 160px;
+  height: 160px;
+
+  border:
+    1px solid
+    rgba(201, 164, 91, 0.1);
+
+  border-radius: 50%;
+
+  animation:
+    pfOrbit
+    12s
+    linear
+    infinite;
 }
 
 .pf-eyebrow {
   display: block;
 
-  max-width: 750px;
+  max-width: 760px;
 
-  margin-bottom: 27px;
+  margin-bottom: 28px;
 
-  color: var(--pf-gold-light);
+  color: var(--gold-light);
 
   font-size: 9px;
   font-weight: 800;
-  line-height: 1.7;
+
+  line-height: 1.8;
+
   letter-spacing: 0.15em;
 }
 
 .pf-hero h1 {
-  max-width: 980px;
+  max-width: 1000px;
 
   margin: 0;
 
-  color: var(--pf-paper);
+  color: var(--paper);
 
-  font-size: clamp(4.2rem, 8vw, 8.5rem);
+  font-size: clamp(4.1rem, 8vw, 8.4rem);
 
   font-weight: 800;
 
-  line-height: 0.98;
+  line-height: 1.02;
 
   letter-spacing: -0.042em;
+
+  text-shadow:
+    0 10px 35px rgba(0, 0, 0, 0.15);
 }
 
 .pf-hero h1 em,
@@ -332,18 +442,22 @@
   font-style: normal;
 
   -webkit-text-stroke:
-    1px rgba(201, 164, 91, 0.68);
+    1px rgba(201, 164, 91, 0.78);
+
+  text-shadow:
+    0 0 28px rgba(201, 164, 91, 0.06);
 }
 
 .pf-hero-description {
   max-width: 610px;
 
-  margin: 39px 0 0;
+  margin: 42px 0 0;
 
-  color: var(--pf-muted);
+  color: var(--muted);
 
   font-size: 14px;
-  line-height: 1.9;
+
+  line-height: 1.95;
 }
 
 /* =========================================================
@@ -352,23 +466,31 @@
 
 .pf-client-strip {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
 
-  margin-top: 70px;
+  grid-template-columns:
+    repeat(3, 1fr);
 
-  border-top: 1px solid var(--pf-line-strong);
-  border-bottom: 1px solid var(--pf-line-strong);
+  margin-top: 72px;
+
+  border-top:
+    1px solid
+    var(--line-strong);
+
+  border-bottom:
+    1px solid
+    var(--line-strong);
 
   background:
     linear-gradient(
       90deg,
-      rgba(255, 255, 255, 0.018),
-      transparent
+      rgba(201, 164, 91, 0.035),
+      rgba(255, 255, 255, 0.008),
+      rgba(201, 164, 91, 0.025)
     );
 }
 
 .pf-client-strip div {
-  min-height: 94px;
+  min-height: 96px;
 
   display: flex;
   flex-direction: column;
@@ -378,7 +500,9 @@
 
   padding: 0 28px;
 
-  border-right: 1px solid var(--pf-line);
+  border-right:
+    1px solid
+    var(--line);
 }
 
 .pf-client-strip div:first-child {
@@ -390,23 +514,25 @@
 }
 
 .pf-client-strip span {
-  color: var(--pf-gold);
+  color: var(--gold);
 
   font-size: 8px;
   font-weight: 800;
+
   letter-spacing: 0.18em;
 }
 
 .pf-client-strip strong {
-  color: var(--pf-paper);
+  color: var(--paper);
 
   font-size: 11px;
   font-weight: 700;
+
   letter-spacing: 0.06em;
 }
 
 /* =========================================================
-   DIVISOR
+   DIVISORES
 ========================================================= */
 
 .pf-divider {
@@ -424,21 +550,29 @@
 
   padding: 15px 0;
 
-  border-top: 1px solid var(--pf-line);
-  border-bottom: 1px solid var(--pf-line);
+  border-top:
+    1px solid
+    var(--line);
+
+  border-bottom:
+    1px solid
+    var(--line);
 }
 
 .pf-divider span {
   flex: 0 0 auto;
 
-  color: var(--pf-gold);
+  color: var(--gold-light);
 
   font-size: 8px;
   font-weight: 800;
+
   letter-spacing: 0.2em;
 }
 
 .pf-divider i {
+  position: relative;
+
   flex: 1;
 
   height: 1px;
@@ -446,9 +580,38 @@
   background:
     linear-gradient(
       90deg,
-      rgba(201, 164, 91, 0.32),
-      rgba(244, 239, 228, 0.06)
+      rgba(201, 164, 91, 0.34),
+      rgba(255, 255, 255, 0.05)
     );
+}
+
+.pf-divider i::after {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  top: -1px;
+
+  width: 80px;
+  height: 3px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      var(--gold),
+      transparent
+    );
+
+  filter:
+    blur(1px);
+
+  animation:
+    pfLineMove
+    4s
+    ease-in-out
+    infinite;
 }
 
 /* =========================================================
@@ -457,15 +620,16 @@
 
 .pf-section {
   display: grid;
+
   grid-template-columns: 150px minmax(0, 1fr);
 
   gap: 90px;
 
-  padding: 130px 0;
+  padding: 135px 0;
 }
 
 .pf-number {
-  color: rgba(201, 164, 91, 0.16);
+  color: rgba(201, 164, 91, 0.17);
 
   font-size: 7rem;
   font-weight: 900;
@@ -480,17 +644,17 @@
 }
 
 .pf-copy h2 {
-  max-width: 900px;
+  max-width: 920px;
 
-  margin: 0 0 44px;
+  margin: 0 0 46px;
 
-  color: var(--pf-paper);
+  color: var(--paper);
 
   font-size: clamp(3.7rem, 6.1vw, 6.8rem);
 
   font-weight: 800;
 
-  line-height: 1;
+  line-height: 1.02;
 
   letter-spacing: -0.042em;
 }
@@ -500,25 +664,27 @@
 
   margin: 0 0 22px;
 
-  color: var(--pf-muted);
+  color: var(--muted);
 
   font-size: 14px;
 
-  line-height: 1.95;
+  line-height: 1.98;
 }
 
 .pf-copy p strong {
-  color: var(--pf-paper);
+  color: var(--paper);
+
   font-weight: 700;
 }
 
 .pf-copy h3 {
-  margin: 52px 0 22px;
+  margin: 54px 0 22px;
 
-  color: var(--pf-gold-light);
+  color: var(--gold-light);
 
   font-size: 10px;
   font-weight: 800;
+
   letter-spacing: 0.16em;
 }
 
@@ -527,26 +693,80 @@
 ========================================================= */
 
 .pf-list {
-  border-top: 1px solid var(--pf-line-strong);
+  border-top:
+    1px solid
+    var(--line-strong);
 }
 
 .pf-list div {
+  position: relative;
+
   display: grid;
-  grid-template-columns: 54px minmax(0, 1fr);
+
+  grid-template-columns:
+    54px minmax(0, 1fr);
 
   gap: 20px;
 
   align-items: center;
 
-  min-height: 64px;
+  min-height: 65px;
 
   padding: 14px 0;
 
-  border-bottom: 1px solid var(--pf-line);
+  border-bottom:
+    1px solid
+    var(--line);
+
+  transition:
+    padding-left 0.35s ease,
+    background 0.35s ease;
+}
+
+.pf-list div::before {
+  content: "";
+
+  position: absolute;
+
+  left: -18px;
+  top: 0;
+
+  width: 2px;
+  height: 100%;
+
+  background:
+    linear-gradient(
+      to bottom,
+      transparent,
+      var(--gold),
+      transparent
+    );
+
+  transform:
+    scaleY(0);
+
+  transition:
+    transform 0.35s ease;
+}
+
+.pf-list div:hover {
+  padding-left: 10px;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(201, 164, 91, 0.035),
+      transparent
+    );
+}
+
+.pf-list div:hover::before {
+  transform:
+    scaleY(1);
 }
 
 .pf-list b {
-  color: var(--pf-gold);
+  color: var(--gold);
 
   font-size: 8px;
   font-weight: 700;
@@ -566,22 +786,47 @@
 
 .pf-callout,
 .pf-quote {
-  margin-top: 50px;
+  position: relative;
 
-  padding: 32px 0;
+  margin-top: 52px;
 
-  border-top: 1px solid var(--pf-gold-soft);
-  border-bottom: 1px solid var(--pf-line);
+  padding: 34px 0;
 
-  color: rgba(231, 225, 214, 0.82);
+  border-top:
+    1px solid
+    var(--gold-soft);
+
+  border-bottom:
+    1px solid
+    var(--line);
+
+  color: rgba(231, 225, 214, 0.86);
 
   font-size: 20px;
 
-  line-height: 1.5;
+  line-height: 1.52;
+}
+
+.pf-callout::before,
+.pf-quote::before {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  top: -1px;
+
+  width: 75px;
+  height: 2px;
+
+  background: var(--gold-light);
+
+  box-shadow:
+    0 0 18px rgba(201, 164, 91, 0.2);
 }
 
 .pf-callout strong {
-  color: var(--pf-gold-light);
+  color: var(--gold-light);
 }
 
 /* =========================================================
@@ -601,25 +846,43 @@
 .pf-flow span {
   padding: 13px 16px;
 
-  border: 1px solid var(--pf-line-strong);
+  border:
+    1px solid
+    rgba(201, 164, 91, 0.2);
 
   background:
     linear-gradient(
       145deg,
-      rgba(201, 164, 91, 0.055),
-      rgba(255, 255, 255, 0.012)
+      rgba(201, 164, 91, 0.07),
+      rgba(255, 255, 255, 0.014)
     );
 
-  color: rgba(231, 225, 214, 0.74);
+  color: rgba(231, 225, 214, 0.76);
 
   font-size: 8px;
   font-weight: 700;
 
   letter-spacing: 0.06em;
+
+  transition:
+    transform 0.3s ease,
+    border-color 0.3s ease,
+    background 0.3s ease;
+}
+
+.pf-flow span:hover {
+  transform:
+    translateY(-3px);
+
+  border-color:
+    rgba(201, 164, 91, 0.44);
+
+  background:
+    rgba(201, 164, 91, 0.08);
 }
 
 .pf-flow b {
-  color: var(--pf-gold);
+  color: var(--gold-light);
 
   font-size: 13px;
 }
@@ -640,16 +903,36 @@
 .pf-status span {
   padding: 11px 14px;
 
-  border: 1px solid rgba(201, 164, 91, 0.2);
+  border:
+    1px solid
+    rgba(201, 164, 91, 0.2);
 
-  background: rgba(201, 164, 91, 0.035);
+  background:
+    rgba(201, 164, 91, 0.035);
 
-  color: rgba(231, 225, 214, 0.63);
+  color: rgba(231, 225, 214, 0.66);
 
   font-size: 8px;
   font-weight: 700;
 
   letter-spacing: 0.09em;
+
+  transition:
+    transform 0.3s ease,
+    border-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.pf-tags span:hover,
+.pf-status span:hover {
+  transform:
+    translateY(-2px);
+
+  border-color:
+    rgba(201, 164, 91, 0.42);
+
+  color:
+    var(--gold-light);
 }
 
 /* =========================================================
@@ -664,11 +947,19 @@
 
   padding: 15px 18px;
 
-  border: 1px solid var(--pf-gold-soft);
+  border:
+    1px solid
+    var(--gold-soft);
 
-  background: rgba(201, 164, 91, 0.045);
+  background:
+    linear-gradient(
+      90deg,
+      rgba(201, 164, 91, 0.07),
+      rgba(201, 164, 91, 0.015)
+    );
 
-  color: var(--pf-gold-light);
+  color:
+    var(--gold-light);
 
   font-size: 9px;
   font-weight: 700;
@@ -677,30 +968,59 @@
 }
 
 /* =========================================================
-   CARD
+   CARD DA PROPOSTA
 ========================================================= */
 
 .pf-proposal-card {
+  position: relative;
+
   margin-top: 42px;
 
-  padding: 36px;
+  padding: 38px;
 
-  border: 1px solid var(--pf-line-strong);
+  border:
+    1px solid
+    var(--line-strong);
 
   background:
     linear-gradient(
       145deg,
-      rgba(201, 164, 91, 0.045),
-      rgba(255, 255, 255, 0.02)
+      rgba(201, 164, 91, 0.06),
+      rgba(255, 255, 255, 0.018)
     );
 
   box-shadow:
-    0 24px 70px rgba(0, 0, 0, 0.25);
+    0 30px 75px rgba(0, 0, 0, 0.2);
 
-  position: relative;
+  overflow: hidden;
 }
 
 .pf-proposal-card::before {
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  background:
+    linear-gradient(
+      120deg,
+      transparent 35%,
+      rgba(201, 164, 91, 0.07) 50%,
+      transparent 65%
+    );
+
+  transform:
+    translateX(-100%);
+
+  animation:
+    pfCardShine
+    7s
+    ease-in-out
+    infinite;
+}
+
+.pf-proposal-card::after {
   content: "";
 
   position: absolute;
@@ -714,7 +1034,8 @@
   background:
     linear-gradient(
       to bottom,
-      var(--pf-gold),
+      var(--gold-light),
+      var(--gold),
       transparent
     );
 }
@@ -724,7 +1045,7 @@
 
   margin-bottom: 20px;
 
-  color: var(--pf-gold-light);
+  color: var(--gold-light);
 
   font-size: 9px;
 
@@ -736,7 +1057,7 @@
 
   margin-bottom: 15px;
 
-  color: rgba(244, 239, 228, 0.87);
+  color: rgba(244, 239, 228, 0.9);
 
   font-size: 13px;
 }
@@ -744,7 +1065,7 @@
 .pf-proposal-card small {
   display: block;
 
-  color: var(--pf-muted);
+  color: var(--muted);
 
   font-size: 11px;
 
@@ -756,7 +1077,7 @@
 
   margin-top: 30px;
 
-  color: var(--pf-paper);
+  color: var(--paper);
 
   font-size: 2.5rem;
 
@@ -775,9 +1096,12 @@
 .pf-card-actions span {
   padding: 13px 15px;
 
-  border: 1px solid var(--pf-line-strong);
+  border:
+    1px solid
+    var(--line-strong);
 
-  color: rgba(231, 225, 214, 0.7);
+  color:
+    rgba(231, 225, 214, 0.72);
 
   font-size: 8px;
   font-weight: 800;
@@ -786,12 +1110,14 @@
 }
 
 /* =========================================================
-   DEVICES
+   DISPOSITIVOS
 ========================================================= */
 
 .pf-device-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+
+  grid-template-columns:
+    repeat(3, 1fr);
 
   gap: 12px;
 
@@ -803,18 +1129,33 @@
 
   padding: 24px;
 
-  border: 1px solid var(--pf-line-strong);
+  border:
+    1px solid
+    var(--line-strong);
 
   background:
     linear-gradient(
       145deg,
-      rgba(201, 164, 91, 0.045),
+      rgba(201, 164, 91, 0.055),
       rgba(255, 255, 255, 0.012)
     );
 
-  color: var(--pf-gold-light);
+  color:
+    var(--gold-light);
 
   font-size: 28px;
+
+  transition:
+    transform 0.35s ease,
+    border-color 0.35s ease;
+}
+
+.pf-device-grid span:hover {
+  transform:
+    translateY(-5px);
+
+  border-color:
+    rgba(201, 164, 91, 0.38);
 }
 
 .pf-device-grid b {
@@ -822,7 +1163,8 @@
 
   margin-top: 18px;
 
-  color: rgba(231, 225, 214, 0.62);
+  color:
+    rgba(231, 225, 214, 0.62);
 
   font-size: 9px;
   font-weight: 800;
@@ -837,9 +1179,12 @@
 .pf-result-grid {
   display: grid;
 
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
 
-  border-top: 1px solid var(--pf-line);
+  border-top:
+    1px solid
+    var(--line);
 }
 
 .pf-result-grid div {
@@ -847,8 +1192,13 @@
 
   padding: 28px;
 
-  border-right: 1px solid var(--pf-line);
-  border-bottom: 1px solid var(--pf-line);
+  border-right:
+    1px solid
+    var(--line);
+
+  border-bottom:
+    1px solid
+    var(--line);
 
   background:
     linear-gradient(
@@ -856,6 +1206,14 @@
       rgba(201, 164, 91, 0.028),
       rgba(255, 255, 255, 0.006)
     );
+
+  transition:
+    background 0.35s ease;
+}
+
+.pf-result-grid div:hover {
+  background:
+    rgba(201, 164, 91, 0.05);
 }
 
 .pf-result-grid div:nth-child(even) {
@@ -872,7 +1230,8 @@
 
   margin-bottom: 14px;
 
-  color: var(--pf-gold-light);
+  color:
+    var(--gold-light);
 
   font-size: 9px;
   font-weight: 800;
@@ -885,7 +1244,8 @@
 
   max-width: 420px;
 
-  color: var(--pf-muted);
+  color:
+    var(--muted);
 
   font-size: 11px;
 
@@ -900,23 +1260,33 @@
   position: relative;
   z-index: 5;
 
-  padding: 145px 0;
+  padding: 150px 0;
 
   background:
     radial-gradient(
-      circle at 65% 20%,
-      rgba(201, 164, 91, 0.08),
-      transparent 28%
+      circle at 72% 20%,
+      rgba(201, 164, 91, 0.12),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 20% 80%,
+      rgba(255, 239, 208, 0.045),
+      transparent 22%
     ),
     linear-gradient(
-      180deg,
-      #222222 0%,
-      #1d1d1d 50%,
-      #181818 100%
+      135deg,
+      #24211c 0%,
+      #2c2924 50%,
+      #1c1a17 100%
     );
 
-  border-top: 1px solid rgba(201, 164, 91, 0.2);
-  border-bottom: 1px solid var(--pf-line-strong);
+  border-top:
+    1px solid
+    rgba(201, 164, 91, 0.24);
+
+  border-bottom:
+    1px solid
+    rgba(201, 164, 91, 0.15);
 }
 
 .pf-investment > div > span,
@@ -927,7 +1297,8 @@
 
   margin-bottom: 24px;
 
-  color: var(--pf-gold);
+  color:
+    var(--gold-light);
 
   font-size: 8px;
   font-weight: 800;
@@ -940,9 +1311,11 @@
 .pf-terms h2 {
   margin: 0;
 
-  color: var(--pf-paper);
+  color:
+    var(--paper);
 
-  font-size: clamp(4.2rem, 7.4vw, 8rem);
+  font-size:
+    clamp(4.2rem, 7.4vw, 8rem);
 
   font-weight: 800;
 
@@ -956,21 +1329,28 @@
 
   margin-top: 64px;
 
-  color: var(--pf-gold-light);
+  color:
+    var(--gold-bright);
 
-  font-size: clamp(4rem, 8vw, 8rem);
+  font-size:
+    clamp(4rem, 8vw, 8rem);
 
   font-weight: 800;
 
   line-height: 0.96;
 
   letter-spacing: -0.06em;
+
+  text-shadow:
+    0 0 35px
+    rgba(201, 164, 91, 0.14);
 }
 
 .pf-payment {
   display: grid;
 
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
 
   gap: 36px;
 
@@ -978,7 +1358,9 @@
 
   padding-top: 28px;
 
-  border-top: 1px solid rgba(201, 164, 91, 0.2);
+  border-top:
+    1px solid
+    rgba(201, 164, 91, 0.22);
 }
 
 .pf-payment div {
@@ -989,7 +1371,8 @@
 }
 
 .pf-payment b {
-  color: var(--pf-paper);
+  color:
+    var(--paper);
 
   font-size: 9px;
   font-weight: 800;
@@ -998,7 +1381,8 @@
 }
 
 .pf-payment span {
-  color: var(--pf-muted);
+  color:
+    var(--muted);
 
   font-size: 11px;
 
@@ -1015,13 +1399,16 @@
 
   padding: 145px 0;
 
-  border-bottom: 1px solid var(--pf-line);
+  border-bottom:
+    1px solid
+    var(--line);
 }
 
 .pf-development > div {
   display: grid;
 
-  grid-template-columns: 150px minmax(0, 1fr);
+  grid-template-columns:
+    150px minmax(0, 1fr);
 
   gap: 90px;
 }
@@ -1029,13 +1416,16 @@
 .pf-steps {
   margin-top: 68px;
 
-  border-top: 1px solid var(--pf-line-strong);
+  border-top:
+    1px solid
+    var(--line-strong);
 }
 
 .pf-steps div {
   display: grid;
 
-  grid-template-columns: 60px minmax(0, 1fr);
+  grid-template-columns:
+    60px minmax(0, 1fr);
 
   gap: 20px;
 
@@ -1043,17 +1433,32 @@
 
   align-items: center;
 
-  border-bottom: 1px solid var(--pf-line);
+  border-bottom:
+    1px solid
+    var(--line);
+
+  transition:
+    padding-left 0.35s ease,
+    background 0.35s ease;
+}
+
+.pf-steps div:hover {
+  padding-left: 10px;
+
+  background:
+    rgba(201, 164, 91, 0.025);
 }
 
 .pf-steps b {
-  color: var(--pf-gold);
+  color:
+    var(--gold);
 
   font-size: 8px;
 }
 
 .pf-steps span {
-  color: rgba(231, 225, 214, 0.7);
+  color:
+    rgba(231, 225, 214, 0.72);
 
   font-size: 11px;
 }
@@ -1065,7 +1470,9 @@
 .pf-terms {
   display: grid;
 
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-columns:
+    minmax(0, 1fr)
+    minmax(0, 1fr);
 
   gap: 80px;
 
@@ -1080,7 +1487,8 @@
 
   margin: 0;
 
-  color: var(--pf-muted);
+  color:
+    var(--muted);
 
   font-size: 13px;
 
@@ -1102,18 +1510,21 @@
 
   padding: 150px 0 175px;
 
-  border-top: 1px solid rgba(201, 164, 91, 0.16);
+  border-top:
+    1px solid
+    rgba(201, 164, 91, 0.18);
 
   background:
     radial-gradient(
       circle at 50% 12%,
-      rgba(201, 164, 91, 0.065),
-      transparent 27%
+      rgba(201, 164, 91, 0.09),
+      transparent 30%
     ),
     linear-gradient(
-      180deg,
-      #171717,
-      #111111
+      135deg,
+      #1b1916,
+      #25221e,
+      #161513
     );
 }
 
@@ -1122,13 +1533,15 @@
 
   margin: 0 0 38px;
 
-  color: var(--pf-paper);
+  color:
+    var(--paper);
 
-  font-size: clamp(5rem, 11vw, 11rem);
+  font-size:
+    clamp(5rem, 11vw, 11rem);
 
   font-weight: 800;
 
-  line-height: 0.91;
+  line-height: 0.93;
 
   letter-spacing: -0.055em;
 }
@@ -1138,7 +1551,8 @@
 
   margin: 0;
 
-  color: var(--pf-muted);
+  color:
+    var(--muted);
 
   font-size: 13px;
 
@@ -1150,13 +1564,16 @@
 
   padding-top: 44px;
 
-  border-top: 1px solid var(--pf-line-strong);
+  border-top:
+    1px solid
+    var(--line-strong);
 }
 
 .pf-close > span {
   display: block;
 
-  color: var(--pf-gold);
+  color:
+    var(--gold-light);
 
   font-size: 8px;
   font-weight: 800;
@@ -1169,9 +1586,11 @@
 
   margin: 30px 0;
 
-  color: var(--pf-paper);
+  color:
+    var(--paper);
 
-  font-size: clamp(2.7rem, 5vw, 5.2rem);
+  font-size:
+    clamp(2.7rem, 5vw, 5.2rem);
 
   font-weight: 800;
 
@@ -1185,7 +1604,8 @@
 
   margin: 0;
 
-  color: var(--pf-muted);
+  color:
+    var(--muted);
 
   font-size: 13px;
 
@@ -1193,7 +1613,8 @@
 }
 
 .pf-close p strong {
-  color: var(--pf-paper);
+  color:
+    var(--paper);
 }
 
 /* =========================================================
@@ -1201,6 +1622,8 @@
 ========================================================= */
 
 .pf-whatsapp {
+  position: relative;
+
   display: inline-flex;
 
   align-items: center;
@@ -1213,55 +1636,100 @@
 
   margin-top: 52px;
 
-  padding: 0 12px 0 22px;
+  padding:
+    0 12px 0 22px;
 
-  border: 1px solid rgba(201, 164, 91, 0.42);
+  border:
+    1px solid
+    rgba(201, 164, 91, 0.5);
 
   background:
     linear-gradient(
       90deg,
-      rgba(201, 164, 91, 0.07),
-      transparent
+      rgba(201, 164, 91, 0.1),
+      rgba(201, 164, 91, 0.025)
     );
 
-  color: var(--pf-gold-light);
+  color:
+    var(--gold-light);
 
   text-decoration: none;
 
+  overflow: hidden;
+
   transition:
-    background 0.3s ease,
-    color 0.3s ease,
-    border-color 0.3s ease,
-    transform 0.3s ease;
+    background 0.35s ease,
+    color 0.35s ease,
+    border-color 0.35s ease,
+    transform 0.35s ease;
+}
+
+.pf-whatsapp::before {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: -100%;
+
+  width: 60%;
+  height: 100%;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 238, 198, 0.16),
+      transparent
+    );
+
+  animation:
+    pfButtonShine
+    5s
+    ease-in-out
+    infinite;
 }
 
 .pf-whatsapp span {
+  position: relative;
+  z-index: 2;
+
   font-size: 8px;
   font-weight: 800;
+
   letter-spacing: 0.16em;
 }
 
 .pf-whatsapp b {
+  position: relative;
+  z-index: 2;
+
   display: grid;
   place-items: center;
 
   width: 42px;
   height: 42px;
 
-  border: 1px solid currentColor;
+  border:
+    1px solid
+    currentColor;
 
   font-size: 17px;
   font-weight: 400;
 }
 
 .pf-whatsapp:hover {
-  background: var(--pf-gold);
+  background:
+    var(--gold);
 
-  border-color: var(--pf-gold);
+  border-color:
+    var(--gold);
 
-  color: #17120b;
+  color:
+    #17130c;
 
-  transform: translateY(-2px);
+  transform:
+    translateY(-3px);
 }
 
 /* =========================================================
@@ -1278,11 +1746,14 @@
 
   padding-top: 25px;
 
-  border-top: 1px solid var(--pf-line);
+  border-top:
+    1px solid
+    var(--line);
 }
 
 .pf-signature strong {
-  color: var(--pf-paper);
+  color:
+    var(--paper);
 
   font-size: 11px;
 
@@ -1290,7 +1761,8 @@
 }
 
 .pf-signature span {
-  color: var(--pf-soft);
+  color:
+    var(--soft);
 
   font-size: 7px;
 
@@ -1316,13 +1788,17 @@
   background:
     linear-gradient(
       90deg,
-      rgba(21, 21, 21, 0.98),
-      rgba(28, 28, 28, 0.98)
+      rgba(25, 23, 20, 0.98),
+      rgba(35, 31, 25, 0.98),
+      rgba(25, 23, 20, 0.98)
     );
 
-  border-top: 1px solid rgba(201, 164, 91, 0.24);
+  border-top:
+    1px solid
+    rgba(201, 164, 91, 0.3);
 
-  backdrop-filter: blur(16px);
+  backdrop-filter:
+    blur(18px);
 }
 
 .pf-ticker-track {
@@ -1352,7 +1828,8 @@
 .pf-ticker-group span {
   padding: 0 24px;
 
-  color: rgba(231, 225, 214, 0.5);
+  color:
+    rgba(231, 225, 214, 0.54);
 
   font-size: 7px;
   font-weight: 800;
@@ -1361,11 +1838,13 @@
 }
 
 .pf-ticker-group span:first-child {
-  color: var(--pf-gold-light);
+  color:
+    var(--gold-light);
 }
 
 .pf-ticker-group b {
-  color: rgba(201, 164, 91, 0.34);
+  color:
+    rgba(201, 164, 91, 0.38);
 }
 
 @keyframes pfTicker {
@@ -1392,11 +1871,35 @@
 .proposal-fernando .pf-final {
   opacity: 0;
 
-  transform: translateY(24px);
+  transform:
+    translateY(28px);
 
   transition:
-    opacity 0.8s ease,
-    transform 0.8s ease;
+    opacity 0.85s ease,
+    transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.proposal-fernando.is-loaded .pf-hero-main {
+  transition-delay: 0.08s;
+}
+
+.proposal-fernando.is-loaded .pf-client-strip {
+  transition-delay: 0.18s;
+}
+
+.proposal-fernando.is-loaded .pf-divider {
+  transition-delay: 0.12s;
+}
+
+.proposal-fernando.is-loaded .pf-section {
+  transition-delay: 0.16s;
+}
+
+.proposal-fernando.is-loaded .pf-investment,
+.proposal-fernando.is-loaded .pf-development,
+.proposal-fernando.is-loaded .pf-terms,
+.proposal-fernando.is-loaded .pf-final {
+  transition-delay: 0.2s;
 }
 
 .proposal-fernando.is-loaded .pf-hero-main,
@@ -1409,7 +1912,116 @@
 .proposal-fernando.is-loaded .pf-final {
   opacity: 1;
 
-  transform: translateY(0);
+  transform:
+    translateY(0);
+}
+
+/* =========================================================
+   ANIMAÇÕES
+========================================================= */
+
+@keyframes pfAmbient {
+  from {
+    transform:
+      translate3d(-2%, -1%, 0)
+      scale(1);
+  }
+
+  to {
+    transform:
+      translate3d(3%, 2%, 0)
+      scale(1.08);
+  }
+}
+
+@keyframes pfGlow {
+  from {
+    opacity: 0.75;
+    transform: scale(1);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1.035);
+  }
+}
+
+@keyframes pfOrbit {
+  from {
+    transform:
+      rotate(0deg)
+      translateX(0);
+  }
+
+  to {
+    transform:
+      rotate(360deg)
+      translateX(0);
+  }
+}
+
+@keyframes pfSideLine {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  75% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(190px);
+    opacity: 0;
+  }
+}
+
+@keyframes pfLineMove {
+  0% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  80% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateX(350px);
+    opacity: 0;
+  }
+}
+
+@keyframes pfCardShine {
+  0%,
+  55% {
+    transform: translateX(-100%);
+  }
+
+  70%,
+  100% {
+    transform: translateX(130%);
+  }
+}
+
+@keyframes pfButtonShine {
+  0%,
+  55% {
+    left: -100%;
+  }
+
+  70%,
+  100% {
+    left: 130%;
+  }
 }
 
 /* =========================================================
@@ -1419,11 +2031,16 @@
 @media (max-width: 1000px) {
   .pf-shell,
   .pf-divider {
-    width: min(100% - 64px, 1180px);
+    width:
+      min(
+        calc(100% - 64px),
+        1180px
+      );
   }
 
   .pf-header {
-    width: calc(100% - 64px);
+    width:
+      calc(100% - 64px);
   }
 
   .pf-side {
@@ -1431,13 +2048,15 @@
   }
 
   .pf-section {
-    grid-template-columns: 100px minmax(0, 1fr);
+    grid-template-columns:
+      100px minmax(0, 1fr);
 
     gap: 45px;
   }
 
   .pf-development > div {
-    grid-template-columns: 100px minmax(0, 1fr);
+    grid-template-columns:
+      100px minmax(0, 1fr);
 
     gap: 45px;
   }
@@ -1449,7 +2068,8 @@
   }
 
   .pf-header {
-    width: calc(100% - 40px);
+    width:
+      calc(100% - 40px);
 
     padding-top: 22px;
   }
@@ -1468,7 +2088,8 @@
 
   .pf-shell,
   .pf-divider {
-    width: calc(100% - 40px);
+    width:
+      calc(100% - 40px);
   }
 
   .pf-hero {
@@ -1478,7 +2099,7 @@
   }
 
   .pf-hero-main {
-    margin-top: 52px;
+    margin-top: 54px;
   }
 
   .pf-eyebrow {
@@ -1486,9 +2107,14 @@
   }
 
   .pf-hero h1 {
-    font-size: clamp(3.1rem, 14.7vw, 6rem);
+    font-size:
+      clamp(
+        3.1rem,
+        14.7vw,
+        6rem
+      );
 
-    line-height: 0.98;
+    line-height: 1;
   }
 
   .pf-hero-description {
@@ -1511,11 +2137,23 @@
     padding: 18px 0;
 
     border-right: 0;
-    border-bottom: 1px solid var(--pf-line);
+
+    border-bottom:
+      1px solid
+      var(--line);
   }
 
   .pf-client-strip div:last-child {
     border-bottom: 0;
+  }
+
+  .pf-divider {
+    padding: 13px 0;
+  }
+
+  .pf-divider span {
+    font-size: 7px;
+    letter-spacing: 0.15em;
   }
 
   .pf-section {
@@ -1531,9 +2169,14 @@
   }
 
   .pf-copy h2 {
-    font-size: clamp(3rem, 13vw, 5rem);
+    font-size:
+      clamp(
+        3rem,
+        13vw,
+        5rem
+      );
 
-    line-height: 1;
+    line-height: 1.02;
 
     margin-bottom: 30px;
   }
@@ -1545,7 +2188,8 @@
   }
 
   .pf-list div {
-    grid-template-columns: 38px minmax(0, 1fr);
+    grid-template-columns:
+      38px minmax(0, 1fr);
 
     gap: 14px;
 
@@ -1556,6 +2200,20 @@
 
   .pf-list span {
     font-size: 10px;
+  }
+
+  .pf-flow {
+    gap: 8px;
+  }
+
+  .pf-flow span {
+    font-size: 7px;
+  }
+
+  .pf-callout,
+  .pf-quote {
+    font-size: 16px;
+    line-height: 1.55;
   }
 
   .pf-device-grid {
@@ -1583,13 +2241,23 @@
   .pf-investment h2,
   .pf-development h2,
   .pf-terms h2 {
-    font-size: clamp(3.5rem, 15vw, 6rem);
+    font-size:
+      clamp(
+        3.5rem,
+        15vw,
+        6rem
+      );
   }
 
   .pf-investment > div > strong {
     margin-top: 45px;
 
-    font-size: clamp(3.6rem, 15vw, 6.5rem);
+    font-size:
+      clamp(
+        3.6rem,
+        15vw,
+        6.5rem
+      );
   }
 
   .pf-payment {
@@ -1621,7 +2289,12 @@
   }
 
   .pf-final h2 {
-    font-size: clamp(4rem, 18vw, 7rem);
+    font-size:
+      clamp(
+        4rem,
+        18vw,
+        7rem
+      );
   }
 
   .pf-whatsapp {
@@ -1640,5 +2313,19 @@
     padding: 0 15px;
 
     font-size: 6px;
+  }
+}
+
+/* =========================================================
+   ACESSIBILIDADE / REDUÇÃO DE MOVIMENTO
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .proposal-fernando *,
+  .proposal-fernando *::before,
+  .proposal-fernando *::after {
+    animation: none !important;
+
+    transition: none !important;
   }
 }
