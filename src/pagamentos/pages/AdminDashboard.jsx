@@ -1,4 +1,5 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { supabase } from '../lib/supabase';
 
 const COLORS = {
   bg: '#070707',
@@ -9,77 +10,167 @@ const COLORS = {
   muted: '#858585',
   muted2: '#555555',
   red: '#ef2b35',
-  redDark: '#a9151d',
   green: '#22c55e',
+  yellow: '#f59e0b',
 };
 
-const charges = [
-  {
-    id: 1,
-    initials: 'FV',
-    client: 'Fernando Veiga',
-    service: 'Identidade visual',
-    amount: 850,
-    status: 'Pago',
-    date: 'Hoje, 10:42',
-  },
-  {
-    id: 2,
-    initials: 'JS',
-    client: 'João Silva',
-    service: 'Gestão de imagem',
-    amount: 450,
-    status: 'Pendente',
-    date: 'Hoje, 09:18',
-  },
-  {
-    id: 3,
-    initials: 'KS',
-    client: 'Kreative Sports',
-    service: 'Pacote mensal',
-    amount: 1200,
-    status: 'Pago',
-    date: 'Ontem, 18:27',
-  },
-  {
-    id: 4,
-    initials: 'MC',
-    client: 'Marcos Costa',
-    service: 'Artes para jogo',
-    amount: 300,
-    status: 'Pendente',
-    date: 'Ontem, 16:12',
-  },
-  {
-    id: 5,
-    initials: 'LR',
-    client: 'Lucas Ribeiro',
-    service: 'Consultoria',
-    amount: 600,
-    status: 'Pago',
-    date: '04/09/2026',
-  },
-];
-
-const revenueData = [
-  { day: '01/09', value: 520 },
-  { day: '02/09', value: 650 },
-  { day: '03/09', value: 520 },
-  { day: '04/09', value: 820 },
-  { day: '05/09', value: 1480 },
-  { day: '06/09', value: 1850 },
-  { day: '07/09', value: 1100 },
-];
-
-function formatCurrency(value) {
-  return new Intl.NumberFormat('pt-BR', {
+const formatCurrency = (value) =>
+  new Intl.NumberFormat('pt-BR', {
     style: 'currency',
     currency: 'BRL',
-  }).format(value);
-}
+  }).format(Number(value || 0));
+
+const formatDate = (value) => {
+  if (!value) return '—';
+
+  return new Intl.DateTimeFormat('pt-BR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  }).format(new Date(value));
+};
+
+const formatDateTime = (value) => {
+  if (!value) return '—';
+
+  return new Intl.DateTimeFormat('pt-BR', {
+    day: '2-digit',
+    month: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(new Date(value));
+};
+
+const normalize = (value) =>
+  String(value || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+
+const isPaidPayment = (payment) => {
+  const status = normalize(payment?.status);
+
+  return [
+    'paid',
+    'pago',
+    'approved',
+    'aprovado',
+    'completed',
+    'complete',
+    'succeeded',
+    'success',
+    'confirmed',
+    'confirmado',
+    'captured',
+    'capturado',
+  ].includes(status);
+};
+
+const isPaidCharge = (charge) => {
+  const status = normalize(charge?.status);
+
+  return [
+    'paid',
+    'pago',
+    'approved',
+    'aprovado',
+    'completed',
+    'complete',
+    'succeeded',
+    'success',
+    'confirmed',
+    'confirmado',
+    'captured',
+    'capturado',
+  ].includes(status);
+};
+
+const getChargeStatus = (charge) => {
+  const status = normalize(charge?.status);
+
+  if ([
+    'paid',
+    'pago',
+    'approved',
+    'aprovado',
+    'completed',
+    'complete',
+    'succeeded',
+    'success',
+    'confirmed',
+    'confirmado',
+    'captured',
+    'capturado',
+  ].includes(status)) {
+    return {
+      label: 'Pago',
+      color: COLORS.green,
+      background: 'rgba(34,197,94,.10)',
+    };
+  }
+
+  if ([
+    'cancelled',
+    'canceled',
+    'cancelado',
+    'expired',
+    'expirada',
+    'expirado',
+  ].includes(status)) {
+    return {
+      label: 'Cancelado',
+      color: COLORS.red,
+      background: 'rgba(239,43,53,.10)',
+    };
+  }
+
+  if ([
+    'overdue',
+    'atrasado',
+    'late',
+  ].includes(status)) {
+    return {
+      label: 'Atrasado',
+      color: COLORS.red,
+      background: 'rgba(239,43,53,.10)',
+    };
+  }
+
+  return {
+    label: 'Pendente',
+    color: COLORS.yellow,
+    background: 'rgba(245,158,11,.10)',
+  };
+};
+
+const getPaymentMethod = (payment) => {
+  const method = normalize(payment?.payment_method);
+
+  if (method.includes('pix')) return 'PIX';
+
+  if (
+    method.includes('credit') ||
+    method.includes('credito') ||
+    method.includes('card') ||
+    method.includes('cartao') ||
+    method.includes('cartão')
+  ) {
+    return 'Cartão';
+  }
+
+  if (method.includes('debit') || method.includes('debito')) {
+    return 'Débito';
+  }
+
+  if (!method) return 'Não informado';
+
+  return String(payment.payment_method)
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, (letter) => letter.toUpperCase());
+};
 
 function Icon({ name, size = 20 }) {
-  const common = {
+  const props = {
     width: size,
     height: size,
     viewBox: '0 0 24 24',
@@ -166,30 +257,12 @@ function Icon({ name, size = 20 }) {
       </>
     ),
 
-    bell: (
+    refresh: (
       <>
-        <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" />
-        <path d="M10 21h4" />
-      </>
-    ),
-
-    chevron: (
-      <>
-        <path d="m6 9 6 6 6-6" />
-      </>
-    ),
-
-    arrowUp: (
-      <>
-        <path d="M12 19V5" />
-        <path d="m6 11 6-6 6 6" />
-      </>
-    ),
-
-    arrowRight: (
-      <>
-        <path d="M5 12h14" />
-        <path d="m13 6 6 6-6 6" />
+        <path d="M20 11a8.1 8.1 0 0 0-14.8-4L3 10" />
+        <path d="M3 4v6h6" />
+        <path d="M4 13a8.1 8.1 0 0 0 14.8 4L21 14" />
+        <path d="M21 20v-6h-6" />
       </>
     ),
 
@@ -198,14 +271,6 @@ function Icon({ name, size = 20 }) {
         <path d="M3 7.5A2.5 2.5 0 0 1 5.5 5H20v14H5.5A2.5 2.5 0 0 1 3 16.5z" />
         <path d="M3 8h14" />
         <path d="M17 11h5v5h-5a2.5 2.5 0 0 1 0-5Z" />
-        <circle cx="17.5" cy="13.5" r=".5" />
-      </>
-    ),
-
-    clock: (
-      <>
-        <circle cx="12" cy="12" r="9" />
-        <path d="M12 7v5l3 2" />
       </>
     ),
 
@@ -234,7 +299,7 @@ function Icon({ name, size = 20 }) {
     ),
   };
 
-  return <svg {...common}>{icons[name] || icons.info}</svg>;
+  return <svg {...props}>{icons[name] || icons.info}</svg>;
 }
 
 function MetricCard({
@@ -243,29 +308,26 @@ function MetricCard({
   description,
   icon,
   accent = COLORS.red,
-  positive,
 }) {
   return (
     <div
       style={{
         position: 'relative',
-        overflow: 'hidden',
-        minHeight: '155px',
-        padding: '22px',
-        borderRadius: '16px',
+        minHeight: 145,
+        padding: 22,
+        borderRadius: 16,
         border: `1px solid ${COLORS.border}`,
         background:
-          'linear-gradient(145deg, rgba(255,255,255,0.045), rgba(255,255,255,0.018))',
-        boxShadow: '0 18px 45px rgba(0,0,0,0.18)',
+          'linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.018))',
+        boxShadow: '0 18px 45px rgba(0,0,0,.18)',
+        overflow: 'hidden',
       }}
     >
       <div
         style={{
           position: 'absolute',
-          left: 0,
-          top: 0,
-          bottom: 0,
-          width: '3px',
+          inset: '0 auto 0 0',
+          width: 3,
           background: accent,
         }}
       />
@@ -280,27 +342,20 @@ function MetricCard({
         <div>
           <div
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '7px',
               color: '#c7c7c7',
-              fontSize: '14px',
+              fontSize: 14,
               fontWeight: 600,
             }}
           >
             {title}
-            <span style={{ color: COLORS.muted2 }}>
-              <Icon name="info" size={14} />
-            </span>
           </div>
 
           <div
             style={{
-              marginTop: '12px',
-              fontSize: '29px',
-              lineHeight: 1,
+              marginTop: 12,
+              fontSize: 29,
               fontWeight: 800,
-              letterSpacing: '-0.03em',
+              letterSpacing: '-.03em',
             }}
           >
             {value}
@@ -309,12 +364,12 @@ function MetricCard({
 
         <div
           style={{
-            width: '42px',
-            height: '42px',
+            width: 42,
+            height: 42,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            borderRadius: '12px',
+            borderRadius: 12,
             color: accent,
             background: `${accent}14`,
             border: `1px solid ${accent}30`,
@@ -327,263 +382,511 @@ function MetricCard({
       <div
         style={{
           position: 'absolute',
-          left: '22px',
-          right: '22px',
-          bottom: '20px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
+          left: 22,
+          bottom: 18,
           color: '#777',
-          fontSize: '12px',
+          fontSize: 12,
         }}
       >
-        {positive && (
-          <span
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '3px',
-              color: COLORS.green,
-              fontWeight: 700,
-            }}
-          >
-            <Icon name="arrowUp" size={13} />
-            {positive}
-          </span>
-        )}
-
-        <span>{description}</span>
+        {description}
       </div>
     </div>
   );
 }
 
-function RevenueChart() {
-  const width = 760;
-  const height = 270;
-  const paddingX = 30;
-  const paddingTop = 28;
-  const paddingBottom = 42;
-
-  const max = Math.max(...revenueData.map((item) => item.value));
-  const min = 0;
-
-  const points = revenueData.map((item, index) => {
-    const x =
-      paddingX +
-      (index / (revenueData.length - 1)) *
-        (width - paddingX * 2);
-
-    const y =
-      paddingTop +
-      (1 - (item.value - min) / (max - min)) *
-        (height - paddingTop - paddingBottom);
-
-    return { ...item, x, y };
-  });
-
-  const linePath = points
-    .map((point, index) => {
-      if (index === 0) {
-        return `M ${point.x} ${point.y}`;
-      }
-
-      const previous = points[index - 1];
-
-      const controlX1 =
-        previous.x + (point.x - previous.x) / 2;
-
-      const controlX2 =
-        point.x - (point.x - previous.x) / 2;
-
-      return `C ${controlX1} ${previous.y}, ${controlX2} ${point.y}, ${point.x} ${point.y}`;
-    })
-    .join(' ');
-
-  const areaPath = `${linePath} L ${points[points.length - 1].x} ${
-    height - paddingBottom
-  } L ${points[0].x} ${
-    height - paddingBottom
-  } Z`;
-
+function EmptyState({ children }) {
   return (
-    <div style={{ width: '100%', overflow: 'hidden' }}>
-      <svg
-        viewBox={`0 0 ${width} ${height}`}
-        style={{
-          width: '100%',
-          height: '280px',
-          minWidth: '520px',
-          display: 'block',
-        }}
-        preserveAspectRatio="none"
-      >
-        <defs>
-          <linearGradient
-            id="revenueFill"
-            x1="0"
-            y1="0"
-            x2="0"
-            y2="1"
-          >
-            <stop
-              offset="0%"
-              stopColor={COLORS.red}
-              stopOpacity="0.32"
-            />
-            <stop
-              offset="100%"
-              stopColor={COLORS.red}
-              stopOpacity="0"
-            />
-          </linearGradient>
-        </defs>
-
-        {[0, 1, 2, 3].map((row) => {
-          const y =
-            paddingTop +
-            row *
-              ((height - paddingTop - paddingBottom) /
-                3);
-
-          return (
-            <line
-              key={row}
-              x1={paddingX}
-              x2={width - paddingX}
-              y1={y}
-              y2={y}
-              stroke="rgba(255,255,255,0.07)"
-              strokeWidth="1"
-            />
-          );
-        })}
-
-        <path
-          d={areaPath}
-          fill="url(#revenueFill)"
-        />
-
-        <path
-          d={linePath}
-          fill="none"
-          stroke={COLORS.red}
-          strokeWidth="3"
-          strokeLinecap="round"
-        />
-
-        {points.map((point) => (
-          <g key={point.day}>
-            <circle
-              cx={point.x}
-              cy={point.y}
-              r="6"
-              fill={COLORS.red}
-            />
-            <circle
-              cx={point.x}
-              cy={point.y}
-              r="2.5"
-              fill="#ffffff"
-            />
-
-            <text
-              x={point.x}
-              y={height - 13}
-              textAnchor="middle"
-              fill="#707070"
-              fontSize="12"
-            >
-              {point.day}
-            </text>
-          </g>
-        ))}
-
-        {[2000, 1500, 1000, 500, 0].map(
-          (value, index) => {
-            const y =
-              paddingTop +
-              index *
-                ((height -
-                  paddingTop -
-                  paddingBottom) /
-                  4);
-
-            return (
-              <text
-                key={value}
-                x="0"
-                y={y + 4}
-                fill="#666"
-                fontSize="11"
-              >
-                {formatCurrency(value).replace(
-                  ',00',
-                  ''
-                )}
-              </text>
-            );
-          }
-        )}
-      </svg>
+    <div
+      style={{
+        padding: '42px 20px',
+        textAlign: 'center',
+        color: COLORS.muted,
+        fontSize: 14,
+      }}
+    >
+      {children}
     </div>
   );
 }
 
 function AdminDashboard() {
-  const [activeMenu, setActiveMenu] = useState(
-    'Dashboard'
+  const [user, setUser] = useState(null);
+  const [charges, setCharges] = useState([]);
+  const [payments, setPayments] = useState([]);
+  const [clients, setClients] = useState([]);
+
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState('');
+
+  const [period, setPeriod] = useState('month');
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const loadDashboard = useCallback(async () => {
+    setError('');
+    setRefreshing(true);
+
+    try {
+      const {
+        data: { user: authenticatedUser },
+        error: authError,
+      } = await supabase.auth.getUser();
+
+      if (authError) {
+        throw authError;
+      }
+
+      if (!authenticatedUser) {
+        window.location.href = '/pagamentos/admin';
+        return;
+      }
+
+      setUser(authenticatedUser);
+
+      const ownerId = authenticatedUser.id;
+
+      const [chargesResponse, paymentsResponse, clientsResponse] =
+        await Promise.all([
+          supabase
+            .from('charges')
+            .select(
+              `
+                id,
+                owner_id,
+                brand_id,
+                client_id,
+                reference_code,
+                title,
+                description,
+                amount,
+                currency,
+                due_date,
+                status,
+                pix_enabled,
+                card_enabled,
+                max_installments,
+                fee_payer,
+                gateway,
+                gateway_checkout_id,
+                gateway_checkout_url,
+                paid_at,
+                created_at,
+                updated_at
+              `
+            )
+            .eq('owner_id', ownerId)
+            .order('created_at', { ascending: false }),
+
+          supabase
+            .from('payments')
+            .select(
+              `
+                id,
+                owner_id,
+                charge_id,
+                gateway,
+                gateway_transaction_id,
+                gateway_order_id,
+                gateway_invoice_id,
+                amount,
+                fee_amount,
+                net_amount,
+                payment_method,
+                installments,
+                status,
+                paid_at,
+                created_at,
+                updated_at
+              `
+            )
+            .eq('owner_id', ownerId)
+            .order('created_at', { ascending: false }),
+
+          supabase
+            .from('clients')
+            .select(
+              `
+                id,
+                owner_id,
+                brand_id,
+                name,
+                document,
+                email,
+                phone,
+                notes,
+                is_active,
+                created_at,
+                updated_at
+              `
+            )
+            .eq('owner_id', ownerId)
+            .order('created_at', { ascending: false }),
+        ]);
+
+      if (chargesResponse.error) {
+        throw chargesResponse.error;
+      }
+
+      if (paymentsResponse.error) {
+        throw paymentsResponse.error;
+      }
+
+      if (clientsResponse.error) {
+        throw clientsResponse.error;
+      }
+
+      setCharges(chargesResponse.data || []);
+      setPayments(paymentsResponse.data || []);
+      setClients(clientsResponse.data || []);
+    } catch (err) {
+      console.error('Erro ao carregar dashboard:', err);
+
+      setError(
+        err?.message ||
+          'Não foi possível carregar os dados do dashboard.'
+      );
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadDashboard();
+  }, [loadDashboard]);
+
+  const clientMap = useMemo(() => {
+    return Object.fromEntries(
+      clients.map((client) => [client.id, client])
+    );
+  }, [clients]);
+
+  const rangeStart = useMemo(() => {
+    const now = new Date();
+
+    if (period === 'today') {
+      now.setHours(0, 0, 0, 0);
+      return now;
+    }
+
+    if (period === '7d') {
+      now.setHours(0, 0, 0, 0);
+      now.setDate(now.getDate() - 6);
+      return now;
+    }
+
+    if (period === 'month') {
+      now.setHours(0, 0, 0, 0);
+      now.setDate(1);
+      return now;
+    }
+
+    now.setHours(0, 0, 0, 0);
+    now.setMonth(0, 1);
+
+    return now;
+  }, [period]);
+
+  const filteredCharges = useMemo(() => {
+    return charges.filter((charge) => {
+      if (!charge.created_at) return false;
+
+      return new Date(charge.created_at) >= rangeStart;
+    });
+  }, [charges, rangeStart]);
+
+  const filteredPayments = useMemo(() => {
+    return payments.filter((payment) => {
+      if (!isPaidPayment(payment)) return false;
+      if (!payment.paid_at) return false;
+
+      return new Date(payment.paid_at) >= rangeStart;
+    });
+  }, [payments, rangeStart]);
+
+  const billing = useMemo(() => {
+    return filteredCharges.reduce(
+      (total, charge) => total + Number(charge.amount || 0),
+      0
+    );
+  }, [filteredCharges]);
+
+  const received = useMemo(() => {
+    return filteredPayments.reduce(
+      (total, payment) => total + Number(payment.amount || 0),
+      0
+    );
+  }, [filteredPayments]);
+
+  const fees = useMemo(() => {
+    return filteredPayments.reduce(
+      (total, payment) => total + Number(payment.fee_amount || 0),
+      0
+    );
+  }, [filteredPayments]);
+
+  const net = useMemo(() => {
+    return filteredPayments.reduce((total, payment) => {
+      const amount = Number(payment.amount || 0);
+      const fee = Number(payment.fee_amount || 0);
+
+      const paymentNet =
+        payment.net_amount !== null &&
+        payment.net_amount !== undefined
+          ? Number(payment.net_amount)
+          : amount - fee;
+
+      return total + paymentNet;
+    }, 0);
+  }, [filteredPayments]);
+
+  const pending = useMemo(() => {
+    const paidChargeIds = new Set(
+      payments
+        .filter(isPaidPayment)
+        .map((payment) => payment.charge_id)
+        .filter(Boolean)
+    );
+
+    return filteredCharges.reduce((total, charge) => {
+      if (isPaidCharge(charge)) {
+        return total;
+      }
+
+      if (paidChargeIds.has(charge.id)) {
+        return total;
+      }
+
+      const status = normalize(charge.status);
+
+      if (
+        [
+          'cancelled',
+          'canceled',
+          'cancelado',
+          'expired',
+          'expirada',
+          'expirado',
+        ].includes(status)
+      ) {
+        return total;
+      }
+
+      return total + Number(charge.amount || 0);
+    }, 0);
+  }, [filteredCharges, payments]);
+
+  const paymentMethods = useMemo(() => {
+    const result = {};
+
+    filteredPayments.forEach((payment) => {
+      const method = getPaymentMethod(payment);
+
+      if (!result[method]) {
+        result[method] = {
+          count: 0,
+          amount: 0,
+        };
+      }
+
+      result[method].count += 1;
+      result[method].amount += Number(payment.amount || 0);
+    });
+
+    return Object.entries(result)
+      .sort((a, b) => b[1].amount - a[1].amount)
+      .map(([name, values]) => ({
+        name,
+        ...values,
+      }));
+  }, [filteredPayments]);
+
+  const chart = useMemo(() => {
+    const now = new Date();
+
+    let numberOfDays = 7;
+
+    if (period === 'today') {
+      numberOfDays = 1;
+    }
+
+    if (period === '7d') {
+      numberOfDays = 7;
+    }
+
+    if (period === 'month') {
+      numberOfDays = now.getDate();
+    }
+
+    if (period === 'year') {
+      numberOfDays = 12;
+    }
+
+    const days = [];
+
+    if (period === 'year') {
+      for (let i = 11; i >= 0; i -= 1) {
+        const current = new Date(
+          now.getFullYear(),
+          now.getMonth() - i,
+          1
+        );
+
+        const next = new Date(
+          current.getFullYear(),
+          current.getMonth() + 1,
+          1
+        );
+
+        const value = filteredPayments
+          .filter((payment) => {
+            const paidAt = new Date(payment.paid_at);
+
+            return paidAt >= current && paidAt < next;
+          })
+          .reduce(
+            (total, payment) => total + Number(payment.amount || 0),
+            0
+          );
+
+        days.push({
+          label: current.toLocaleDateString('pt-BR', {
+            month: 'short',
+          }),
+          value,
+        });
+      }
+
+      return days;
+    }
+
+    for (let i = numberOfDays - 1; i >= 0; i -= 1) {
+      const current = new Date(now);
+      current.setHours(0, 0, 0, 0);
+      current.setDate(current.getDate() - i);
+
+      const next = new Date(current);
+      next.setDate(next.getDate() + 1);
+
+      const value = filteredPayments
+        .filter((payment) => {
+          const paidAt = new Date(payment.paid_at);
+
+          return paidAt >= current && paidAt < next;
+        })
+        .reduce(
+          (total, payment) => total + Number(payment.amount || 0),
+          0
+        );
+
+      days.push({
+        label: current.toLocaleDateString('pt-BR', {
+          day: '2-digit',
+          month: '2-digit',
+        }),
+        value,
+      });
+    }
+
+    return days;
+  }, [filteredPayments, period]);
+
+  const maxChartValue = Math.max(
+    ...chart.map((item) => item.value),
+    1
   );
 
-  const [period, setPeriod] = useState('Hoje');
+  const recentCharges = filteredCharges.slice(0, 6);
 
-  const totalRevenue = 12850;
-  const received = 9420;
-  const pending = 3430;
-  const fees = 380;
-  const net = received - fees;
+  const styles = `
+    * {
+      box-sizing: border-box;
+    }
 
-  const menuItems = useMemo(
-    () => [
-      {
-        label: 'Dashboard',
-        icon: 'dashboard',
-      },
-      {
-        label: 'Cobranças',
-        icon: 'charges',
-      },
-      {
-        label: 'Clientes',
-        icon: 'clients',
-      },
-      {
-        label: 'Pagamentos',
-        icon: 'payments',
-      },
-      {
-        label: 'Faturamento',
-        icon: 'chart',
-      },
-      {
-        label: 'Comprovantes',
-        icon: 'receipt',
-      },
-      {
-        label: 'Marcas / Projetos',
-        icon: 'tag',
-      },
-      {
-        label: 'Relatórios',
-        icon: 'reports',
-      },
-      {
-        label: 'Configurações',
-        icon: 'settings',
-      },
-    ],
-    []
-  );
+    body {
+      margin: 0;
+    }
+
+    .cp-nav {
+      transition: transform .2s ease;
+    }
+
+    .cp-row:hover {
+      background: rgba(255,255,255,.025);
+    }
+
+    .cp-mobile {
+      display: none !important;
+    }
+
+    @media (max-width: 1000px) {
+      .cp-nav {
+        transform: translateX(-100%);
+        position: fixed !important;
+        z-index: 30;
+      }
+
+      .cp-nav.open {
+        transform: translateX(0);
+      }
+
+      .cp-main {
+        margin-left: 0 !important;
+      }
+
+      .cp-mobile {
+        display: flex !important;
+      }
+
+      .cp-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+      }
+
+      .cp-wide {
+        grid-template-columns: 1fr !important;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .cp-grid {
+        grid-template-columns: 1fr !important;
+      }
+
+      .cp-main {
+        padding: 72px 18px 40px !important;
+      }
+
+      .cp-header {
+        align-items: flex-start !important;
+      }
+
+      .cp-title {
+        font-size: 25px !important;
+      }
+
+      .cp-user {
+        display: none !important;
+      }
+    }
+  `;
+
+  if (loading) {
+    return (
+      <div
+        style={{
+          minHeight: '100vh',
+          background: COLORS.bg,
+          color: COLORS.white,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontFamily: 'Arial, sans-serif',
+        }}
+      >
+        Carregando Central de Pagamentos...
+      </div>
+    );
+  }
 
   return (
     <div
@@ -591,1158 +894,687 @@ function AdminDashboard() {
         minHeight: '100vh',
         background: COLORS.bg,
         color: COLORS.white,
-        fontFamily:
-          'Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+        fontFamily: 'Inter, Arial, sans-serif',
       }}
     >
-      <style>
-        {`
-          * {
-            box-sizing: border-box;
-          }
+      <style>{styles}</style>
 
-          body {
-            margin: 0;
-            background: #070707;
-          }
+      <button
+        className="cp-mobile"
+        onClick={() => setMobileOpen((value) => !value)}
+        style={{
+          position: 'fixed',
+          top: 15,
+          left: 15,
+          zIndex: 40,
+          width: 42,
+          height: 42,
+          borderRadius: 12,
+          border: `1px solid ${COLORS.border}`,
+          background: COLORS.panel,
+          color: COLORS.white,
+          alignItems: 'center',
+          justifyContent: 'center',
+          cursor: 'pointer',
+        }}
+      >
+        <Icon name="menu" />
+      </button>
 
-          button,
-          input,
-          select {
-            font: inherit;
-          }
+      <aside
+        className={`cp-nav ${mobileOpen ? 'open' : ''}`}
+        style={{
+          position: 'fixed',
+          top: 0,
+          bottom: 0,
+          left: 0,
+          width: 245,
+          background: '#090909',
+          borderRight: `1px solid ${COLORS.border}`,
+          padding: 22,
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        <div
+          style={{
+            fontWeight: 900,
+            fontSize: 18,
+            letterSpacing: '-.04em',
+            marginBottom: 36,
+          }}
+        >
+          CENTRAL{' '}
+          <span style={{ color: COLORS.red }}>
+            DE PAGAMENTOS
+          </span>
 
-          button {
-            -webkit-tap-highlight-color: transparent;
-          }
-
-          .dashboard-layout {
-            display: flex;
-            min-height: 100vh;
-          }
-
-          .dashboard-sidebar {
-            position: fixed;
-            z-index: 20;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 258px;
-            background:
-              radial-gradient(circle at 30% 85%, rgba(239,43,53,0.08), transparent 28%),
-              #090909;
-            border-right: 1px solid rgba(255,255,255,0.08);
-            display: flex;
-            flex-direction: column;
-          }
-
-          .dashboard-content {
-            width: calc(100% - 258px);
-            margin-left: 258px;
-            min-width: 0;
-          }
-
-          .dashboard-main {
-            max-width: 1500px;
-            margin: 0 auto;
-            padding: 0 30px 50px;
-          }
-
-          .metrics-grid {
-            display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 18px;
-          }
-
-          .middle-grid {
-            display: grid;
-            grid-template-columns: minmax(0, 2fr) minmax(300px, 0.9fr);
-            gap: 18px;
-          }
-
-          .bottom-grid {
-            display: grid;
-            grid-template-columns: minmax(0, 2fr) minmax(300px, 0.9fr);
-            gap: 18px;
-          }
-
-          .right-stack {
-            display: grid;
-            gap: 18px;
-          }
-
-          .responsive-table {
-            overflow-x: auto;
-          }
-
-          @media (max-width: 1200px) {
-            .metrics-grid {
-              grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-
-            .middle-grid,
-            .bottom-grid {
-              grid-template-columns: 1fr;
-            }
-          }
-
-          @media (max-width: 820px) {
-            .dashboard-sidebar {
-              width: 76px;
-            }
-
-            .dashboard-sidebar .brand-text,
-            .dashboard-sidebar .menu-label,
-            .dashboard-sidebar .admin-info,
-            .dashboard-sidebar .logout-label {
-              display: none;
-            }
-
-            .dashboard-sidebar .brand {
-              justify-content: center;
-            }
-
-            .dashboard-sidebar .menu-button {
-              justify-content: center;
-              padding-left: 0;
-              padding-right: 0;
-            }
-
-            .dashboard-content {
-              width: calc(100% - 76px);
-              margin-left: 76px;
-            }
-
-            .dashboard-main {
-              padding: 0 18px 35px;
-            }
-
-            .metrics-grid {
-              grid-template-columns: 1fr;
-            }
-
-            .header-date {
-              display: none;
-            }
-          }
-
-          @media (max-width: 600px) {
-            .top-header {
-              padding: 18px;
-            }
-
-            .dashboard-main {
-              padding: 0 14px 30px;
-            }
-
-            .welcome-row {
-              align-items: flex-start !important;
-              flex-direction: column;
-            }
-
-            .period-selector {
-              width: 100%;
-              overflow-x: auto;
-            }
-
-            .period-selector button {
-              white-space: nowrap;
-            }
-
-            .chart-card,
-            .panel-card {
-              border-radius: 14px !important;
-            }
-          }
-        `}
-      </style>
-
-      <div className="dashboard-layout">
-        {/* SIDEBAR */}
-        <aside className="dashboard-sidebar">
           <div
-            className="brand"
             style={{
-              minHeight: '92px',
-              padding: '20px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '13px',
-              borderBottom:
-                '1px solid rgba(255,255,255,0.07)',
+              fontSize: 10,
+              color: '#666',
+              letterSpacing: '.14em',
+              marginTop: 5,
             }}
           >
+            KREATIVE SPORTS / LÉO SOUZA
+          </div>
+        </div>
+
+        <div
+          style={{
+            fontSize: 10,
+            color: '#555',
+            letterSpacing: '.14em',
+            marginBottom: 10,
+          }}
+        >
+          MENU
+        </div>
+
+        {[
+          ['dashboard', 'Dashboard'],
+          ['charges', 'Cobranças'],
+          ['clients', 'Clientes'],
+          ['payments', 'Pagamentos'],
+          ['chart', 'Faturamento'],
+          ['receipt', 'Comprovantes'],
+          ['tag', 'Marcas / Projetos'],
+          ['reports', 'Relatórios'],
+          ['settings', 'Configurações'],
+        ].map(([icon, label], index) => (
+          <div
+            key={label}
+            onClick={() => {
+              if (index === 0) {
+                setMobileOpen(false);
+              }
+            }}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 12,
+              padding: '11px 12px',
+              borderRadius: 10,
+              marginBottom: 4,
+              color:
+                index === 0 ? COLORS.white : '#888',
+              background:
+                index === 0
+                  ? 'rgba(239,43,53,.12)'
+                  : 'transparent',
+              cursor: 'pointer',
+              fontSize: 13,
+              fontWeight: index === 0 ? 700 : 500,
+            }}
+          >
+            <Icon name={icon} size={18} />
+            {label}
+          </div>
+        ))}
+
+        <div
+          style={{
+            marginTop: 'auto',
+            paddingTop: 20,
+            borderTop: `1px solid ${COLORS.border}`,
+          }}
+        >
+          <div
+            className="cp-user"
+            style={{
+              fontSize: 11,
+              color: '#777',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              marginBottom: 12,
+            }}
+          >
+            {user?.email}
+          </div>
+
+          <button
+            onClick={async () => {
+              await supabase.auth.signOut();
+              window.location.href = '/pagamentos/admin';
+            }}
+            style={{
+              display: 'flex',
+              gap: 10,
+              alignItems: 'center',
+              background: 'none',
+              border: 0,
+              color: '#777',
+              cursor: 'pointer',
+              padding: 0,
+            }}
+          >
+            <Icon name="logout" size={17} />
+            Sair
+          </button>
+        </div>
+      </aside>
+
+      <main
+        className="cp-main"
+        style={{
+          marginLeft: 245,
+          padding: '30px 34px 50px',
+          maxWidth: 1500,
+        }}
+      >
+        <header
+          className="cp-header"
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: 30,
+          }}
+        >
+          <div>
             <div
               style={{
-                width: '38px',
-                height: '38px',
-                flexShrink: 0,
+                fontSize: 11,
+                color: '#666',
+                letterSpacing: '.12em',
+                textTransform: 'uppercase',
+              }}
+            >
+              Central de Pagamentos
+            </div>
+
+            <h1
+              className="cp-title"
+              style={{
+                fontSize: 30,
+                margin: '7px 0 0',
+                letterSpacing: '-.04em',
+              }}
+            >
+              Visão geral
+            </h1>
+          </div>
+
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 10,
+            }}
+          >
+            <select
+              value={period}
+              onChange={(event) =>
+                setPeriod(event.target.value)
+              }
+              style={{
+                height: 40,
+                padding: '0 12px',
+                borderRadius: 10,
+                border: `1px solid ${COLORS.border}`,
+                background: COLORS.panel,
+                color: '#ddd',
+                outline: 'none',
+              }}
+            >
+              <option value="today">Hoje</option>
+              <option value="7d">Últimos 7 dias</option>
+              <option value="month">Este mês</option>
+              <option value="year">Este ano</option>
+            </select>
+
+            <button
+              onClick={loadDashboard}
+              disabled={refreshing}
+              title="Atualizar dados"
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 10,
+                border: `1px solid ${COLORS.border}`,
+                background: COLORS.panel,
+                color: '#aaa',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                borderRadius: '11px',
+                cursor: refreshing
+                  ? 'default'
+                  : 'pointer',
+                opacity: refreshing ? 0.5 : 1,
+              }}
+            >
+              <Icon name="refresh" size={18} />
+            </button>
+
+            <div
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 12,
                 background: COLORS.red,
-                color: '#fff',
-                fontWeight: 900,
-                fontSize: '18px',
-                boxShadow:
-                  '0 10px 30px rgba(239,43,53,0.22)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 800,
               }}
             >
               LS
             </div>
-
-            <div className="brand-text">
-              <div
-                style={{
-                  fontSize: '15px',
-                  fontWeight: 900,
-                  letterSpacing: '0.08em',
-                }}
-              >
-                LÉO SOUZA
-              </div>
-
-              <div
-                style={{
-                  marginTop: '3px',
-                  fontSize: '10px',
-                  color: '#777',
-                  letterSpacing: '0.18em',
-                  fontWeight: 700,
-                }}
-              >
-                DESIGNER
-              </div>
-            </div>
           </div>
+        </header>
 
-          <div
-            className="menu-label"
-            style={{
-              padding:
-                '25px 20px 10px',
-              color: '#4f4f4f',
-              fontSize: '10px',
-              fontWeight: 800,
-              letterSpacing: '0.18em',
-              textTransform: 'uppercase',
-            }}
-          >
-            Central
-          </div>
-
-          <nav
-            style={{
-              padding: '0 10px',
-              flex: 1,
-            }}
-          >
-            {menuItems.map((item) => {
-              const active =
-                activeMenu === item.label;
-
-              return (
-                <button
-                  key={item.label}
-                  className="menu-button"
-                  onClick={() =>
-                    setActiveMenu(item.label)
-                  }
-                  style={{
-                    width: '100%',
-                    height: '47px',
-                    marginBottom: '4px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '14px',
-                    padding: '0 12px',
-                    border: '1px solid transparent',
-                    borderRadius: '9px',
-                    background: active
-                      ? 'linear-gradient(90deg, rgba(239,43,53,0.17), rgba(239,43,53,0.05))'
-                      : 'transparent',
-                    color: active
-                      ? '#ffffff'
-                      : '#858585',
-                    cursor: 'pointer',
-                    textAlign: 'left',
-                    position: 'relative',
-                  }}
-                >
-                  {active && (
-                    <span
-                      style={{
-                        position: 'absolute',
-                        left: '-10px',
-                        top: '7px',
-                        bottom: '7px',
-                        width: '3px',
-                        borderRadius:
-                          '0 4px 4px 0',
-                        background:
-                          COLORS.red,
-                      }}
-                    />
-                  )}
-
-                  <span
-                    style={{
-                      display: 'flex',
-                      color: active
-                        ? COLORS.red
-                        : '#707070',
-                    }}
-                  >
-                    <Icon
-                      name={item.icon}
-                      size={19}
-                    />
-                  </span>
-
-                  <span
-                    className="menu-label"
-                    style={{
-                      fontSize: '13px',
-                      fontWeight: active
-                        ? 700
-                        : 500,
-                    }}
-                  >
-                    {item.label}
-                  </span>
-                </button>
-              );
-            })}
-          </nav>
-
+        {error && (
           <div
             style={{
-              padding: '15px 12px',
-              borderTop:
-                '1px solid rgba(255,255,255,0.07)',
-            }}
-          >
-            <button
-              onClick={() => {
-                window.location.href =
-                  '/pagamentos/admin';
-              }}
-              style={{
-                width: '100%',
-                height: '43px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '10px',
-                border: 0,
-                borderRadius: '9px',
-                background: 'transparent',
-                color: '#666',
-                cursor: 'pointer',
-              }}
-            >
-              <Icon name="logout" size={18} />
-
-              <span className="logout-label">
-                Sair da Central
-              </span>
-            </button>
-          </div>
-        </aside>
-
-        {/* CONTEÚDO */}
-        <section className="dashboard-content">
-          {/* HEADER */}
-          <header
-            className="top-header"
-            style={{
-              height: '92px',
-              padding: '0 30px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent:
-                'space-between',
-              borderBottom:
-                '1px solid rgba(255,255,255,0.07)',
+              padding: 14,
+              marginBottom: 20,
+              borderRadius: 12,
+              border:
+                '1px solid rgba(239,43,53,.35)',
               background:
-                'rgba(7,7,7,0.86)',
-              backdropFilter:
-                'blur(20px)',
-              position: 'sticky',
-              top: 0,
-              zIndex: 10,
+                'rgba(239,43,53,.08)',
+              color: '#ff9da3',
+              fontSize: 13,
             }}
           >
-            <div>
-              <div
-                style={{
-                  color: '#777',
-                  fontSize: '11px',
-                  fontWeight: 700,
-                  letterSpacing:
-                    '0.18em',
-                  textTransform:
-                    'uppercase',
-                }}
-              >
-                Central de Pagamentos
-              </div>
+            Não foi possível carregar os dados:{' '}
+            {error}
+          </div>
+        )}
 
-              <div
-                style={{
-                  marginTop: '6px',
-                  fontSize: '20px',
-                  fontWeight: 800,
-                }}
-              >
-                Controle. Evolução. Resultados.
-              </div>
-            </div>
+        <section
+          className="cp-grid"
+          style={{
+            display: 'grid',
+            gridTemplateColumns:
+              'repeat(4, 1fr)',
+            gap: 14,
+            marginBottom: 18,
+          }}
+        >
+          <MetricCard
+            title="Faturamento"
+            value={formatCurrency(billing)}
+            description="Cobranças criadas no período"
+            icon="chart"
+          />
 
+          <MetricCard
+            title="Recebido"
+            value={formatCurrency(received)}
+            description="Pagamentos confirmados"
+            icon="wallet"
+            accent={COLORS.green}
+          />
+
+          <MetricCard
+            title="A receber"
+            value={formatCurrency(pending)}
+            description="Cobranças ainda pendentes"
+            icon="charges"
+            accent={COLORS.yellow}
+          />
+
+          <MetricCard
+            title="Cobranças"
+            value={filteredCharges.length}
+            description="Criadas no período"
+            icon="receipt"
+          />
+        </section>
+
+        <section
+          className="cp-wide"
+          style={{
+            display: 'grid',
+            gridTemplateColumns:
+              'minmax(0, 2fr) minmax(300px, 1fr)',
+            gap: 18,
+            marginBottom: 18,
+          }}
+        >
+          <div
+            style={{
+              background: COLORS.panel,
+              border: `1px solid ${COLORS.border}`,
+              borderRadius: 16,
+              padding: 22,
+            }}
+          >
             <div
               style={{
                 display: 'flex',
+                justifyContent: 'space-between',
                 alignItems: 'center',
-                gap: '12px',
-              }}
-            >
-              <div
-                className="header-date"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '9px',
-                  height: '42px',
-                  padding: '0 14px',
-                  border:
-                    '1px solid rgba(255,255,255,0.09)',
-                  borderRadius: '10px',
-                  color: '#aaa',
-                  fontSize: '12px',
-                }}
-              >
-                06 de Setembro de 2026
-                <Icon
-                  name="chevron"
-                  size={15}
-                />
-              </div>
-
-              <button
-                style={{
-                  position: 'relative',
-                  width: '42px',
-                  height: '42px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  border:
-                    '1px solid rgba(255,255,255,0.09)',
-                  borderRadius: '10px',
-                  background:
-                    'rgba(255,255,255,0.025)',
-                  color: '#aaa',
-                  cursor: 'pointer',
-                }}
-              >
-                <Icon name="bell" size={18} />
-
-                <span
-                  style={{
-                    position: 'absolute',
-                    top: '7px',
-                    right: '7px',
-                    width: '7px',
-                    height: '7px',
-                    borderRadius:
-                      '50%',
-                    background:
-                      COLORS.red,
-                    boxShadow:
-                      '0 0 0 3px #070707',
-                  }}
-                />
-              </button>
-
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                  padding:
-                    '5px 10px 5px 5px',
-                  border:
-                    '1px solid rgba(255,255,255,0.09)',
-                  borderRadius: '11px',
-                }}
-              >
-                <div
-                  style={{
-                    width: '32px',
-                    height: '32px',
-                    borderRadius: '9px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    background:
-                      'linear-gradient(145deg,#444,#1b1b1b)',
-                    fontWeight: 800,
-                    fontSize: '11px',
-                  }}
-                >
-                  LS
-                </div>
-
-                <div className="admin-info">
-                  <div
-                    style={{
-                      fontSize: '12px',
-                      fontWeight: 700,
-                    }}
-                  >
-                    Léo Souza
-                  </div>
-
-                  <div
-                    style={{
-                      marginTop: '2px',
-                      color: '#666',
-                      fontSize: '10px',
-                    }}
-                  >
-                    Administrador
-                  </div>
-                </div>
-
-                <Icon
-                  name="chevron"
-                  size={14}
-                />
-              </div>
-            </div>
-          </header>
-
-          <main className="dashboard-main">
-            {/* BOAS-VINDAS */}
-            <div
-              className="welcome-row"
-              style={{
-                padding:
-                  '32px 0 24px',
-                display: 'flex',
-                alignItems: 'flex-end',
-                justifyContent:
-                  'space-between',
-                gap: '20px',
+                marginBottom: 20,
               }}
             >
               <div>
-                <h1
+                <h2
                   style={{
+                    fontSize: 17,
                     margin: 0,
-                    fontSize:
-                      'clamp(28px, 4vw, 42px)',
-                    lineHeight: 1,
-                    letterSpacing:
-                      '-0.04em',
                   }}
                 >
-                  Bem-vindo, Léo.
-                </h1>
+                  Receita recebida
+                </h2>
 
-                <p
+                <div
                   style={{
-                    margin:
-                      '10px 0 0',
-                    color: '#777',
-                    fontSize: '14px',
+                    fontSize: 12,
+                    color: '#666',
+                    marginTop: 5,
                   }}
                 >
-                  Aqui está o resumo financeiro
-                  da sua operação.
-                </p>
+                  Pagamentos confirmados no período
+                </div>
               </div>
 
-              <div
-                className="period-selector"
+              <strong
                 style={{
-                  display: 'flex',
-                  padding: '4px',
-                  border:
-                    '1px solid rgba(255,255,255,0.08)',
-                  borderRadius: '10px',
-                  background:
-                    'rgba(255,255,255,0.025)',
+                  fontSize: 20,
                 }}
               >
-                {[
-                  'Hoje',
-                  '7 dias',
-                  '30 dias',
-                  'Este mês',
-                  '3 meses',
-                  'Personalizado',
-                ].map((item) => (
-                  <button
-                    key={item}
-                    onClick={() =>
-                      setPeriod(item)
-                    }
-                    style={{
-                      height: '34px',
-                      padding:
-                        '0 12px',
-                      border: 0,
-                      borderRadius: '7px',
-                      background:
-                        period === item
-                          ? COLORS.red
-                          : 'transparent',
-                      color:
-                        period === item
-                          ? '#fff'
-                          : '#777',
-                      fontSize: '11px',
-                      fontWeight:
-                        period === item
-                          ? 800
-                          : 500,
-                      cursor:
-                        'pointer',
-                    }}
-                  >
-                    {item}
-                  </button>
-                ))}
-              </div>
+                {formatCurrency(received)}
+              </strong>
             </div>
 
-            {/* CARDS */}
-            <section className="metrics-grid">
-              <MetricCard
-                title="Faturamento"
-                value={formatCurrency(
-                  totalRevenue
-                )}
-                description="em relação ao mês anterior"
-                positive="+18,4%"
-                icon="chart"
-                accent={COLORS.red}
-              />
+            {chart.every(
+              (item) => item.value === 0
+            ) ? (
+              <EmptyState>
+                Sem movimentações no período.
+              </EmptyState>
+            ) : (
+              <>
+                <div
+                  style={{
+                    height: 250,
+                    display: 'flex',
+                    alignItems: 'flex-end',
+                    gap: 6,
+                    borderBottom: `1px solid ${COLORS.border}`,
+                    padding: '15px 0 0',
+                  }}
+                >
+                  {chart.map((item, index) => (
+                    <div
+                      key={`${item.label}-${index}`}
+                      title={`${item.label} · ${formatCurrency(
+                        item.value
+                      )}`}
+                      style={{
+                        flex: 1,
+                        height: '100%',
+                        display: 'flex',
+                        alignItems: 'flex-end',
+                        minWidth: 2,
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: '100%',
+                          height: `${Math.max(
+                            3,
+                            (item.value /
+                              maxChartValue) *
+                              100
+                          )}%`,
+                          background:
+                            COLORS.red,
+                          borderRadius:
+                            '5px 5px 0 0',
+                          opacity: 0.9,
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
 
-              <MetricCard
-                title="Recebido"
-                value={formatCurrency(
-                  received
-                )}
-                description="em relação ao mês anterior"
-                positive="+12,8%"
-                icon="wallet"
-                accent={COLORS.green}
-              />
-
-              <MetricCard
-                title="A receber"
-                value={formatCurrency(
-                  pending
-                )}
-                description="8 cobranças pendentes"
-                icon="clock"
-                accent={COLORS.red}
-              />
-
-              <MetricCard
-                title="Cobranças"
-                value="27"
-                description="21 pagas · 8 pendentes"
-                icon="receipt"
-                accent={COLORS.red}
-              />
-            </section>
-
-            <div style={{ height: '18px' }} />
-
-            {/* GRÁFICO + RESUMO */}
-            <section className="middle-grid">
-              <div
-                className="chart-card"
-                style={{
-                  minWidth: 0,
-                  padding: '22px',
-                  border:
-                    '1px solid rgba(255,255,255,0.09)',
-                  borderRadius: '16px',
-                  background:
-                    'linear-gradient(145deg, rgba(255,255,255,0.035), rgba(255,255,255,0.012))',
-                  overflow: 'hidden',
-                }}
-              >
                 <div
                   style={{
                     display: 'flex',
                     justifyContent:
                       'space-between',
-                    alignItems:
-                      'center',
-                    gap: '10px',
-                    marginBottom:
-                      '8px',
+                    color: '#555',
+                    fontSize: 10,
+                    marginTop: 8,
                   }}
                 >
-                  <div>
-                    <h2
-                      style={{
-                        margin: 0,
-                        fontSize:
-                          '19px',
-                        fontWeight: 800,
-                      }}
-                    >
-                      Faturamento por período
-                    </h2>
-
-                    <div
-                      style={{
-                        marginTop:
-                          '5px',
-                        color:
-                          '#626262',
-                        fontSize:
-                          '11px',
-                      }}
-                    >
-                      Acompanhe a evolução
-                      das suas receitas.
-                    </div>
-                  </div>
-
-                  <select
-                    defaultValue="7"
-                    style={{
-                      height: '36px',
-                      padding:
-                        '0 10px',
-                      border:
-                        '1px solid rgba(255,255,255,0.1)',
-                      borderRadius:
-                        '8px',
-                      outline: 'none',
-                      background:
-                        '#121212',
-                      color: '#aaa',
-                      fontSize:
-                        '11px',
-                    }}
-                  >
-                    <option value="7">
-                      Últimos 7 dias
-                    </option>
-                    <option value="30">
-                      Últimos 30 dias
-                    </option>
-                    <option value="90">
-                      Últimos 3 meses
-                    </option>
-                  </select>
+                  <span>{chart[0]?.label}</span>
+                  <span>
+                    {chart[chart.length - 1]?.label}
+                  </span>
                 </div>
+              </>
+            )}
+          </div>
 
-                <RevenueChart />
-              </div>
+          <div
+            style={{
+              background: COLORS.panel,
+              border: `1px solid ${COLORS.border}`,
+              borderRadius: 16,
+              padding: 22,
+            }}
+          >
+            <h2
+              style={{
+                fontSize: 17,
+                margin: '0 0 20px',
+              }}
+            >
+              Resumo financeiro
+            </h2>
 
+            {[
+              ['Faturamento bruto', billing],
+              ['Recebido', received],
+              ['A receber', pending],
+              ['Taxas InfinitePay', fees],
+              ['Líquido recebido', net],
+            ].map(([label, value], index) => (
               <div
-                className="panel-card"
+                key={label}
                 style={{
-                  padding: '22px',
-                  border:
-                    '1px solid rgba(255,255,255,0.09)',
-                  borderRadius: '16px',
-                  background:
-                    'linear-gradient(145deg, rgba(255,255,255,0.035), rgba(255,255,255,0.012))',
+                  display: 'flex',
+                  justifyContent:
+                    'space-between',
+                  padding: '12px 0',
+                  borderBottom:
+                    index === 4
+                      ? 'none'
+                      : `1px solid ${COLORS.border}`,
+                  fontSize: 13,
                 }}
               >
+                <span
+                  style={{
+                    color: '#777',
+                  }}
+                >
+                  {label}
+                </span>
+
+                <strong>
+                  {formatCurrency(value)}
+                </strong>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section
+          className="cp-wide"
+          style={{
+            display: 'grid',
+            gridTemplateColumns:
+              'minmax(0, 2fr) minmax(300px, 1fr)',
+            gap: 18,
+          }}
+        >
+          <div
+            style={{
+              background: COLORS.panel,
+              border: `1px solid ${COLORS.border}`,
+              borderRadius: 16,
+              padding: 22,
+              overflow: 'hidden',
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: 18,
+              }}
+            >
+              <div>
                 <h2
                   style={{
-                    margin:
-                      '0 0 22px',
-                    fontSize:
-                      '19px',
-                    fontWeight: 800,
+                    fontSize: 17,
+                    margin: 0,
                   }}
                 >
-                  Resumo financeiro
+                  Últimas cobranças
                 </h2>
 
-                {[
-                  [
-                    'Faturamento bruto',
-                    totalRevenue,
-                    '#fff',
-                  ],
-                  [
-                    'Recebido',
-                    received,
-                    COLORS.green,
-                  ],
-                  [
-                    'A receber',
-                    pending,
-                    COLORS.red,
-                  ],
-                  [
-                    'Taxas InfinitePay',
-                    -fees,
-                    COLORS.red,
-                  ],
-                ].map(
-                  ([label, value, color]) => (
-                    <div
-                      key={label}
-                      style={{
-                        display:
-                          'flex',
-                        alignItems:
-                          'center',
-                        justifyContent:
-                          'space-between',
-                        gap: '10px',
-                        padding:
-                          '14px 0',
-                        borderBottom:
-                          '1px solid rgba(255,255,255,0.07)',
-                      }}
-                    >
-                      <span
-                        style={{
-                          color:
-                            '#777',
-                          fontSize:
-                            '12px',
-                        }}
-                      >
-                        {label}
-                      </span>
-
-                      <strong
-                        style={{
-                          color,
-                          fontSize:
-                            '13px',
-                        }}
-                      >
-                        {formatCurrency(
-                          value
-                        )}
-                      </strong>
-                    </div>
-                  )
-                )}
-
                 <div
                   style={{
-                    display:
-                      'flex',
-                    alignItems:
-                      'flex-end',
-                    justifyContent:
-                      'space-between',
-                    paddingTop:
-                      '20px',
+                    fontSize: 12,
+                    color: '#666',
+                    marginTop: 5,
                   }}
                 >
-                  <div>
-                    <div
-                      style={{
-                        color:
-                          '#666',
-                        fontSize:
-                          '11px',
-                      }}
-                    >
-                      Líquido recebido
-                    </div>
-
-                    <div
-                      style={{
-                        marginTop:
-                          '6px',
-                        fontSize:
-                          '25px',
-                        fontWeight:
-                          900,
-                      }}
-                    >
-                      {formatCurrency(
-                        net
-                      )}
-                    </div>
-                  </div>
-
-                  <div
-                    style={{
-                      color:
-                        COLORS.green,
-                      fontSize:
-                        '11px',
-                      fontWeight:
-                        800,
-                    }}
-                  >
-                    +12,8%
-                  </div>
+                  Dados reais do sistema
                 </div>
               </div>
-            </section>
 
-            <div style={{ height: '18px' }} />
-
-            {/* COBRANÇAS + LADO DIREITO */}
-            <section className="bottom-grid">
-              <div
-                className="panel-card"
+              <span
                 style={{
-                  minWidth: 0,
-                  padding: '22px',
-                  border:
-                    '1px solid rgba(255,255,255,0.09)',
-                  borderRadius: '16px',
-                  background:
-                    'linear-gradient(145deg, rgba(255,255,255,0.035), rgba(255,255,255,0.012))',
+                  fontSize: 12,
+                  color: '#666',
                 }}
               >
-                <div
+                {filteredCharges.length}{' '}
+                no período
+              </span>
+            </div>
+
+            {recentCharges.length === 0 ? (
+              <EmptyState>
+                Nenhuma cobrança criada ainda.
+              </EmptyState>
+            ) : (
+              <div
+                style={{
+                  overflowX: 'auto',
+                }}
+              >
+                <table
                   style={{
-                    display:
-                      'flex',
-                    justifyContent:
-                      'space-between',
-                    alignItems:
-                      'center',
-                    marginBottom:
-                      '18px',
+                    width: '100%',
+                    borderCollapse:
+                      'collapse',
+                    minWidth: 650,
                   }}
                 >
-                  <div>
-                    <h2
+                  <thead>
+                    <tr
                       style={{
-                        margin: 0,
-                        fontSize:
-                          '19px',
-                        fontWeight:
-                          800,
+                        color: '#555',
+                        fontSize: 10,
+                        textTransform:
+                          'uppercase',
+                        letterSpacing: '.08em',
+                        textAlign: 'left',
                       }}
                     >
-                      Últimas cobranças
-                    </h2>
+                      {[
+                        'Cliente',
+                        'Cobrança',
+                        'Valor',
+                        'Status',
+                        'Data',
+                      ].map((heading) => (
+                        <th
+                          key={heading}
+                          style={{
+                            padding:
+                              '10px 8px',
+                            borderBottom: `1px solid ${COLORS.border}`,
+                          }}
+                        >
+                          {heading}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
 
-                    <div
-                      style={{
-                        marginTop:
-                          '5px',
-                        color:
-                          '#626262',
-                        fontSize:
-                          '11px',
-                      }}
-                    >
-                      Movimentações mais recentes.
-                    </div>
-                  </div>
+                  <tbody>
+                    {recentCharges.map(
+                      (charge) => {
+                        const client =
+                          clientMap[
+                            charge.client_id
+                          ];
 
-                  <button
-                    style={{
-                      display:
-                        'flex',
-                      alignItems:
-                        'center',
-                      gap: '5px',
-                      border: 0,
-                      background:
-                        'transparent',
-                      color:
-                        COLORS.red,
-                      fontSize:
-                        '11px',
-                      fontWeight:
-                        800,
-                      cursor:
-                        'pointer',
-                    }}
-                  >
-                    Ver todas
-                    <Icon
-                      name="arrowRight"
-                      size={14}
-                    />
-                  </button>
-                </div>
+                        const status =
+                          getChargeStatus(
+                            charge
+                          );
 
-                <div className="responsive-table">
-                  <table
-                    style={{
-                      width:
-                        '100%',
-                      minWidth:
-                        '650px',
-                      borderCollapse:
-                        'collapse',
-                    }}
-                  >
-                    <thead>
-                      <tr>
-                        {[
-                          'Cliente',
-                          'Serviço',
-                          'Valor',
-                          'Status',
-                          'Data',
-                          '',
-                        ].map(
-                          (head) => (
-                            <th
-                              key={head}
-                              style={{
-                                padding:
-                                  '0 10px 12px',
-                                textAlign:
-                                  'left',
-                                color:
-                                  '#555',
-                                fontSize:
-                                  '10px',
-                                fontWeight:
-                                  800,
-                                letterSpacing:
-                                  '0.08em',
-                                textTransform:
-                                  'uppercase',
-                                borderBottom:
-                                  '1px solid rgba(255,255,255,0.07)',
-                              }}
-                            >
-                              {head}
-                            </th>
-                          )
-                        )}
-                      </tr>
-                    </thead>
-
-                    <tbody>
-                      {charges.map(
-                        (charge) => (
+                        return (
                           <tr
-                            key={
-                              charge.id
-                            }
+                            className="cp-row"
+                            key={charge.id}
                           >
                             <td
                               style={{
                                 padding:
-                                  '13px 10px',
-                                borderBottom:
-                                  '1px solid rgba(255,255,255,0.05)',
+                                  '13px 8px',
+                                borderBottom: `1px solid ${COLORS.border}`,
+                                fontSize: 13,
                               }}
                             >
-                              <div
+                              {client?.name ||
+                                'Cliente não informado'}
+                            </td>
+
+                            <td
+                              style={{
+                                padding:
+                                  '13px 8px',
+                                borderBottom: `1px solid ${COLORS.border}`,
+                                fontSize: 13,
+                              }}
+                            >
+                              <div>
+                                {charge.title ||
+                                  'Cobrança'}
+                              </div>
+
+                              <small
                                 style={{
-                                  display:
-                                    'flex',
-                                  alignItems:
-                                    'center',
-                                  gap: '10px',
+                                  color:
+                                    '#555',
                                 }}
                               >
-                                <div
-                                  style={{
-                                    width:
-                                      '31px',
-                                    height:
-                                      '31px',
-                                    flexShrink:
-                                      0,
-                                    display:
-                                      'flex',
-                                    alignItems:
-                                      'center',
-                                    justifyContent:
-                                      'center',
-                                    borderRadius:
-                                      '9px',
-                                    background:
-                                      charge.client ===
-                                      'Kreative Sports'
-                                        ? COLORS.red
-                                        : '#252525',
-                                    color:
-                                      '#fff',
-                                    fontSize:
-                                      '9px',
-                                    fontWeight:
-                                      900,
-                                  }}
-                                >
-                                  {
-                                    charge.initials
-                                  }
-                                </div>
-
-                                <div>
-                                  <div
-                                    style={{
-                                      fontSize:
-                                        '12px',
-                                      fontWeight:
-                                        700,
-                                    }}
-                                  >
-                                    {
-                                      charge.client
-                                    }
-                                  </div>
-
-                                  <div
-                                    style={{
-                                      marginTop:
-                                        '2px',
-                                      color:
-                                        '#555',
-                                      fontSize:
-                                        '10px',
-                                    }}
-                                  >
-                                    Cliente
-                                  </div>
-                                </div>
-                              </div>
+                                {
+                                  charge.reference_code
+                                }
+                              </small>
                             </td>
 
                             <td
                               style={{
                                 padding:
-                                  '13px 10px',
-                                color:
-                                  '#777',
-                                fontSize:
-                                  '11px',
-                                borderBottom:
-                                  '1px solid rgba(255,255,255,0.05)',
-                              }}
-                            >
-                              {
-                                charge.service
-                              }
-                            </td>
-
-                            <td
-                              style={{
-                                padding:
-                                  '13px 10px',
-                                fontSize:
-                                  '11px',
-                                fontWeight:
-                                  700,
-                                borderBottom:
-                                  '1px solid rgba(255,255,255,0.05)',
+                                  '13px 8px',
+                                borderBottom: `1px solid ${COLORS.border}`,
+                                fontWeight: 700,
                               }}
                             >
                               {formatCurrency(
@@ -1753,44 +1585,25 @@ function AdminDashboard() {
                             <td
                               style={{
                                 padding:
-                                  '13px 10px',
-                                borderBottom:
-                                  '1px solid rgba(255,255,255,0.05)',
+                                  '13px 8px',
+                                borderBottom: `1px solid ${COLORS.border}`,
                               }}
                             >
                               <span
                                 style={{
-                                  display:
-                                    'inline-flex',
-                                  alignItems:
-                                    'center',
-                                  gap: '6px',
+                                  padding:
+                                    '5px 8px',
+                                  borderRadius:
+                                    20,
+                                  fontSize: 11,
+                                  background:
+                                    status.background,
                                   color:
-                                    charge.status ===
-                                    'Pago'
-                                      ? COLORS.green
-                                      : COLORS.red,
-                                  fontSize:
-                                    '10px',
-                                  fontWeight:
-                                    800,
+                                    status.color,
                                 }}
                               >
-                                <span
-                                  style={{
-                                    width:
-                                      '6px',
-                                    height:
-                                      '6px',
-                                    borderRadius:
-                                      '50%',
-                                    background:
-                                      'currentColor',
-                                  }}
-                                />
-
                                 {
-                                  charge.status
+                                  status.label
                                 }
                               </span>
                             </td>
@@ -1798,84 +1611,64 @@ function AdminDashboard() {
                             <td
                               style={{
                                 padding:
-                                  '13px 10px',
+                                  '13px 8px',
+                                borderBottom: `1px solid ${COLORS.border}`,
                                 color:
-                                  '#666',
-                                fontSize:
-                                  '10px',
-                                borderBottom:
-                                  '1px solid rgba(255,255,255,0.05)',
+                                  '#777',
+                                fontSize: 12,
                               }}
                             >
-                              {
-                                charge.date
-                              }
-                            </td>
-
-                            <td
-                              style={{
-                                padding:
-                                  '13px 10px',
-                                textAlign:
-                                  'right',
-                                color:
-                                  '#555',
-                                fontSize:
-                                  '18px',
-                                borderBottom:
-                                  '1px solid rgba(255,255,255,0.05)',
-                              }}
-                            >
-                              ⋮
+                              {formatDateTime(
+                                charge.created_at
+                              )}
                             </td>
                           </tr>
-                        )
-                      )}
-                    </tbody>
-                  </table>
-                </div>
+                        );
+                      }
+                    )}
+                  </tbody>
+                </table>
               </div>
+            )}
+          </div>
 
-              <div className="right-stack">
-                {/* MÉTODOS */}
-                <div
-                  className="panel-card"
-                  style={{
-                    padding: '22px',
-                    border:
-                      '1px solid rgba(255,255,255,0.09)',
-                    borderRadius:
-                      '16px',
-                    background:
-                      'linear-gradient(145deg, rgba(255,255,255,0.035), rgba(255,255,255,0.012))',
-                  }}
-                >
-                  <h2
-                    style={{
-                      margin:
-                        '0 0 20px',
-                      fontSize:
-                        '18px',
-                      fontWeight:
-                        800,
-                    }}
-                  >
-                    Métodos de pagamento
-                  </h2>
+          <div
+            style={{
+              background: COLORS.panel,
+              border: `1px solid ${COLORS.border}`,
+              borderRadius: 16,
+              padding: 22,
+            }}
+          >
+            <h2
+              style={{
+                fontSize: 17,
+                margin: '0 0 18px',
+              }}
+            >
+              Meios de pagamento
+            </h2>
 
-                  {[
-                    ['Pix', 58],
-                    ['Cartão de crédito', 28],
-                    ['Cartão de débito', 8],
-                    ['Boleto', 4],
-                    ['Outros', 2],
-                  ].map(
-                    ([label, value]) => (
+            {paymentMethods.length === 0 ? (
+              <EmptyState>
+                Nenhum pagamento confirmado.
+              </EmptyState>
+            ) : (
+              <div>
+                {paymentMethods.map(
+                  (method) => {
+                    const percentage =
+                      received > 0
+                        ? (method.amount /
+                            received) *
+                          100
+                        : 0;
+
+                    return (
                       <div
-                        key={label}
+                        key={method.name}
                         style={{
-                          marginBottom:
-                            '13px',
+                          marginBottom: 18,
                         }}
                       >
                         <div
@@ -1884,212 +1677,234 @@ function AdminDashboard() {
                               'flex',
                             justifyContent:
                               'space-between',
-                            marginBottom:
-                              '6px',
+                            alignItems:
+                              'center',
+                            marginBottom: 7,
                           }}
                         >
                           <span
                             style={{
+                              fontSize: 13,
                               color:
-                                '#858585',
-                              fontSize:
-                                '11px',
+                                '#bbb',
                             }}
                           >
-                            {label}
+                            {method.name}
                           </span>
 
                           <strong
                             style={{
-                              fontSize:
-                                '10px',
-                              color:
-                                '#aaa',
+                              fontSize: 13,
                             }}
                           >
-                            {value}%
+                            {formatCurrency(
+                              method.amount
+                            )}
                           </strong>
                         </div>
 
                         <div
                           style={{
-                            height:
-                              '5px',
+                            height: 7,
+                            borderRadius: 20,
+                            background:
+                              '#1c1c1c',
                             overflow:
                               'hidden',
-                            borderRadius:
-                              '10px',
-                            background:
-                              '#242424',
                           }}
                         >
                           <div
                             style={{
-                              width: `${value}%`,
-                              height:
-                                '100%',
-                              borderRadius:
-                                '10px',
+                              width: `${percentage}%`,
+                              height: '100%',
                               background:
-                                `linear-gradient(90deg, ${COLORS.red}, #ff5a61)`,
+                                COLORS.red,
+                              borderRadius:
+                                20,
                             }}
                           />
                         </div>
-                      </div>
-                    )
-                  )}
-                </div>
 
-                {/* CLIENTES */}
-                <div
-                  className="panel-card"
-                  style={{
-                    padding: '22px',
-                    border:
-                      '1px solid rgba(255,255,255,0.09)',
-                    borderRadius:
-                      '16px',
-                    background:
-                      'linear-gradient(145deg, rgba(255,255,255,0.035), rgba(255,255,255,0.012))',
-                  }}
-                >
-                  <div
-                    style={{
-                      display:
-                        'flex',
-                      justifyContent:
-                        'space-between',
-                      alignItems:
-                        'center',
-                      marginBottom:
-                        '20px',
-                    }}
-                  >
-                    <h2
-                      style={{
-                        margin: 0,
-                        fontSize:
-                          '18px',
-                        fontWeight:
-                          800,
-                      }}
-                    >
-                      Clientes
-                    </h2>
-
-                    <span
-                      style={{
-                        color:
-                          COLORS.red,
-                        fontSize:
-                          '10px',
-                        fontWeight:
-                          800,
-                      }}
-                    >
-                      Ver todos →
-                    </span>
-                  </div>
-
-                  <div
-                    style={{
-                      display:
-                        'grid',
-                      gridTemplateColumns:
-                        'repeat(3, 1fr)',
-                    }}
-                  >
-                    {[
-                      [
-                        '48',
-                        'Total de clientes',
-                      ],
-                      [
-                        '6',
-                        'Novos este mês',
-                      ],
-                      [
-                        '32',
-                        'Clientes ativos',
-                      ],
-                    ].map(
-                      ([value, label], index) => (
                         <div
-                          key={label}
                           style={{
-                            padding:
-                              '0 12px',
-                            borderRight:
-                              index <
-                              2
-                                ? '1px solid rgba(255,255,255,0.07)'
-                                : 0,
+                            marginTop: 5,
+                            fontSize: 10,
+                            color:
+                              '#555',
                           }}
                         >
-                          <div
-                            style={{
-                              fontSize:
-                                '23px',
-                              fontWeight:
-                                900,
-                            }}
-                          >
-                            {value}
-                          </div>
-
-                          <div
-                            style={{
-                              marginTop:
-                                '5px',
-                              color:
-                                '#5f5f5f',
-                              fontSize:
-                                '9px',
-                              lineHeight:
-                                1.4,
-                            }}
-                          >
-                            {label}
-                          </div>
+                          {method.count}{' '}
+                          pagamento
+                          {method.count !== 1
+                            ? 's'
+                            : ''}{' '}
+                          ·{' '}
+                          {percentage.toFixed(
+                            1
+                          )}
+                          %
                         </div>
-                      )
-                    )}
-                  </div>
+                      </div>
+                    );
+                  }
+                )}
+
+                <div
+                  style={{
+                    marginTop: 24,
+                    paddingTop: 18,
+                    borderTop: `1px solid ${COLORS.border}`,
+                    fontSize: 12,
+                    color: '#777',
+                  }}
+                >
+                  Taxas registradas:{' '}
+                  <strong
+                    style={{
+                      color: '#ddd',
+                    }}
+                  >
+                    {formatCurrency(fees)}
+                  </strong>
                 </div>
               </div>
-            </section>
+            )}
+          </div>
+        </section>
 
-            {/* RODAPÉ DO DASHBOARD */}
+        <section
+          style={{
+            marginTop: 18,
+            display: 'grid',
+            gridTemplateColumns:
+              'repeat(3, 1fr)',
+            gap: 14,
+          }}
+        >
+          <div
+            style={{
+              padding: 18,
+              background: COLORS.panel,
+              border: `1px solid ${COLORS.border}`,
+              borderRadius: 16,
+            }}
+          >
             <div
               style={{
-                marginTop:
-                  '28px',
-                padding:
-                  '18px 0 0',
-                borderTop:
-                  '1px solid rgba(255,255,255,0.06)',
-                display:
-                  'flex',
-                justifyContent:
-                  'space-between',
-                alignItems:
-                  'center',
-                gap: '15px',
-                color: '#444',
-                fontSize: '10px',
+                color: '#666',
+                fontSize: 11,
+                textTransform:
+                  'uppercase',
+                letterSpacing: '.08em',
               }}
             >
-              <span>
-                CENTRAL DE PAGAMENTOS · LÉO SOUZA DESIGNER
-              </span>
-
-              <span>
-                Sistema administrativo
-              </span>
+              Clientes
             </div>
-          </main>
+
+            <strong
+              style={{
+                display: 'block',
+                marginTop: 8,
+                fontSize: 25,
+              }}
+            >
+              {clients.length}
+            </strong>
+
+            <div
+              style={{
+                marginTop: 5,
+                color: '#555',
+                fontSize: 11,
+              }}
+            >
+              clientes cadastrados
+            </div>
+          </div>
+
+          <div
+            style={{
+              padding: 18,
+              background: COLORS.panel,
+              border: `1px solid ${COLORS.border}`,
+              borderRadius: 16,
+            }}
+          >
+            <div
+              style={{
+                color: '#666',
+                fontSize: 11,
+                textTransform:
+                  'uppercase',
+                letterSpacing: '.08em',
+              }}
+            >
+              Pagamentos
+            </div>
+
+            <strong
+              style={{
+                display: 'block',
+                marginTop: 8,
+                fontSize: 25,
+              }}
+            >
+              {filteredPayments.length}
+            </strong>
+
+            <div
+              style={{
+                marginTop: 5,
+                color: '#555',
+                fontSize: 11,
+              }}
+            >
+              confirmados no período
+            </div>
+          </div>
+
+          <div
+            style={{
+              padding: 18,
+              background: COLORS.panel,
+              border: `1px solid ${COLORS.border}`,
+              borderRadius: 16,
+            }}
+          >
+            <div
+              style={{
+                color: '#666',
+                fontSize: 11,
+                textTransform:
+                  'uppercase',
+                letterSpacing: '.08em',
+              }}
+            >
+              Líquido
+            </div>
+
+            <strong
+              style={{
+                display: 'block',
+                marginTop: 8,
+                fontSize: 25,
+              }}
+            >
+              {formatCurrency(net)}
+            </strong>
+
+            <div
+              style={{
+                marginTop: 5,
+                color: '#555',
+                fontSize: 11,
+              }}
+            >
+              após taxas registradas
+            </div>
+          </div>
         </section>
-      </div>
+      </main>
     </div>
   );
 }
