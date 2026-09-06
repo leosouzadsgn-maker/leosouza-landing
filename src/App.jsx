@@ -1,5 +1,6 @@
 import React, { lazy, Suspense } from 'react';
 
+import AdminDashboard from './pagamentos/pages/AdminDashboard';
 import Hero from './sections/Hero/Hero';
 import Manifesto from './sections/Manifesto/Manifesto';
 import Services from './sections/Services/Services';
@@ -16,6 +17,7 @@ import ProposalDirection from './proposal/pages/ProposalDirection';
 import ProposalPlans from './proposal/pages/ProposalPlans';
 import ProposalAdmin from './proposal/pages/ProposalAdmin';
 import ProposalFernando from './proposal/pages/ProposalFernando';
+
 
 import TreinamentoKreative from './treinamento/TreinamentoKreative';
 
