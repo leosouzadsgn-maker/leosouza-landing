@@ -19,6 +19,9 @@ import ProposalFernando from './proposal/pages/ProposalFernando';
 
 import TreinamentoKreative from './treinamento/TreinamentoKreative';
 
+import AdminLogin from './pagamentos/pages/AdminLogin';
+
+
 function MainSite() {
   return (
     <main>
@@ -34,8 +37,22 @@ function MainSite() {
   );
 }
 
+
 function App() {
   const path = window.location.pathname;
+
+
+  /* =====================================================
+     CENTRAL DE PAGAMENTOS - ADMIN
+  ===================================================== */
+
+  if (
+    path === '/pagamentos/admin' ||
+    path === '/pagamentos/admin/'
+  ) {
+    return <AdminLogin />;
+  }
+
 
   /* =====================================================
      TREINAMENTO COMERCIAL KREATIVE
@@ -48,21 +65,27 @@ function App() {
     return <TreinamentoKreative />;
   }
 
+
   /* =====================================================
-     ADMIN
+     ADMIN DE PROPOSTAS
   ===================================================== */
 
   if (path.startsWith('/admin/propostas')) {
     return <ProposalAdmin />;
   }
 
+
   /* =====================================================
      PROPOSTA FERNANDO BARTENDER
   ===================================================== */
 
-  if (path === '/proposta/fernando-veiga' || path === '/proposta/fernando-veiga/') {
+  if (
+    path === '/proposta/fernando-veiga' ||
+    path === '/proposta/fernando-veiga/'
+  ) {
     return <ProposalFernando />;
   }
+
 
   /* =====================================================
      DIREÇÃO
@@ -72,6 +95,7 @@ function App() {
     return <ProposalDirection />;
   }
 
+
   /* =====================================================
      PLANOS
   ===================================================== */
@@ -80,29 +104,39 @@ function App() {
     return <ProposalPlans />;
   }
 
+
   /* =====================================================
      CONTEXTO
   ===================================================== */
 
-  if (path.match(/^\/proposta\/[^/]+\/contexto\/?$/)) {
+  if (
+    path.match(/^\/proposta\/[^/]+\/contexto\/?$/)
+  ) {
     return <ProposalContext />;
   }
+
 
   /* =====================================================
      DIAGNÓSTICO
   ===================================================== */
 
-  if (path.match(/^\/proposta\/[^/]+\/diagnostico\/?$/)) {
+  if (
+    path.match(/^\/proposta\/[^/]+\/diagnostico\/?$/)
+  ) {
     return <ProposalDiagnostico />;
   }
+
 
   /* =====================================================
      ENTRADA DA PROPOSTA
   ===================================================== */
 
-  if (path.match(/^\/proposta\/[^/]+\/?$/)) {
+  if (
+    path.match(/^\/proposta\/[^/]+\/?$/)
+  ) {
     return <ProposalEntry />;
   }
+
 
   /* =====================================================
      SITE PRINCIPAL
@@ -110,5 +144,6 @@ function App() {
 
   return <MainSite />;
 }
+
 
 export default App;
