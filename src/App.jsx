@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 
 import Hero from './sections/Hero/Hero';
 import Manifesto from './sections/Manifesto/Manifesto';
@@ -19,8 +19,21 @@ import ProposalFernando from './proposal/pages/ProposalFernando';
 
 import TreinamentoKreative from './treinamento/TreinamentoKreative';
 
-import AdminLogin from './pagamentos/pages/AdminLogin';
+/*
+=====================================================
+CENTRAL DE PAGAMENTOS
 
+O AdminLogin é carregado SOMENTE quando a rota
+/pagamentos/admin for acessada.
+
+Isso impede que um erro no sistema de pagamentos
+derrube o site principal inteiro.
+=====================================================
+*/
+
+const AdminLogin = lazy(
+  () => import('./pagamentos/pages/AdminLogin')
+);
 
 function MainSite() {
   return (
@@ -37,26 +50,47 @@ function MainSite() {
   );
 }
 
+function LoadingPage() {
+  return (
+    <main
+      style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontFamily: 'Arial, sans-serif',
+      }}
+    >
+      Carregando...
+    </main>
+  );
+}
 
 function App() {
   const path = window.location.pathname;
 
-
-  /* =====================================================
-     CENTRAL DE PAGAMENTOS - ADMIN
-  ===================================================== */
+  /*
+  =====================================================
+  CENTRAL DE PAGAMENTOS - ADMIN
+  =====================================================
+  */
 
   if (
     path === '/pagamentos/admin' ||
     path === '/pagamentos/admin/'
   ) {
-    return <AdminLogin />;
+    return (
+      <Suspense fallback={<LoadingPage />}>
+        <AdminLogin />
+      </Suspense>
+    );
   }
 
-
-  /* =====================================================
-     TREINAMENTO COMERCIAL KREATIVE
-  ===================================================== */
+  /*
+  =====================================================
+  TREINAMENTO COMERCIAL KREATIVE
+  =====================================================
+  */
 
   if (
     path === '/treinamentokreative' ||
@@ -65,19 +99,21 @@ function App() {
     return <TreinamentoKreative />;
   }
 
-
-  /* =====================================================
-     ADMIN DE PROPOSTAS
-  ===================================================== */
+  /*
+  =====================================================
+  ADMIN DE PROPOSTAS
+  =====================================================
+  */
 
   if (path.startsWith('/admin/propostas')) {
     return <ProposalAdmin />;
   }
 
-
-  /* =====================================================
-     PROPOSTA FERNANDO BARTENDER
-  ===================================================== */
+  /*
+  =====================================================
+  PROPOSTA FERNANDO BARTENDER
+  =====================================================
+  */
 
   if (
     path === '/proposta/fernando-veiga' ||
@@ -86,64 +122,69 @@ function App() {
     return <ProposalFernando />;
   }
 
-
-  /* =====================================================
-     DIREÇÃO
-  ===================================================== */
+  /*
+  =====================================================
+  DIREÇÃO
+  =====================================================
+  */
 
   if (path.includes('/direcao')) {
     return <ProposalDirection />;
   }
 
-
-  /* =====================================================
-     PLANOS
-  ===================================================== */
+  /*
+  =====================================================
+  PLANOS
+  =====================================================
+  */
 
   if (path.includes('/planos')) {
     return <ProposalPlans />;
   }
 
-
-  /* =====================================================
-     CONTEXTO
-  ===================================================== */
+  /*
+  =====================================================
+  CONTEXTO
+  =====================================================
+  */
 
   if (
-    path.match(/^\/proposta\/[^/]+\/contexto\/?$/)
+    /^\/proposta\/[^/]+\/contexto\/?$/.test(path)
   ) {
     return <ProposalContext />;
   }
 
-
-  /* =====================================================
-     DIAGNÓSTICO
-  ===================================================== */
+  /*
+  =====================================================
+  DIAGNÓSTICO
+  =====================================================
+  */
 
   if (
-    path.match(/^\/proposta\/[^/]+\/diagnostico\/?$/)
+    /^\/proposta\/[^/]+\/diagnostico\/?$/.test(path)
   ) {
     return <ProposalDiagnostico />;
   }
 
-
-  /* =====================================================
-     ENTRADA DA PROPOSTA
-  ===================================================== */
+  /*
+  =====================================================
+  ENTRADA DA PROPOSTA
+  =====================================================
+  */
 
   if (
-    path.match(/^\/proposta\/[^/]+\/?$/)
+    /^\/proposta\/[^/]+\/?$/.test(path)
   ) {
     return <ProposalEntry />;
   }
 
-
-  /* =====================================================
-     SITE PRINCIPAL
-  ===================================================== */
+  /*
+  =====================================================
+  SITE PRINCIPAL
+  =====================================================
+  */
 
   return <MainSite />;
 }
-
 
 export default App;
