@@ -18,7 +18,6 @@ import ProposalPlans from './proposal/pages/ProposalPlans';
 import ProposalAdmin from './proposal/pages/ProposalAdmin';
 import ProposalFernando from './proposal/pages/ProposalFernando';
 
-
 import TreinamentoKreative from './treinamento/TreinamentoKreative';
 
 /*
@@ -73,7 +72,7 @@ function App() {
 
   /*
   =====================================================
-  CENTRAL DE PAGAMENTOS - ADMIN
+  CENTRAL DE PAGAMENTOS - LOGIN ADMIN
   =====================================================
   */
 
@@ -86,6 +85,19 @@ function App() {
         <AdminLogin />
       </Suspense>
     );
+  }
+
+  /*
+  =====================================================
+  CENTRAL DE PAGAMENTOS - DASHBOARD
+  =====================================================
+  */
+
+  if (
+    path === '/pagamentos/admin/dashboard' ||
+    path === '/pagamentos/admin/dashboard/'
+  ) {
+    return <AdminDashboard />;
   }
 
   /*
