@@ -1,17 +1,26 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+/*
+=====================================================
+SUPABASE - CENTRAL DE PAGAMENTOS
+=====================================================
 
-if (!supabaseUrl) {
-  throw new Error('VITE_SUPABASE_URL não foi configurada.')
-}
+A URL do projeto e a Publishable Key são públicas
+e podem ser utilizadas no frontend.
 
-if (!supabaseAnonKey) {
-  throw new Error('VITE_SUPABASE_ANON_KEY não foi configurada.')
-}
+NÃO coloque aqui uma sb_secret_.
+=====================================================
+*/
+
+// URL pública do projeto Supabase
+const SUPABASE_URL =
+  'https://tjbzzkvdsnubsndqmzsd.supabase.co';
+
+// Cole aqui a sua Publishable Key (sb_publishable_...)
+const SUPABASE_PUBLISHABLE_KEY =
+  'sb_publishable_iWQPhYPqHaBOEJUQcaelwA_ocFsQUUn';
 
 export const supabase = createClient(
-  supabaseUrl,
-  supabaseAnonKey
-)
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY
+);
