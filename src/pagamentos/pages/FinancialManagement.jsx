@@ -1,4 +1,9 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { supabase } from '../lib/supabase';
 
 const COLORS = {
@@ -47,36 +52,23 @@ const normalize = (value) =>
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '');
 
-const movementTypeLabels = {
-  income: 'Entrada',
-  expense: 'Despesa',
-  withdrawal: 'Retirada',
-  transfer: 'Transferência',
-};
-
 const commonExpenseCategories = [
-  'Casa',
   'Água',
   'Luz',
   'Internet',
+  'Aluguel',
+  'Prestação',
   'Mercado',
-  'Lazer',
   'Transporte',
-  'Saúde',
-  'Educação',
-  'Assinaturas',
   'Software',
+  'Assinaturas',
   'Marketing',
   'Impostos',
   'Fornecedores',
   'Equipamentos',
+  'Manutenção',
+  'Lazer',
   'Outros',
-];
-
-const commonIncomeCategories = [
-  'Receitas de serviços',
-  'Vendas',
-  'Outros recebimentos',
 ];
 
 function Icon({ name, size = 20 }) {
@@ -103,13 +95,7 @@ function Icon({ name, size = 20 }) {
 
     charges: (
       <>
-        <rect
-          x="3"
-          y="5"
-          width="18"
-          height="14"
-          rx="2"
-        />
+        <rect x="3" y="5" width="18" height="14" rx="2" />
         <path d="M3 10h18" />
         <path d="M7 15h4" />
       </>
@@ -126,13 +112,7 @@ function Icon({ name, size = 20 }) {
 
     payments: (
       <>
-        <rect
-          x="2"
-          y="5"
-          width="20"
-          height="14"
-          rx="2"
-        />
+        <rect x="2" y="5" width="20" height="14" rx="2" />
         <path d="M2 10h20" />
         <path d="M6 15h4" />
       </>
@@ -212,17 +192,17 @@ function Icon({ name, size = 20 }) {
       </>
     ),
 
-    down: (
-      <>
-        <path d="M12 5v14" />
-        <path d="m19 12-7 7-7-7" />
-      </>
-    ),
-
     up: (
       <>
         <path d="M12 19V5" />
         <path d="m5 12 7-7 7 7" />
+      </>
+    ),
+
+    down: (
+      <>
+        <path d="M12 5v14" />
+        <path d="m19 12-7 7-7-7" />
       </>
     ),
 
@@ -249,46 +229,18 @@ function Icon({ name, size = 20 }) {
       </>
     ),
 
-    user: (
-      <>
-        <circle cx="12" cy="8" r="4" />
-        <path d="M4 21a8 8 0 0 1 16 0" />
-      </>
-    ),
-
-    calendar: (
-      <>
-        <rect
-          x="3"
-          y="4"
-          width="18"
-          height="17"
-          rx="2"
-        />
-        <path d="M16 2v4" />
-        <path d="M8 2v4" />
-        <path d="M3 10h18" />
-      </>
-    ),
-
     check: (
       <>
         <path d="m5 12 4 4L19 6" />
       </>
     ),
-
-    trash: (
-      <>
-        <path d="M4 7h16" />
-        <path d="M10 11v6" />
-        <path d="M14 11v6" />
-        <path d="M6 7l1 14h10l1-14" />
-        <path d="M9 7V4h6v3" />
-      </>
-    ),
   };
 
-  return <svg {...props}>{icons[name] || null}</svg>;
+  return (
+    <svg {...props}>
+      {icons[name] || null}
+    </svg>
+  );
 }
 
 function Card({
@@ -316,7 +268,6 @@ function Modal({
   subtitle,
   onClose,
   children,
-  wide = false,
 }) {
   return (
     <div
@@ -340,19 +291,21 @@ function Modal({
       <div
         style={{
           width: '100%',
-          maxWidth: wide ? 820 : 620,
+          maxWidth: 680,
           maxHeight: '90vh',
           overflowY: 'auto',
           background: '#0d0d0d',
           border: `1px solid ${COLORS.border}`,
           borderRadius: 20,
-          boxShadow: '0 30px 100px rgba(0,0,0,.55)',
+          boxShadow:
+            '0 30px 100px rgba(0,0,0,.55)',
         }}
       >
         <div
           style={{
             padding: '20px 22px',
-            borderBottom: `1px solid ${COLORS.border}`,
+            borderBottom:
+              `1px solid ${COLORS.border}`,
             display: 'flex',
             justifyContent: 'space-between',
             gap: 18,
@@ -387,6 +340,7 @@ function Modal({
                   marginTop: 5,
                   color: COLORS.muted,
                   fontSize: 12,
+                  lineHeight: 1.5,
                 }}
               >
                 {subtitle}
@@ -396,10 +350,25 @@ function Modal({
 
           <button
             onClick={onClose}
-            style={iconButtonStyle}
-            aria-label="Fechar"
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: 11,
+              border:
+                `1px solid ${COLORS.border}`,
+              background: COLORS.panel,
+              color: COLORS.muted,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              flexShrink: 0,
+            }}
           >
-            <Icon name="close" size={18} />
+            <Icon
+              name="close"
+              size={18}
+            />
           </button>
         </div>
 
@@ -408,20 +377,6 @@ function Modal({
     </div>
   );
 }
-
-const iconButtonStyle = {
-  width: 40,
-  height: 40,
-  borderRadius: 11,
-  border: `1px solid ${COLORS.border}`,
-  background: COLORS.panel,
-  color: COLORS.muted,
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  cursor: 'pointer',
-  flexShrink: 0,
-};
 
 const fieldLabelStyle = {
   display: 'block',
@@ -436,7 +391,8 @@ const fieldStyle = {
   height: 44,
   padding: '0 13px',
   borderRadius: 10,
-  border: `1px solid ${COLORS.border}`,
+  border:
+    `1px solid ${COLORS.border}`,
   background: '#111',
   color: COLORS.white,
   outline: 'none',
@@ -444,45 +400,71 @@ const fieldStyle = {
 };
 
 function FinancialManagement() {
-  const [user, setUser] = useState(null);
-  const [accounts, setAccounts] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [transactions, setTransactions] = useState([]);
+  const [user, setUser] =
+    useState(null);
 
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
-  const [saving, setSaving] = useState(false);
+  const [accounts, setAccounts] =
+    useState([]);
 
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [categories, setCategories] =
+    useState([]);
 
-  const [period, setPeriod] = useState('month');
+  const [transactions, setTransactions] =
+    useState([]);
 
-  const [showMovementModal, setShowMovementModal] =
+  const [loading, setLoading] =
+    useState(true);
+
+  const [refreshing, setRefreshing] =
+    useState(false);
+
+  const [saving, setSaving] =
+    useState(false);
+
+  const [mobileOpen, setMobileOpen] =
+    useState(false);
+
+  const [period, setPeriod] =
+    useState('month');
+
+  const [showExpenseModal, setShowExpenseModal] =
+    useState(false);
+
+  const [showTransferModal, setShowTransferModal] =
     useState(false);
 
   const [showAccountModal, setShowAccountModal] =
     useState(false);
 
-  const [toast, setToast] = useState(null);
+  const [toast, setToast] =
+    useState(null);
 
-  const [movement, setMovement] = useState({
-    type: 'expense',
-    description: '',
-    amount: '',
-    accountId: '',
-    destinationAccountId: '',
-    categoryId: '',
-    categoryName: '',
-    date: todayISO(),
-    notes: '',
-  });
+  const [expenseForm, setExpenseForm] =
+    useState({
+      description: '',
+      amount: '',
+      categoryId: '',
+      categoryName: '',
+      date: todayISO(),
+      notes: '',
+    });
 
-  const [newAccount, setNewAccount] = useState({
-    name: '',
-    type: 'personal',
-    description: '',
-    initialBalance: '',
-  });
+  const [transferForm, setTransferForm] =
+    useState({
+      sourceAccountId: '',
+      destinationAccountId: '',
+      amount: '',
+      date: todayISO(),
+      notes: '',
+    });
+
+  const [newAccount, setNewAccount] =
+    useState({
+      name: '',
+      type: 'reserve',
+      description: '',
+      initialBalance: '',
+    });
 
   const notify = (
     message,
@@ -498,8 +480,8 @@ function FinancialManagement() {
     }, 3200);
   };
 
-  const loadFinancialData = useCallback(
-    async () => {
+  const loadFinancialData =
+    useCallback(async () => {
       setRefreshing(true);
 
       try {
@@ -521,7 +503,9 @@ function FinancialManagement() {
           return;
         }
 
-        setUser(authenticatedUser);
+        setUser(
+          authenticatedUser
+        );
 
         const ownerId =
           authenticatedUser.id;
@@ -530,81 +514,86 @@ function FinancialManagement() {
           accountsResponse,
           categoriesResponse,
           transactionsResponse,
-        ] = await Promise.all([
-          supabase
-            .from(
-              'financial_accounts'
-            )
-            .select('*')
-            .eq(
-              'owner_id',
-              ownerId
-            )
-            .eq(
-              'is_active',
-              true
-            )
-            .order(
-              'created_at',
-              {
-                ascending: true,
-              }
-            ),
-
-          supabase
-            .from(
-              'financial_categories'
-            )
-            .select('*')
-            .eq(
-              'owner_id',
-              ownerId
-            )
-            .eq(
-              'is_active',
-              true
-            )
-            .order(
-              'name',
-              {
-                ascending: true,
-              }
-            ),
-
-          supabase
-            .from(
-              'financial_transactions'
-            )
-            .select(`
-              *,
-              financial_accounts (
-                id,
-                name,
-                type
-              ),
-              financial_categories (
-                id,
-                name,
-                type
+        ] =
+          await Promise.all([
+            supabase
+              .from(
+                'financial_accounts'
               )
-            `)
-            .eq(
-              'owner_id',
-              ownerId
-            )
-            .order(
-              'transaction_date',
-              {
-                ascending: false,
-              }
-            )
-            .order(
-              'created_at',
-              {
-                ascending: false,
-              }
-            ),
-        ]);
+              .select('*')
+              .eq(
+                'owner_id',
+                ownerId
+              )
+              .eq(
+                'is_active',
+                true
+              )
+              .order(
+                'created_at',
+                {
+                  ascending:
+                    true,
+                }
+              ),
+
+            supabase
+              .from(
+                'financial_categories'
+              )
+              .select('*')
+              .eq(
+                'owner_id',
+                ownerId
+              )
+              .eq(
+                'is_active',
+                true
+              )
+              .order(
+                'name',
+                {
+                  ascending:
+                    true,
+                }
+              ),
+
+            supabase
+              .from(
+                'financial_transactions'
+              )
+              .select(`
+                *,
+                financial_accounts (
+                  id,
+                  name,
+                  type
+                ),
+                financial_categories (
+                  id,
+                  name,
+                  type
+                )
+              `)
+              .eq(
+                'owner_id',
+                ownerId
+              )
+              .order(
+                'transaction_date',
+                {
+                  ascending:
+                    false,
+                }
+              )
+              .order(
+                'created_at',
+                {
+                  ascending:
+                    false,
+                }
+              ),
+          ]);
 
         if (
           accountsResponse.error
@@ -624,12 +613,9 @@ function FinancialManagement() {
           throw transactionsResponse.error;
         }
 
-        const loadedAccounts =
-          accountsResponse.data ||
-          [];
-
         setAccounts(
-          loadedAccounts
+          accountsResponse.data ||
+            []
         );
 
         setCategories(
@@ -642,46 +628,48 @@ function FinancialManagement() {
             []
         );
 
-        setMovement(
+        const loadedAccounts =
+          accountsResponse.data ||
+          [];
+
+        const cash =
+          loadedAccounts.find(
+            (account) =>
+              [
+                'business',
+                'caixa',
+                'operacional',
+                'cash',
+              ].includes(
+                normalize(
+                  account.type
+                )
+              )
+          );
+
+        const otherAccount =
+          loadedAccounts.find(
+            (account) =>
+              account.id !==
+                cash?.id
+          );
+
+        setExpenseForm(
           (current) => ({
             ...current,
+          })
+        );
 
-            accountId:
-              current.accountId ||
-              loadedAccounts.find(
-                (
-                  account
-                ) =>
-                  [
-                    'business',
-                    'caixa',
-                    'operacional',
-                    'cash',
-                  ].includes(
-                    normalize(
-                      account.type
-                    )
-                  )
-              )?.id ||
-              loadedAccounts[0]
-                ?.id ||
+        setTransferForm(
+          (current) => ({
+            ...current,
+            sourceAccountId:
+              current.sourceAccountId ||
+              cash?.id ||
               '',
-
             destinationAccountId:
               current.destinationAccountId ||
-              loadedAccounts.find(
-                (
-                  account
-                ) =>
-                  [
-                    'personal',
-                    'pessoal',
-                  ].includes(
-                    normalize(
-                      account.type
-                    )
-                  )
-              )?.id ||
+              otherAccount?.id ||
               '',
           })
         );
@@ -700,12 +688,14 @@ function FinancialManagement() {
           'error'
         );
       } finally {
-        setLoading(false);
-        setRefreshing(false);
+        setLoading(
+          false
+        );
+        setRefreshing(
+          false
+        );
       }
-    },
-    []
-  );
+    }, []);
 
   useEffect(() => {
     loadFinancialData();
@@ -766,38 +756,19 @@ function FinancialManagement() {
       [accounts]
     );
 
-  const personalAccount =
-    useMemo(
-      () =>
-        accounts.find(
-          (account) =>
-            [
-              'personal',
-              'pessoal',
-            ].includes(
-              normalize(
-                account.type
-              )
-            )
-        ),
-      [accounts]
-    );
-
   const getPeriodStart =
     useCallback(() => {
       const now =
         new Date();
 
       if (
-        period ===
-        'all'
+        period === 'all'
       ) {
         return null;
       }
 
       if (
-        period ===
-        'year'
+        period === 'year'
       ) {
         return `${now.getFullYear()}-01-01`;
       }
@@ -953,70 +924,31 @@ function FinancialManagement() {
       [filteredTransactions]
     );
 
-  const withdrawals =
-    useMemo(
-      () =>
-        filteredTransactions
-          .filter(
-            (transaction) =>
-              [
-                'withdrawal',
-                'retirada',
-                'pro-labore',
-                'prolabore',
-              ].includes(
-                normalize(
-                  transaction.type
-                )
-              ) &&
-              normalize(
-                transaction.status
-              ) !==
-                'cancelled'
-          )
-          .reduce(
-            (
-              total,
-              transaction
-            ) =>
-              total +
-              Number(
-                transaction.amount ||
-                  0
-              ),
-            0
-          ),
-      [filteredTransactions]
+  const availableCash =
+    Number(
+      businessAccount?.current_balance ||
+        0
+    );
+
+  const reserveBalance =
+    Number(
+      reserveAccount?.current_balance ||
+        0
+    );
+
+  const investmentBalance =
+    Number(
+      investmentAccount?.current_balance ||
+        0
     );
 
   const totalAccountBalance =
-    useMemo(
-      () =>
-        accounts.reduce(
-          (
-            total,
-            account
-          ) =>
-            total +
-            Number(
-              account.current_balance ||
-                0
-            ),
-          0
-        ),
-      [accounts]
-    );
+    availableCash +
+    reserveBalance +
+    investmentBalance;
 
   const netResult =
-    income -
-    expenses -
-    withdrawals;
-
-  const availablePersonal =
-    Number(
-      personalAccount?.current_balance ||
-        0
-    );
+    income - expenses;
 
   const expenseCategories =
     useMemo(() => {
@@ -1032,16 +964,15 @@ function FinancialManagement() {
         )
         .forEach(
           (transaction) => {
-            const category =
+            const name =
               transaction
                 .financial_categories
                 ?.name ||
               'Sem categoria';
 
-            map[category] =
-              (map[
-                category
-              ] || 0) +
+            map[name] =
+              (map[name] ||
+                0) +
               Number(
                 transaction.amount ||
                   0
@@ -1076,34 +1007,20 @@ function FinancialManagement() {
       10
     );
 
-  const categoryOptions =
+  const availableExpenseCategories =
     useMemo(() => {
-      const isIncome =
-        movement.type ===
-        'income';
-
-      const available =
+      const realCategories =
         categories.filter(
           (category) =>
-            isIncome
-              ? normalize(
-                  category.type
-                ) ===
-                'income'
-              : normalize(
-                  category.type
-                ) ===
-                'expense'
+            normalize(
+              category.type
+            ) ===
+            'expense'
         );
 
-      const builtInNames =
-        isIncome
-          ? commonIncomeCategories
-          : commonExpenseCategories;
-
-      const names =
+      const existing =
         new Set(
-          available.map(
+          realCategories.map(
             (category) =>
               normalize(
                 category.name
@@ -1111,11 +1028,11 @@ function FinancialManagement() {
           )
         );
 
-      const virtualCategories =
-        builtInNames
+      const virtual =
+        commonExpenseCategories
           .filter(
             (name) =>
-              !names.has(
+              !existing.has(
                 normalize(
                   name
                 )
@@ -1123,23 +1040,22 @@ function FinancialManagement() {
           )
           .map(
             (name) => ({
-              id: `virtual:${name}`,
+              id:
+                `virtual:${name}`,
               name,
               type:
-                isIncome
-                  ? 'income'
-                  : 'expense',
-              virtual: true,
+                'expense',
+              virtual:
+                true,
             })
           );
 
       return [
-        ...available,
-        ...virtualCategories,
+        ...realCategories,
+        ...virtual,
       ];
     }, [
       categories,
-      movement.type,
     ]);
 
   const getAccountLabel =
@@ -1157,7 +1073,7 @@ function FinancialManagement() {
           normalized
         )
       ) {
-        return 'Empresa';
+        return 'Caixa da empresa';
       }
 
       if (
@@ -1182,19 +1098,9 @@ function FinancialManagement() {
         return 'Investimentos';
       }
 
-      if (
-        [
-          'personal',
-          'pessoal',
-        ].includes(
-          normalized
-        )
-      ) {
-        return 'Pessoal';
-      }
-
       return (
-        type || 'Conta'
+        type ||
+        'Conta'
       );
     };
 
@@ -1207,7 +1113,7 @@ function FinancialManagement() {
         normalized ===
         'income'
       ) {
-        return 'Entrada';
+        return 'Entrada automática';
       }
 
       if (
@@ -1215,19 +1121,6 @@ function FinancialManagement() {
         'expense'
       ) {
         return 'Despesa';
-      }
-
-      if (
-        [
-          'withdrawal',
-          'retirada',
-          'pro-labore',
-          'prolabore',
-        ].includes(
-          normalized
-        )
-      ) {
-        return 'Retirada';
       }
 
       if (
@@ -1270,19 +1163,6 @@ function FinancialManagement() {
 
       if (
         [
-          'withdrawal',
-          'retirada',
-          'pro-labore',
-          'prolabore',
-        ].includes(
-          normalized
-        )
-      ) {
-        return COLORS.yellow;
-      }
-
-      if (
-        [
           'transfer',
           'transfer_in',
           'transfer_out',
@@ -1297,46 +1177,53 @@ function FinancialManagement() {
       return COLORS.muted;
     };
 
-  const resetMovement =
-    (type = 'expense') => {
-      const defaultAccount =
-        type === 'income'
-          ? businessAccount?.id ||
-            accounts[0]
-              ?.id ||
-            ''
-          : accounts[0]
-              ?.id ||
-            '';
-
-      setMovement({
-        type,
+  const openExpenseModal =
+    () => {
+      setExpenseForm({
         description: '',
         amount: '',
-        accountId:
-          defaultAccount,
-        destinationAccountId:
-          personalAccount?.id ||
-          '',
         categoryId: '',
         categoryName: '',
         date: todayISO(),
         notes: '',
       });
-    };
 
-  const openMovement =
-    (type = 'expense') => {
-      resetMovement(type);
-      setShowMovementModal(
+      setShowExpenseModal(
         true
       );
     };
 
-  const createCategoryIfNeeded =
+  const openTransferModal =
+    () => {
+      setTransferForm({
+        sourceAccountId:
+          businessAccount?.id ||
+          accounts[0]
+            ?.id ||
+          '',
+        destinationAccountId:
+          reserveAccount?.id ||
+          investmentAccount?.id ||
+          accounts.find(
+            (account) =>
+              account.id !==
+              businessAccount?.id
+          )?.id ||
+          '',
+        amount: '',
+        date: todayISO(),
+        notes: '',
+      });
+
+      setShowTransferModal(
+        true
+      );
+    };
+
+  const createExpenseCategory =
     async () => {
       if (
-        !movement.categoryName.trim()
+        !expenseForm.categoryName.trim()
       ) {
         return null;
       }
@@ -1348,19 +1235,17 @@ function FinancialManagement() {
               category.name
             ) ===
             normalize(
-              movement.categoryName
-            )
+              expenseForm.categoryName
+            ) &&
+            normalize(
+              category.type
+            ) ===
+              'expense'
         );
 
       if (existing) {
         return existing.id;
       }
-
-      const categoryType =
-        movement.type ===
-        'income'
-          ? 'income'
-          : 'expense';
 
       const {
         data,
@@ -1374,9 +1259,9 @@ function FinancialManagement() {
             owner_id:
               user.id,
             name:
-              movement.categoryName.trim(),
+              expenseForm.categoryName.trim(),
             type:
-              categoryType,
+              'expense',
             is_active:
               true,
           })
@@ -1388,27 +1273,23 @@ function FinancialManagement() {
       }
 
       setCategories(
-        (current) =>
-          [
-            ...current,
-            data,
-          ].sort(
-            (a, b) =>
-              a.name.localeCompare(
-                b.name
-              )
-          )
+        (
+          current
+        ) => [
+          ...current,
+          data,
+        ]
       );
 
       return data.id;
     };
 
-  const saveMovement =
+  const saveExpense =
     async () => {
       const amount =
         Number(
           String(
-            movement.amount
+            expenseForm.amount
           ).replace(
             ',',
             '.'
@@ -1416,11 +1297,11 @@ function FinancialManagement() {
         );
 
       const description =
-        movement.description.trim();
+        expenseForm.description.trim();
 
       if (!description) {
         notify(
-          'Informe uma descrição para a movimentação.',
+          'Informe a descrição da despesa.',
           'error'
         );
         return;
@@ -1440,43 +1321,21 @@ function FinancialManagement() {
       }
 
       if (
-        !movement.accountId
+        !businessAccount
       ) {
         notify(
-          'Selecione a conta de origem.',
-          'error'
-        );
-        return;
-      }
-
-      if (!movement.date) {
-        notify(
-          'Informe a data da movimentação.',
+          'A conta Caixa da Empresa ainda não foi configurada.',
           'error'
         );
         return;
       }
 
       if (
-        movement.type ===
-          'transfer' &&
-        !movement.destinationAccountId
+        availableCash <
+        amount
       ) {
         notify(
-          'Selecione a conta de destino.',
-          'error'
-        );
-        return;
-      }
-
-      if (
-        movement.type ===
-          'transfer' &&
-        movement.destinationAccountId ===
-          movement.accountId
-      ) {
-        notify(
-          'A conta de origem e destino precisam ser diferentes.',
+          'Saldo insuficiente no Caixa da Empresa.',
           'error'
         );
         return;
@@ -1486,326 +1345,362 @@ function FinancialManagement() {
 
       try {
         const categoryId =
-          await createCategoryIfNeeded();
+          await createExpenseCategory();
 
-        const ownerId =
-          user.id;
+        const currentBalance =
+          Number(
+            businessAccount.current_balance ||
+              0
+          );
+
+        const {
+          error:
+            transactionError,
+        } =
+          await supabase
+            .from(
+              'financial_transactions'
+            )
+            .insert({
+              owner_id:
+                user.id,
+              account_id:
+                businessAccount.id,
+              category_id:
+                categoryId ||
+                null,
+              type:
+                'expense',
+              amount,
+              description,
+              transaction_date:
+                expenseForm.date,
+              status:
+                'confirmed',
+              notes:
+                expenseForm.notes.trim() ||
+                null,
+            });
 
         if (
-          movement.type ===
-          'transfer'
+          transactionError
         ) {
-          const source =
-            accounts.find(
-              (account) =>
-                account.id ===
-                movement.accountId
-            );
+          throw transactionError;
+        }
 
-          const destination =
-            accounts.find(
-              (account) =>
-                account.id ===
-                movement.destinationAccountId
-            );
-
-          if (
-            !source ||
-            !destination
-          ) {
-            throw new Error(
-              'Conta de origem ou destino não encontrada.'
-            );
-          }
-
-          if (
-            Number(
-              source.current_balance ||
-                0
-            ) <
-            amount
-          ) {
-            throw new Error(
-              'Saldo insuficiente na conta de origem.'
-            );
-          }
-
-          const transferDescription =
-            description ||
-            'Transferência entre contas';
-
-          const {
-            data:
-              outTransaction,
-            error:
-              outError,
-          } =
-            await supabase
-              .from(
-                'financial_transactions'
-              )
-              .insert({
-                owner_id:
-                  ownerId,
-                account_id:
-                  source.id,
-                type:
-                  'transfer_out',
+        const {
+          error:
+            balanceError,
+        } =
+          await supabase
+            .from(
+              'financial_accounts'
+            )
+            .update({
+              current_balance:
+                currentBalance -
                 amount,
-                description:
-                  transferDescription,
-                transaction_date:
-                  movement.date,
-                status:
-                  'confirmed',
-                notes:
-                  movement.notes ||
-                  null,
-              })
-              .select('*')
-              .single();
-
-          if (outError) {
-            throw outError;
-          }
-
-          const {
-            error: inError,
-          } =
-            await supabase
-              .from(
-                'financial_transactions'
-              )
-              .insert({
-                owner_id:
-                  ownerId,
-                account_id:
-                  destination.id,
-                type:
-                  'transfer_in',
-                amount,
-                description:
-                  transferDescription,
-                transaction_date:
-                  movement.date,
-                status:
-                  'confirmed',
-                notes:
-                  movement.notes ||
-                  null,
-              });
-
-          if (inError) {
-            await supabase
-              .from(
-                'financial_transactions'
-              )
-              .delete()
-              .eq(
-                'id',
-                outTransaction.id
-              );
-
-            throw inError;
-          }
-
-          const {
-            error:
-              sourceBalanceError,
-          } =
-            await supabase
-              .from(
-                'financial_accounts'
-              )
-              .update({
-                current_balance:
-                  Number(
-                    source.current_balance ||
-                      0
-                  ) -
-                  amount,
-                updated_at:
-                  new Date().toISOString(),
-              })
-              .eq(
-                'id',
-                source.id
-              )
-              .eq(
-                'owner_id',
-                ownerId
-              );
-
-          if (
-            sourceBalanceError
-          ) {
-            throw sourceBalanceError;
-          }
-
-          const {
-            error:
-              destinationBalanceError,
-          } =
-            await supabase
-              .from(
-                'financial_accounts'
-              )
-              .update({
-                current_balance:
-                  Number(
-                    destination.current_balance ||
-                      0
-                  ) +
-                  amount,
-                updated_at:
-                  new Date().toISOString(),
-              })
-              .eq(
-                'id',
-                destination.id
-              )
-              .eq(
-                'owner_id',
-                ownerId
-              );
-
-          if (
-            destinationBalanceError
-          ) {
-            throw destinationBalanceError;
-          }
-        } else {
-          const account =
-            accounts.find(
-              (item) =>
-                item.id ===
-                movement.accountId
+              updated_at:
+                new Date().toISOString(),
+            })
+            .eq(
+              'id',
+              businessAccount.id
+            )
+            .eq(
+              'owner_id',
+              user.id
             );
 
-          if (!account) {
-            throw new Error(
-              'Conta selecionada não encontrada.'
-            );
-          }
-
-          const currentBalance =
-            Number(
-              account.current_balance ||
-                0
-            );
-
-          const delta =
-            movement.type ===
-            'income'
-              ? amount
-              : -amount;
-
-          if (
-            delta < 0 &&
-            currentBalance <
-              amount
-          ) {
-            throw new Error(
-              'Saldo insuficiente para registrar esta despesa.'
-            );
-          }
-
-          const {
-            error:
-              transactionError,
-          } =
-            await supabase
-              .from(
-                'financial_transactions'
-              )
-              .insert({
-                owner_id:
-                  ownerId,
-                account_id:
-                  account.id,
-                category_id:
-                  categoryId ||
-                  null,
-                type:
-                  movement.type ===
-                  'income'
-                    ? 'income'
-                    : movement.type,
-                amount,
-                description,
-                transaction_date:
-                  movement.date,
-                status:
-                  'confirmed',
-                notes:
-                  movement.notes ||
-                  null,
-              });
-
-          if (
-            transactionError
-          ) {
-            throw transactionError;
-          }
-
-          const {
-            error:
-              balanceError,
-          } =
-            await supabase
-              .from(
-                'financial_accounts'
-              )
-              .update({
-                current_balance:
-                  currentBalance +
-                  delta,
-                updated_at:
-                  new Date().toISOString(),
-              })
-              .eq(
-                'id',
-                account.id
-              )
-              .eq(
-                'owner_id',
-                ownerId
-              );
-
-          if (
-            balanceError
-          ) {
-            throw balanceError;
-          }
+        if (balanceError) {
+          throw balanceError;
         }
 
         notify(
-          movement.type ===
-            'income'
-            ? 'Entrada registrada com sucesso.'
-            : movement.type ===
-                'expense'
-              ? 'Despesa registrada com sucesso.'
-              : movement.type ===
-                  'transfer'
-                ? 'Transferência registrada com sucesso.'
-                : 'Retirada registrada com sucesso.'
+          'Despesa registrada no Caixa da Empresa.'
         );
 
-        setShowMovementModal(
+        setShowExpenseModal(
           false
         );
 
         await loadFinancialData();
       } catch (error) {
         console.error(
-          'Erro ao salvar movimentação:',
+          'Erro ao registrar despesa:',
           error
         );
 
         notify(
           error?.message ||
-            'Não foi possível salvar a movimentação.',
+            'Não foi possível registrar a despesa.',
+          'error'
+        );
+      } finally {
+        setSaving(false);
+      }
+    };
+
+  const saveTransfer =
+    async () => {
+      const amount =
+        Number(
+          String(
+            transferForm.amount
+          ).replace(
+            ',',
+            '.'
+          )
+        );
+
+      if (
+        !transferForm.sourceAccountId
+      ) {
+        notify(
+          'Selecione a conta de origem.',
+          'error'
+        );
+        return;
+      }
+
+      if (
+        !transferForm.destinationAccountId
+      ) {
+        notify(
+          'Selecione a conta de destino.',
+          'error'
+        );
+        return;
+      }
+
+      if (
+        transferForm.sourceAccountId ===
+        transferForm.destinationAccountId
+      ) {
+        notify(
+          'As contas precisam ser diferentes.',
+          'error'
+        );
+        return;
+      }
+
+      if (
+        !Number.isFinite(
+          amount
+        ) ||
+        amount <= 0
+      ) {
+        notify(
+          'Informe um valor válido.',
+          'error'
+        );
+        return;
+      }
+
+      const source =
+        accounts.find(
+          (account) =>
+            account.id ===
+            transferForm.sourceAccountId
+        );
+
+      const destination =
+        accounts.find(
+          (account) =>
+            account.id ===
+            transferForm.destinationAccountId
+        );
+
+      if (
+        !source ||
+        !destination
+      ) {
+        notify(
+          'Conta de origem ou destino não encontrada.',
+          'error'
+        );
+        return;
+      }
+
+      const sourceBalance =
+        Number(
+          source.current_balance ||
+            0
+        );
+
+      if (
+        sourceBalance <
+        amount
+      ) {
+        notify(
+          'Saldo insuficiente na conta de origem.',
+          'error'
+        );
+        return;
+      }
+
+      setSaving(true);
+
+      try {
+        const description =
+          transferForm.notes.trim() ||
+          `Transferência de ${source.name} para ${destination.name}`;
+
+        const {
+          data:
+            outgoingTransaction,
+          error:
+            outgoingError,
+        } =
+          await supabase
+            .from(
+              'financial_transactions'
+            )
+            .insert({
+              owner_id:
+                user.id,
+              account_id:
+                source.id,
+              type:
+                'transfer_out',
+              amount,
+              description,
+              transaction_date:
+                transferForm.date,
+              status:
+                'confirmed',
+              notes:
+                transferForm.notes.trim() ||
+                null,
+            })
+            .select('*')
+            .single();
+
+        if (
+          outgoingError
+        ) {
+          throw outgoingError;
+        }
+
+        const {
+          error:
+            incomingError,
+        } =
+          await supabase
+            .from(
+              'financial_transactions'
+            )
+            .insert({
+              owner_id:
+                user.id,
+              account_id:
+                destination.id,
+              type:
+                'transfer_in',
+              amount,
+              description,
+              transaction_date:
+                transferForm.date,
+              status:
+                'confirmed',
+              notes:
+                transferForm.notes.trim() ||
+                null,
+            });
+
+        if (incomingError) {
+          await supabase
+            .from(
+              'financial_transactions'
+            )
+            .delete()
+            .eq(
+              'id',
+              outgoingTransaction.id
+            );
+
+          throw incomingError;
+        }
+
+        const {
+          error:
+            sourceError,
+        } =
+          await supabase
+            .from(
+              'financial_accounts'
+            )
+            .update({
+              current_balance:
+                sourceBalance -
+                amount,
+              updated_at:
+                new Date().toISOString(),
+            })
+            .eq(
+              'id',
+              source.id
+            )
+            .eq(
+              'owner_id',
+              user.id
+            );
+
+        if (sourceError) {
+          throw sourceError;
+        }
+
+        const {
+          error:
+            destinationError,
+        } =
+          await supabase
+            .from(
+              'financial_accounts'
+            )
+            .update({
+              current_balance:
+                Number(
+                  destination.current_balance ||
+                    0
+                ) +
+                amount,
+              updated_at:
+                new Date().toISOString(),
+            })
+            .eq(
+              'id',
+              destination.id
+            )
+            .eq(
+              'owner_id',
+              user.id
+            );
+
+        if (
+          destinationError
+        ) {
+          throw destinationError;
+        }
+
+        notify(
+          'Transferência registrada com sucesso.'
+        );
+
+        setShowTransferModal(
+          false
+        );
+
+        await loadFinancialData();
+      } catch (error) {
+        console.error(
+          'Erro ao transferir dinheiro:',
+          error
+        );
+
+        notify(
+          error?.message ||
+            'Não foi possível realizar a transferência.',
           'error'
         );
       } finally {
@@ -1885,10 +1780,9 @@ function FinancialManagement() {
 
         setNewAccount({
           name: '',
-          type: 'personal',
+          type: 'reserve',
           description: '',
-          initialBalance:
-            '',
+          initialBalance: '',
         });
 
         setShowAccountModal(
@@ -1898,7 +1792,7 @@ function FinancialManagement() {
         await loadFinancialData();
       } catch (error) {
         console.error(
-          'Erro criando conta:',
+          'Erro ao criar conta:',
           error
         );
 
@@ -1912,46 +1806,13 @@ function FinancialManagement() {
       }
     };
 
-  const accountCards = [
-    {
-      label:
-        'Caixa da empresa',
-      account:
-        businessAccount,
-      color:
-        COLORS.green,
-      note:
-        'Operação e despesas da empresa',
-    },
-    {
-      label: 'Reserva',
-      account:
-        reserveAccount,
-      color:
-        COLORS.blue,
-      note:
-        'Segurança e imprevistos',
-    },
-    {
-      label:
-        'Investimentos',
-      account:
-        investmentAccount,
-      color:
-        COLORS.purple,
-      note:
-        'Patrimônio e crescimento',
-    },
-    {
-      label: 'Pessoal',
-      account:
-        personalAccount,
-      color:
-        COLORS.yellow,
-      note:
-        'Casa, contas e lazer',
-    },
-  ];
+  const periodLabels = {
+    month: 'Este mês',
+    previous: 'Mês anterior',
+    '3months': '3 meses',
+    year: 'Este ano',
+    all: 'Todo o histórico',
+  };
 
   const styles = `
     * {
@@ -2091,19 +1952,6 @@ function FinancialManagement() {
     }
   `;
 
-  const periodLabels = {
-    month:
-      'Este mês',
-    previous:
-      'Mês anterior',
-    '3months':
-      '3 meses',
-    year:
-      'Este ano',
-    all:
-      'Todo o histórico',
-  };
-
   if (loading) {
     return (
       <div
@@ -2153,7 +2001,22 @@ function FinancialManagement() {
           )
         }
         style={{
-          ...iconButtonStyle,
+          width: 42,
+          height: 42,
+          borderRadius:
+            12,
+          border:
+            `1px solid ${COLORS.border}`,
+          background:
+            COLORS.panel,
+          color:
+            COLORS.white,
+          alignItems:
+            'center',
+          justifyContent:
+            'center',
+          cursor:
+            'pointer',
           position:
             'fixed',
           top: 15,
@@ -2163,6 +2026,7 @@ function FinancialManagement() {
       >
         <Icon
           name="menu"
+          size={20}
         />
       </button>
 
@@ -2200,7 +2064,8 @@ function FinancialManagement() {
             style={{
               fontWeight:
                 900,
-              fontSize: 18,
+              fontSize:
+                18,
               letterSpacing:
                 '-.04em',
             }}
@@ -2219,7 +2084,8 @@ function FinancialManagement() {
           <div
             style={{
               fontSize: 10,
-              color: '#666',
+              color:
+                '#666',
               letterSpacing:
                 '.14em',
               marginTop: 5,
@@ -2232,7 +2098,8 @@ function FinancialManagement() {
         <div
           style={{
             fontSize: 10,
-            color: '#555',
+            color:
+              '#555',
             letterSpacing:
               '.14em',
             marginBottom:
@@ -2305,7 +2172,9 @@ function FinancialManagement() {
 
             return (
               <div
-                key={label}
+                key={
+                  label
+                }
                 onClick={() => {
                   setMobileOpen(
                     false
@@ -2326,9 +2195,10 @@ function FinancialManagement() {
                     10,
                   marginBottom:
                     4,
-                  color: active
-                    ? COLORS.white
-                    : '#888',
+                  color:
+                    active
+                      ? COLORS.white
+                      : '#888',
                   background:
                     active
                       ? 'rgba(239,43,53,.12)'
@@ -2336,9 +2206,10 @@ function FinancialManagement() {
                   cursor:
                     'pointer',
                   fontSize: 13,
-                  fontWeight: active
-                    ? 700
-                    : 500,
+                  fontWeight:
+                    active
+                      ? 700
+                      : 500,
                 }}
               >
                 <Icon
@@ -2369,7 +2240,8 @@ function FinancialManagement() {
           <div
             style={{
               fontSize: 11,
-              color: '#777',
+              color:
+                '#777',
               overflow:
                 'hidden',
               textOverflow:
@@ -2380,9 +2252,7 @@ function FinancialManagement() {
                 12,
             }}
           >
-            {
-              user?.email
-            }
+            {user?.email}
           </div>
 
           <button
@@ -2445,7 +2315,8 @@ function FinancialManagement() {
             <div
               style={{
                 fontSize: 11,
-                color: '#666',
+                color:
+                  '#666',
                 letterSpacing:
                   '.12em',
                 textTransform:
@@ -2472,15 +2343,14 @@ function FinancialManagement() {
               style={{
                 margin:
                   '7px 0 0',
-                color: '#666',
+                color:
+                  '#666',
                 fontSize: 13,
               }}
             >
-              Empresa, pessoal,
-              reservas,
-              investimentos
-              e despesas em
-              um só lugar.
+              Acompanhe o dinheiro recebido,
+              distribua automaticamente e
+              controle suas despesas.
             </p>
           </div>
 
@@ -2534,10 +2404,8 @@ function FinancialManagement() {
 
             <button
               className="fm-action"
-              onClick={() =>
-                openMovement(
-                  'expense'
-                )
+              onClick={
+                openExpenseModal
               }
               style={{
                 height: 42,
@@ -2567,7 +2435,43 @@ function FinancialManagement() {
                 name="plus"
                 size={17}
               />
-              Nova movimentação
+              Nova despesa
+            </button>
+
+            <button
+              className="fm-action"
+              onClick={
+                openTransferModal
+              }
+              style={{
+                height: 42,
+                padding:
+                  '0 15px',
+                borderRadius:
+                  10,
+                border:
+                  '1px solid rgba(59,130,246,.28)',
+                background:
+                  'rgba(59,130,246,.10)',
+                color:
+                  COLORS.white,
+                display:
+                  'flex',
+                alignItems:
+                  'center',
+                gap: 8,
+                cursor:
+                  'pointer',
+                fontSize: 12,
+                fontWeight:
+                  800,
+              }}
+            >
+              <Icon
+                name="transfer"
+                size={17}
+              />
+              Transferir
             </button>
 
             <button
@@ -2578,7 +2482,26 @@ function FinancialManagement() {
                 refreshing
               }
               style={{
-                ...iconButtonStyle,
+                width: 42,
+                height: 42,
+                borderRadius:
+                  10,
+                border:
+                  `1px solid ${COLORS.border}`,
+                background:
+                  COLORS.panel,
+                color:
+                  '#aaa',
+                display:
+                  'flex',
+                alignItems:
+                  'center',
+                justifyContent:
+                  'center',
+                cursor:
+                  refreshing
+                    ? 'default'
+                    : 'pointer',
                 opacity:
                   refreshing
                     ? 0.5
@@ -2621,7 +2544,9 @@ function FinancialManagement() {
               label,
             ]) => (
               <button
-                key={key}
+                key={
+                  key
+                }
                 onClick={() =>
                   setPeriod(
                     key
@@ -2655,9 +2580,7 @@ function FinancialManagement() {
                     'nowrap',
                 }}
               >
-                {
-                  label
-                }
+                {label}
               </button>
             )
           )}
@@ -2685,8 +2608,10 @@ function FinancialManagement() {
           >
             <div
               style={{
-                color: '#777',
-                fontSize: 12,
+                color:
+                  '#777',
+                fontSize:
+                  12,
               }}
             >
               Patrimônio financeiro
@@ -2694,10 +2619,12 @@ function FinancialManagement() {
 
             <div
               style={{
-                fontSize: 27,
+                fontSize:
+                  27,
                 fontWeight:
                   800,
-                marginTop: 10,
+                marginTop:
+                  10,
               }}
             >
               {formatCurrency(
@@ -2707,12 +2634,15 @@ function FinancialManagement() {
 
             <div
               style={{
-                color: '#555',
-                fontSize: 11,
-                marginTop: 6,
+                color:
+                  '#555',
+                fontSize:
+                  11,
+                marginTop:
+                  6,
               }}
             >
-              Todas as contas
+              Caixa + reserva + investimentos
             </div>
           </Card>
 
@@ -2726,8 +2656,10 @@ function FinancialManagement() {
           >
             <div
               style={{
-                color: '#777',
-                fontSize: 12,
+                color:
+                  '#777',
+                fontSize:
+                  12,
               }}
             >
               Caixa da empresa
@@ -2735,26 +2667,30 @@ function FinancialManagement() {
 
             <div
               style={{
-                fontSize: 27,
+                fontSize:
+                  27,
                 fontWeight:
                   800,
-                marginTop: 10,
+                marginTop:
+                  10,
               }}
             >
               {formatCurrency(
-                businessAccount?.current_balance ||
-                  0
+                availableCash
               )}
             </div>
 
             <div
               style={{
-                color: '#555',
-                fontSize: 11,
-                marginTop: 6,
+                color:
+                  '#555',
+                fontSize:
+                  11,
+                marginTop:
+                  6,
               }}
             >
-              Operação
+              Onde as despesas saem
             </div>
           </Card>
 
@@ -2768,8 +2704,10 @@ function FinancialManagement() {
           >
             <div
               style={{
-                color: '#777',
-                fontSize: 12,
+                color:
+                  '#777',
+                fontSize:
+                  12,
               }}
             >
               Reserva
@@ -2777,23 +2715,27 @@ function FinancialManagement() {
 
             <div
               style={{
-                fontSize: 27,
+                fontSize:
+                  27,
                 fontWeight:
                   800,
-                marginTop: 10,
+                marginTop:
+                  10,
               }}
             >
               {formatCurrency(
-                reserveAccount?.current_balance ||
-                  0
+                reserveBalance
               )}
             </div>
 
             <div
               style={{
-                color: '#555',
-                fontSize: 11,
-                marginTop: 6,
+                color:
+                  '#555',
+                fontSize:
+                  11,
+                marginTop:
+                  6,
               }}
             >
               Proteção financeira
@@ -2805,41 +2747,46 @@ function FinancialManagement() {
             style={{
               padding: 20,
               borderLeft:
-                `3px solid ${COLORS.yellow}`,
+                `3px solid ${COLORS.purple}`,
             }}
           >
             <div
               style={{
-                color: '#777',
-                fontSize: 12,
+                color:
+                  '#777',
+                fontSize:
+                  12,
               }}
             >
-              Pessoal disponível
+              Investimentos
             </div>
 
             <div
               style={{
-                fontSize: 27,
+                fontSize:
+                  27,
                 fontWeight:
                   800,
-                marginTop: 10,
+                marginTop:
+                  10,
               }}
             >
               {formatCurrency(
-                availablePersonal
+                investmentBalance
               )}
             </div>
 
             <div
               style={{
-                color: '#555',
-                fontSize: 11,
-                marginTop: 6,
+                color:
+                  '#555',
+                fontSize:
+                  11,
+                marginTop:
+                  6,
               }}
             >
-              {personalAccount
-                ? 'Casa, contas e lazer'
-                : 'Crie a conta pessoal'}
+              Patrimônio investido
             </div>
           </Card>
         </section>
@@ -2856,96 +2803,264 @@ function FinancialManagement() {
               18,
           }}
         >
-          {[
-            [
-              'ENTRADAS',
-              income,
-              COLORS.green,
-              'down',
-            ],
-            [
-              'DESPESAS',
-              expenses,
-              COLORS.red,
-              'up',
-            ],
-            [
-              'RETIRADAS',
-              withdrawals,
-              COLORS.yellow,
-              'up',
-            ],
-            [
-              'RESULTADO',
-              netResult,
-              netResult >=
-              0
-                ? COLORS.green
-                : COLORS.red,
-              null,
-            ],
-          ].map(
-            ([
-              label,
-              value,
-              color,
-              icon,
-            ]) => (
-              <Card
-                key={
-                  label
-                }
-                style={{
-                  padding: 18,
-                }}
-              >
-                <div
-                  style={{
-                    display:
-                      'flex',
-                    alignItems:
-                      'center',
-                    gap: 8,
-                    color,
-                    fontSize: 11,
-                    fontWeight:
-                      800,
-                  }}
-                >
-                  {icon && (
-                    <Icon
-                      name={
-                        icon
-                      }
-                      size={16}
-                    />
-                  )}
+          <Card
+            style={{
+              padding:
+                18,
+            }}
+          >
+            <div
+              style={{
+                display:
+                  'flex',
+                alignItems:
+                  'center',
+                gap: 8,
+                color:
+                  COLORS.green,
+                fontSize:
+                  11,
+                fontWeight:
+                  800,
+              }}
+            >
+              <Icon
+                name="down"
+                size={16}
+              />
+              ENTRADAS
+            </div>
 
-                  {
-                    label
-                  }
-                </div>
+            <strong
+              style={{
+                display:
+                  'block',
+                fontSize:
+                  22,
+                marginTop:
+                  10,
+              }}
+            >
+              {formatCurrency(
+                income
+              )}
+            </strong>
 
-                <strong
-                  style={{
-                    display:
-                      'block',
-                    fontSize: 22,
-                    marginTop: 10,
-                  }}
-                >
-                  {formatCurrency(
-                    value
-                  )}
-                </strong>
-              </Card>
-            )
-          )}
+            <div
+              style={{
+                color:
+                  '#555',
+                fontSize:
+                  10,
+                marginTop:
+                  5,
+              }}
+            >
+              Vindas da Central de Pagamentos
+            </div>
+          </Card>
+
+          <Card
+            style={{
+              padding:
+                18,
+            }}
+          >
+            <div
+              style={{
+                display:
+                  'flex',
+                alignItems:
+                  'center',
+                gap: 8,
+                color:
+                  COLORS.red,
+                fontSize:
+                  11,
+                fontWeight:
+                  800,
+              }}
+            >
+              <Icon
+                name="up"
+                size={16}
+              />
+              DESPESAS
+            </div>
+
+            <strong
+              style={{
+                display:
+                  'block',
+                fontSize:
+                  22,
+                marginTop:
+                  10,
+              }}
+            >
+              {formatCurrency(
+                expenses
+              )}
+            </strong>
+
+            <div
+              style={{
+                color:
+                  '#555',
+                fontSize:
+                  10,
+                marginTop:
+                  5,
+              }}
+            >
+              Saídas do Caixa da Empresa
+            </div>
+          </Card>
+
+          <Card
+            style={{
+              padding:
+                18,
+            }}
+          >
+            <div
+              style={{
+                display:
+                  'flex',
+                alignItems:
+                  'center',
+                gap: 8,
+                color:
+                  COLORS.blue,
+                fontSize:
+                  11,
+                fontWeight:
+                  800,
+              }}
+            >
+              <Icon
+                name="transfer"
+                size={16}
+              />
+              TRANSFERÊNCIAS
+            </div>
+
+            <strong
+              style={{
+                display:
+                  'block',
+                fontSize:
+                  22,
+                marginTop:
+                  10,
+              }}
+            >
+              {formatCurrency(
+                filteredTransactions
+                  .filter(
+                    (
+                      transaction
+                    ) =>
+                      [
+                        'transfer_in',
+                        'transfer_out',
+                      ].includes(
+                        normalize(
+                          transaction.type
+                        )
+                      )
+                  )
+                  .reduce(
+                    (
+                      total,
+                      transaction
+                    ) =>
+                      total +
+                      Number(
+                        transaction.amount ||
+                          0
+                      ),
+                    0
+                  ) /
+                  2
+              )}
+            </strong>
+
+            <div
+              style={{
+                color:
+                  '#555',
+                fontSize:
+                  10,
+                marginTop:
+                  5,
+              }}
+            >
+              Movimentações entre contas
+            </div>
+          </Card>
+
+          <Card
+            style={{
+              padding:
+                18,
+            }}
+          >
+            <div
+              style={{
+                display:
+                  'flex',
+                alignItems:
+                  'center',
+                gap: 8,
+                color:
+                  netResult >=
+                  0
+                    ? COLORS.green
+                    : COLORS.red,
+                fontSize:
+                  11,
+                fontWeight:
+                  800,
+              }}
+            >
+              RESULTADO
+            </div>
+
+            <strong
+              style={{
+                display:
+                  'block',
+                fontSize:
+                  22,
+                marginTop:
+                  10,
+              }}
+            >
+              {formatCurrency(
+                netResult
+              )}
+            </strong>
+
+            <div
+              style={{
+                color:
+                  '#555',
+                fontSize:
+                  10,
+                marginTop:
+                  5,
+              }}
+            >
+              Entradas menos despesas
+            </div>
+          </Card>
         </section>
 
         <Card
           style={{
-            padding: 20,
+            padding:
+              20,
             marginBottom:
               18,
           }}
@@ -2957,176 +3072,220 @@ function FinancialManagement() {
               justifyContent:
                 'space-between',
               alignItems:
-                'flex-start',
-              gap: 18,
+                'center',
+              gap:
+                18,
               marginBottom:
-                16,
+                15,
             }}
           >
             <div>
               <h2
                 style={{
                   margin: 0,
-                  fontSize: 17,
+                  fontSize:
+                    17,
                 }}
               >
-                O que você quer registrar?
+                Distribuição automática
               </h2>
 
               <div
                 style={{
-                  color: '#666',
-                  fontSize: 12,
-                  marginTop: 5,
+                  color:
+                    '#666',
+                  fontSize:
+                    12,
+                  marginTop:
+                    5,
                 }}
               >
-                Registre o dinheiro que
-                entra, sai ou muda de conta.
+                Todo pagamento recebido pela Central
+                é distribuído conforme a regra financeira.
               </div>
             </div>
 
             <div
               style={{
-                color: '#666',
-                fontSize: 11,
+                color:
+                  COLORS.green,
+                fontSize:
+                  11,
+                fontWeight:
+                  800,
+                whiteSpace:
+                  'nowrap',
               }}
             >
-              {
-                periodLabels[
-                  period
-                ]
-              }
+              100% distribuído
             </div>
           </div>
 
           <div
-            className="fm-action-grid"
             style={{
               display:
                 'grid',
               gridTemplateColumns:
-                'repeat(4, 1fr)',
-              gap: 10,
+                'repeat(3, 1fr)',
+              gap:
+                10,
             }}
           >
-            {[
-              [
-                'income',
-                'Nova entrada',
-                'Pagamento, venda ou outro recebimento.',
-                COLORS.green,
-                'down',
-              ],
-              [
-                'expense',
-                'Nova despesa',
-                'Casa, luz, internet, software e contas.',
-                COLORS.red,
-                'up',
-              ],
-              [
-                'withdrawal',
-                'Nova retirada',
-                'Pró-labore, retirada ou uso pessoal.',
-                COLORS.yellow,
-                'up',
-              ],
-              [
-                'transfer',
-                'Transferir dinheiro',
-                'Caixa, pessoal, reserva ou investimento.',
-                COLORS.blue,
-                'transfer',
-              ],
-            ].map(
-              ([
-                type,
-                title,
-                description,
-                color,
-                icon,
-              ]) => (
-                <button
-                  key={
-                    type
-                  }
-                  className="fm-action"
-                  onClick={() =>
-                    openMovement(
-                      type
-                    )
-                  }
-                  style={{
-                    textAlign:
-                      'left',
-                    border:
-                      `1px solid ${COLORS.border}`,
-                    background:
-                      '#0d0d0d',
-                    borderRadius:
-                      13,
-                    padding: 15,
-                    cursor:
-                      'pointer',
-                    color:
-                      COLORS.white,
-                  }}
-                >
-                  <div
-                    style={{
-                      width: 34,
-                      height: 34,
-                      borderRadius:
-                        10,
-                      display:
-                        'flex',
-                      alignItems:
-                        'center',
-                      justifyContent:
-                        'center',
-                      background:
-                        `${color}16`,
-                      color,
-                    }}
-                  >
-                    <Icon
-                      name={
-                        icon
-                      }
-                      size={17}
-                    />
-                  </div>
+            <div
+              style={{
+                padding:
+                  16,
+                borderRadius:
+                  12,
+                background:
+                  'rgba(34,197,94,.06)',
+                border:
+                  '1px solid rgba(34,197,94,.14)',
+              }}
+            >
+              <div
+                style={{
+                  color:
+                    COLORS.green,
+                  fontSize:
+                    10,
+                  fontWeight:
+                    800,
+                }}
+              >
+                CAIXA
+              </div>
 
-                  <div
-                    style={{
-                      fontSize: 13,
-                      fontWeight:
-                        800,
-                      marginTop: 11,
-                    }}
-                  >
-                    {
-                      title
-                    }
-                  </div>
+              <div
+                style={{
+                  marginTop:
+                    7,
+                  fontSize:
+                    22,
+                  fontWeight:
+                    900,
+                }}
+              >
+                60%
+              </div>
 
-                  <div
-                    style={{
-                      color:
-                        '#666',
-                      fontSize: 10,
-                      lineHeight:
-                        1.45,
-                      marginTop: 5,
-                    }}
-                  >
-                    {
-                      description
-                    }
-                  </div>
-                </button>
-              )
-            )}
+              <div
+                style={{
+                  color:
+                    '#666',
+                  fontSize:
+                    10,
+                  marginTop:
+                    4,
+                }}
+              >
+                Operação e despesas
+              </div>
+            </div>
+
+            <div
+              style={{
+                padding:
+                  16,
+                borderRadius:
+                  12,
+                background:
+                  'rgba(59,130,246,.06)',
+                border:
+                  '1px solid rgba(59,130,246,.14)',
+              }}
+            >
+              <div
+                style={{
+                  color:
+                    COLORS.blue,
+                  fontSize:
+                    10,
+                  fontWeight:
+                    800,
+                }}
+              >
+                RESERVA
+              </div>
+
+              <div
+                style={{
+                  marginTop:
+                    7,
+                  fontSize:
+                    22,
+                  fontWeight:
+                    900,
+                }}
+              >
+                25%
+              </div>
+
+              <div
+                style={{
+                  color:
+                    '#666',
+                  fontSize:
+                    10,
+                  marginTop:
+                    4,
+                }}
+              >
+                Segurança financeira
+              </div>
+            </div>
+
+            <div
+              style={{
+                padding:
+                  16,
+                borderRadius:
+                  12,
+                background:
+                  'rgba(168,85,247,.06)',
+                border:
+                  '1px solid rgba(168,85,247,.14)',
+              }}
+            >
+              <div
+                style={{
+                  color:
+                    COLORS.purple,
+                  fontSize:
+                    10,
+                  fontWeight:
+                    800,
+                }}
+              >
+                INVESTIMENTOS
+              </div>
+
+              <div
+                style={{
+                  marginTop:
+                    7,
+                  fontSize:
+                    22,
+                  fontWeight:
+                    900,
+                }}
+              >
+                15%
+              </div>
+
+              <div
+                style={{
+                  color:
+                    '#666',
+                  fontSize:
+                    10,
+                  marginTop:
+                    4,
+                }}
+              >
+                Crescimento e patrimônio
+              </div>
+            </div>
           </div>
         </Card>
 
@@ -3137,14 +3296,16 @@ function FinancialManagement() {
               'grid',
             gridTemplateColumns:
               'minmax(0, 1.5fr) minmax(300px, 1fr)',
-            gap: 18,
+            gap:
+              18,
             marginBottom:
               18,
           }}
         >
           <Card
             style={{
-              padding: 22,
+              padding:
+                22,
             }}
           >
             <div
@@ -3163,7 +3324,8 @@ function FinancialManagement() {
                 <h2
                   style={{
                     margin: 0,
-                    fontSize: 17,
+                    fontSize:
+                      17,
                   }}
                 >
                   Fluxo financeiro
@@ -3173,35 +3335,31 @@ function FinancialManagement() {
                   style={{
                     color:
                       '#666',
-                    fontSize: 12,
-                    marginTop: 5,
+                    fontSize:
+                      12,
+                    marginTop:
+                      5,
                   }}
                 >
-                  Quanto entrou e quanto saiu
-                  no período.
+                  Quanto entrou e quanto saiu em{' '}
+                  {
+                    periodLabels[
+                      period
+                    ]
+                  .toLowerCase()}
+                  .
                 </div>
-              </div>
-
-              <div
-                style={{
-                  color:
-                    '#555',
-                  fontSize: 11,
-                }}
-              >
-                {
-                  periodLabels[
-                    period
-                  ]
-                }
               </div>
             </div>
 
-            {income === 0 &&
-            expenses === 0 ? (
+            {income ===
+              0 &&
+            expenses ===
+              0 ? (
               <div
                 style={{
-                  height: 220,
+                  height:
+                    220,
                   display:
                     'flex',
                   alignItems:
@@ -3210,22 +3368,23 @@ function FinancialManagement() {
                     'center',
                   color:
                     '#666',
-                  fontSize: 13,
+                  fontSize:
+                    13,
                   border:
                     `1px dashed ${COLORS.border}`,
                   borderRadius:
                     12,
                 }}
               >
-                Nenhuma movimentação de
-                entrada ou despesa neste período.
+                Nenhuma entrada ou despesa registrada neste período.
               </div>
             ) : (
               <div
                 style={{
                   display:
                     'grid',
-                  gap: 22,
+                  gap:
+                    22,
                 }}
               >
                 {[
@@ -3258,7 +3417,8 @@ function FinancialManagement() {
                             'space-between',
                           marginBottom:
                             8,
-                          fontSize: 12,
+                          fontSize:
+                            12,
                         }}
                       >
                         <span
@@ -3281,7 +3441,8 @@ function FinancialManagement() {
 
                       <div
                         style={{
-                          height: 10,
+                          height:
+                            10,
                           background:
                             '#1d1d1d',
                           borderRadius:
@@ -3324,7 +3485,8 @@ function FinancialManagement() {
 
           <Card
             style={{
-              padding: 22,
+              padding:
+                22,
             }}
           >
             <div
@@ -3335,14 +3497,16 @@ function FinancialManagement() {
                   'space-between',
                 alignItems:
                   'flex-start',
-                gap: 12,
+                gap:
+                  12,
               }}
             >
               <div>
                 <h2
                   style={{
                     margin: 0,
-                    fontSize: 17,
+                    fontSize:
+                      17,
                   }}
                 >
                   Contas financeiras
@@ -3352,11 +3516,13 @@ function FinancialManagement() {
                   style={{
                     color:
                       '#666',
-                    fontSize: 12,
-                    marginTop: 5,
+                    fontSize:
+                      12,
+                    marginTop:
+                      5,
                   }}
                 >
-                  Onde seu dinheiro está agora.
+                  Os três destinos do seu dinheiro.
                 </div>
               </div>
 
@@ -3367,9 +3533,26 @@ function FinancialManagement() {
                   )
                 }
                 style={{
-                  ...iconButtonStyle,
-                  width: 34,
-                  height: 34,
+                  width:
+                    34,
+                  height:
+                    34,
+                  borderRadius:
+                    10,
+                  border:
+                    `1px solid ${COLORS.border}`,
+                  background:
+                    COLORS.panel,
+                  color:
+                    '#aaa',
+                  display:
+                    'flex',
+                  alignItems:
+                    'center',
+                  justifyContent:
+                    'center',
+                  cursor:
+                    'pointer',
                 }}
                 title="Nova conta"
               >
@@ -3390,16 +3573,17 @@ function FinancialManagement() {
               0 ? (
                 <div
                   style={{
-                    padding: 30,
+                    padding:
+                      30,
                     textAlign:
                       'center',
                     color:
                       '#666',
-                    fontSize: 13,
+                    fontSize:
+                      13,
                   }}
                 >
-                  Nenhuma conta
-                  cadastrada.
+                  Nenhuma conta cadastrada.
                 </div>
               ) : (
                 accounts.map(
@@ -3417,9 +3601,10 @@ function FinancialManagement() {
                           'center',
                         justifyContent:
                           'space-between',
-                        gap: 12,
+                        gap:
+                          12,
                         padding:
-                          '13px 0',
+                          '14px 0',
                         borderBottom:
                           `1px solid ${COLORS.border}`,
                       }}
@@ -3430,15 +3615,16 @@ function FinancialManagement() {
                             'flex',
                           alignItems:
                             'center',
-                          gap: 10,
-                          minWidth:
-                            0,
+                          gap:
+                            10,
                         }}
                       >
                         <div
                           style={{
-                            width: 34,
-                            height: 34,
+                            width:
+                              36,
+                            height:
+                              36,
                             borderRadius:
                               10,
                             background:
@@ -3451,33 +3637,23 @@ function FinancialManagement() {
                               'center',
                             color:
                               '#aaa',
-                            flexShrink:
-                              0,
                           }}
                         >
                           <Icon
                             name="wallet"
-                            size={17}
+                            size={
+                              17
+                            }
                           />
                         </div>
 
-                        <div
-                          style={{
-                            minWidth:
-                              0,
-                          }}
-                        >
+                        <div>
                           <div
                             style={{
-                              fontSize: 13,
+                              fontSize:
+                                13,
                               fontWeight:
                                 800,
-                              whiteSpace:
-                                'nowrap',
-                              overflow:
-                                'hidden',
-                              textOverflow:
-                                'ellipsis',
                             }}
                           >
                             {
@@ -3489,8 +3665,10 @@ function FinancialManagement() {
                             style={{
                               color:
                                 '#555',
-                              fontSize: 10,
-                              marginTop: 3,
+                              fontSize:
+                                10,
+                              marginTop:
+                                3,
                             }}
                           >
                             {
@@ -3504,9 +3682,8 @@ function FinancialManagement() {
 
                       <strong
                         style={{
-                          fontSize: 13,
-                          whiteSpace:
-                            'nowrap',
+                          fontSize:
+                            13,
                         }}
                       >
                         {formatCurrency(
@@ -3528,12 +3705,14 @@ function FinancialManagement() {
               'grid',
             gridTemplateColumns:
               'minmax(0, 1.5fr) minmax(300px, 1fr)',
-            gap: 18,
+            gap:
+              18,
           }}
         >
           <Card
             style={{
-              padding: 22,
+              padding:
+                22,
               overflow:
                 'hidden',
             }}
@@ -3554,7 +3733,8 @@ function FinancialManagement() {
                 <h2
                   style={{
                     margin: 0,
-                    fontSize: 17,
+                    fontSize:
+                      17,
                   }}
                 >
                   Últimas movimentações
@@ -3564,11 +3744,13 @@ function FinancialManagement() {
                   style={{
                     color:
                       '#666',
-                    fontSize: 12,
-                    marginTop: 5,
+                    fontSize:
+                      12,
+                    marginTop:
+                      5,
                   }}
                 >
-                  Tudo que aconteceu dentro do período.
+                  Entradas automáticas, despesas e transferências.
                 </div>
               </div>
 
@@ -3576,7 +3758,8 @@ function FinancialManagement() {
                 style={{
                   color:
                     '#555',
-                  fontSize: 11,
+                  fontSize:
+                    11,
                 }}
               >
                 {
@@ -3596,11 +3779,11 @@ function FinancialManagement() {
                     'center',
                   color:
                     '#666',
-                  fontSize: 13,
+                  fontSize:
+                    13,
                 }}
               >
-                Nenhuma movimentação registrada
-                neste período.
+                Nenhuma movimentação registrada neste período.
               </div>
             ) : (
               <div
@@ -3624,7 +3807,8 @@ function FinancialManagement() {
                       style={{
                         color:
                           '#555',
-                        fontSize: 10,
+                        fontSize:
+                          10,
                         textTransform:
                           'uppercase',
                         textAlign:
@@ -3697,11 +3881,6 @@ function FinancialManagement() {
                       (
                         transaction
                       ) => {
-                        const color =
-                          getTransactionColor(
-                            transaction.type
-                          );
-
                         const normalized =
                           normalize(
                             transaction.type
@@ -3710,25 +3889,15 @@ function FinancialManagement() {
                         const isOutgoing =
                           [
                             'expense',
-                            'withdrawal',
-                            'retirada',
-                            'pro-labore',
-                            'prolabore',
                             'transfer_out',
                           ].includes(
                             normalized
                           );
 
-                        const iconName =
-                          normalized ===
-                          'transfer_in'
-                            ? 'down'
-                            : normalized ===
-                                'transfer_out'
-                              ? 'up'
-                              : isOutgoing
-                                ? 'up'
-                                : 'down';
+                        const color =
+                          getTransactionColor(
+                            transaction.type
+                          );
 
                         return (
                           <tr
@@ -3751,13 +3920,16 @@ function FinancialManagement() {
                                     'flex',
                                   alignItems:
                                     'center',
-                                  gap: 9,
+                                  gap:
+                                    9,
                                 }}
                               >
                                 <div
                                   style={{
-                                    width: 30,
-                                    height: 30,
+                                    width:
+                                      30,
+                                    height:
+                                      30,
                                     borderRadius:
                                       9,
                                     background:
@@ -3775,42 +3947,46 @@ function FinancialManagement() {
                                 >
                                   <Icon
                                     name={
-                                      iconName
+                                      isOutgoing
+                                        ? 'up'
+                                        : 'down'
                                     }
-                                    size={15}
+                                    size={
+                                      15
+                                    }
                                   />
                                 </div>
 
-                                <div
-                                  style={{
-                                    minWidth:
-                                      0,
-                                  }}
-                                >
+                                <div>
                                   <div
                                     style={{
-                                      fontSize: 12,
+                                      fontSize:
+                                        12,
                                       fontWeight:
                                         800,
+                                      maxWidth:
+                                        330,
                                       whiteSpace:
                                         'nowrap',
                                       overflow:
                                         'hidden',
                                       textOverflow:
                                         'ellipsis',
-                                      maxWidth: 360,
                                     }}
                                   >
-                                    {transaction.description ||
-                                      'Movimentação financeira'}
+                                    {
+                                      transaction.description
+                                    }
                                   </div>
 
                                   <div
                                     style={{
-                                      fontSize: 10,
+                                      fontSize:
+                                        10,
                                       color:
                                         '#555',
-                                      marginTop: 3,
+                                      marginTop:
+                                        3,
                                     }}
                                   >
                                     {
@@ -3831,7 +4007,8 @@ function FinancialManagement() {
                                   `1px solid ${COLORS.border}`,
                                 color:
                                   '#777',
-                                fontSize: 11,
+                                fontSize:
+                                  11,
                               }}
                             >
                               {transaction
@@ -3848,7 +4025,8 @@ function FinancialManagement() {
                                   `1px solid ${COLORS.border}`,
                                 color:
                                   '#777',
-                                fontSize: 11,
+                                fontSize:
+                                  11,
                               }}
                             >
                               {transaction
@@ -3865,7 +4043,8 @@ function FinancialManagement() {
                                   `1px solid ${COLORS.border}`,
                                 color:
                                   '#777',
-                                fontSize: 11,
+                                fontSize:
+                                  11,
                                 whiteSpace:
                                   'nowrap',
                               }}
@@ -3886,9 +4065,8 @@ function FinancialManagement() {
                                 color,
                                 fontWeight:
                                   800,
-                                fontSize: 12,
-                                whiteSpace:
-                                  'nowrap',
+                                fontSize:
+                                  12,
                               }}
                             >
                               {isOutgoing
@@ -3911,13 +4089,16 @@ function FinancialManagement() {
 
           <Card
             style={{
-              padding: 22,
+              padding:
+                22,
             }}
           >
             <h2
               style={{
-                margin: 0,
-                fontSize: 17,
+                margin:
+                  0,
+                fontSize:
+                  17,
               }}
             >
               Despesas por categoria
@@ -3927,13 +4108,15 @@ function FinancialManagement() {
               style={{
                 color:
                   '#666',
-                fontSize: 12,
-                marginTop: 5,
+                fontSize:
+                  12,
+                marginTop:
+                  5,
                 marginBottom:
                   20,
               }}
             >
-              Onde o dinheiro está saindo.
+              Veja onde o Caixa da Empresa está sendo utilizado.
             </div>
 
             {expenseCategories.length ===
@@ -3946,7 +4129,8 @@ function FinancialManagement() {
                     'center',
                   color:
                     '#666',
-                  fontSize: 13,
+                  fontSize:
+                    13,
                 }}
               >
                 Nenhuma despesa registrada.
@@ -3987,7 +4171,8 @@ function FinancialManagement() {
                               'space-between',
                             marginBottom:
                               7,
-                            fontSize: 12,
+                            fontSize:
+                              12,
                           }}
                         >
                           <span
@@ -4010,7 +4195,8 @@ function FinancialManagement() {
 
                         <div
                           style={{
-                            height: 6,
+                            height:
+                              6,
                             background:
                               '#1d1d1d',
                             borderRadius:
@@ -4040,8 +4226,10 @@ function FinancialManagement() {
                           style={{
                             color:
                               '#555',
-                            fontSize: 10,
-                            marginTop: 4,
+                            fontSize:
+                              10,
+                            marginTop:
+                              4,
                           }}
                         >
                           {
@@ -4058,112 +4246,6 @@ function FinancialManagement() {
             )}
           </Card>
         </section>
-
-        <Card
-          style={{
-            marginTop:
-              18,
-            padding: 20,
-          }}
-        >
-          <div
-            style={{
-              display:
-                'flex',
-              justifyContent:
-                'space-between',
-              gap: 16,
-              alignItems:
-                'center',
-            }}
-          >
-            <div>
-              <div
-                style={{
-                  color:
-                    COLORS.green,
-                  fontSize: 10,
-                  fontWeight:
-                    800,
-                  letterSpacing:
-                    '.13em',
-                  textTransform:
-                    'uppercase',
-                }}
-              >
-                Regra prática
-              </div>
-
-              <div
-                style={{
-                  fontSize: 15,
-                  fontWeight:
-                    800,
-                  marginTop: 5,
-                }}
-              >
-                Empresa paga a empresa.
-                Pessoal paga sua vida.
-              </div>
-
-              <div
-                style={{
-                  color:
-                    '#666',
-                  fontSize: 12,
-                  marginTop: 5,
-                }}
-              >
-                Use Transferência para levar
-                dinheiro da empresa para a conta
-                pessoal e registre as contas da casa
-                dentro da conta pessoal.
-              </div>
-            </div>
-
-            {!personalAccount && (
-              <button
-                onClick={() => {
-                  setNewAccount(
-                    (
-                      current
-                    ) => ({
-                      ...current,
-                      type: 'personal',
-                      name: 'Conta Pessoal',
-                    })
-                  );
-
-                  setShowAccountModal(
-                    true
-                  );
-                }}
-                style={{
-                  height: 42,
-                  padding:
-                    '0 14px',
-                  borderRadius:
-                    10,
-                  border:
-                    '1px solid rgba(245,158,11,.3)',
-                  background:
-                    'rgba(245,158,11,.08)',
-                  color:
-                    COLORS.yellow,
-                  cursor:
-                    'pointer',
-                  fontSize: 11,
-                  fontWeight:
-                    800,
-                  flexShrink:
-                    0,
-                }}
-              >
-                Criar conta pessoal
-              </button>
-            )}
-          </div>
-        </Card>
       </main>
 
       {toast && (
@@ -4171,9 +4253,12 @@ function FinancialManagement() {
           style={{
             position:
               'fixed',
-            right: 22,
-            bottom: 22,
-            zIndex: 300,
+            right:
+              22,
+            bottom:
+              22,
+            zIndex:
+              300,
             maxWidth:
               380,
             padding:
@@ -4208,146 +4293,89 @@ function FinancialManagement() {
         </div>
       )}
 
-      {showMovementModal && (
+      {showExpenseModal && (
         <Modal
-          title={
-            movement.type ===
-            'income'
-              ? 'Nova entrada'
-              : movement.type ===
-                  'expense'
-                ? 'Nova despesa'
-                : movement.type ===
-                    'withdrawal'
-                  ? 'Nova retirada'
-                  : 'Transferir dinheiro'
-          }
-          subtitle={
-            movement.type ===
-            'income'
-              ? 'Registre um valor que entrou na conta.'
-              : movement.type ===
-                  'expense'
-                ? 'Registre uma conta, gasto ou compra.'
-                : movement.type ===
-                    'withdrawal'
-                  ? 'Registre uma retirada da empresa ou outra saída pessoal.'
-                  : 'Mova dinheiro entre duas contas sem alterar o resultado do mês.'
-          }
+          title="Nova despesa"
+          subtitle="Toda despesa registrada aqui sai do Caixa da Empresa."
           onClose={() =>
-            setShowMovementModal(
+            setShowExpenseModal(
               false
             )
           }
-          wide
         >
           <div
             style={{
-              padding: 22,
+              padding:
+                22,
             }}
           >
             <div
               style={{
-                display:
-                  'grid',
-                gridTemplateColumns:
-                  'repeat(2, 1fr)',
-                gap: 14,
+                padding:
+                  14,
+                marginBottom:
+                  16,
+                borderRadius:
+                  12,
+                background:
+                  'rgba(34,197,94,.05)',
+                border:
+                  '1px solid rgba(34,197,94,.12)',
               }}
             >
               <div
                 style={{
-                  gridColumn:
-                    '1 / -1',
+                  color:
+                    COLORS.green,
+                  fontSize:
+                    10,
+                  fontWeight:
+                    800,
+                  letterSpacing:
+                    '.12em',
                 }}
               >
-                <label
-                  style={
-                    fieldLabelStyle
-                  }
-                >
-                  TIPO
-                </label>
-
-                <div
-                  style={{
-                    display:
-                      'grid',
-                    gridTemplateColumns:
-                      'repeat(4, 1fr)',
-                    gap: 7,
-                  }}
-                >
-                  {[
-                    [
-                      'income',
-                      'Entrada',
-                    ],
-                    [
-                      'expense',
-                      'Despesa',
-                    ],
-                    [
-                      'withdrawal',
-                      'Retirada',
-                    ],
-                    [
-                      'transfer',
-                      'Transferência',
-                    ],
-                  ].map(
-                    ([
-                      type,
-                      label,
-                    ]) => (
-                      <button
-                        key={
-                          type
-                        }
-                        onClick={() =>
-                          resetMovement(
-                            type
-                          )
-                        }
-                        style={{
-                          height:
-                            42,
-                          borderRadius:
-                            10,
-                          border:
-                            `1px solid ${
-                              movement.type ===
-                              type
-                                ? 'rgba(239,43,53,.42)'
-                                : COLORS.border
-                            }`,
-                          background:
-                            movement.type ===
-                            type
-                              ? 'rgba(239,43,53,.12)'
-                              : '#111',
-                          color:
-                            movement.type ===
-                            type
-                              ? COLORS.white
-                              : '#777',
-                          cursor:
-                            'pointer',
-                          fontSize:
-                            11,
-                          fontWeight:
-                            800,
-                        }}
-                      >
-                        {
-                          label
-                        }
-                      </button>
-                    )
-                  )}
-                </div>
+                CONTA DE SAÍDA
               </div>
 
+              <div
+                style={{
+                  marginTop:
+                    6,
+                  fontSize:
+                    14,
+                  fontWeight:
+                    800,
+                }}
+              >
+                Caixa da Empresa
+              </div>
+
+              <div
+                style={{
+                  marginTop:
+                    3,
+                  color:
+                    '#666',
+                  fontSize:
+                    11,
+                }}
+              >
+                Saldo disponível:{' '}
+                {formatCurrency(
+                  availableCash
+                )}
+              </div>
+            </div>
+
+            <div
+              style={{
+                display:
+                  'grid',
+                gap:
+                  14,
+              }}
+            >
               <div>
                 <label
                   style={
@@ -4359,12 +4387,12 @@ function FinancialManagement() {
 
                 <input
                   value={
-                    movement.description
+                    expenseForm.description
                   }
                   onChange={(
                     event
                   ) =>
-                    setMovement(
+                    setExpenseForm(
                       (
                         current
                       ) => ({
@@ -4375,137 +4403,461 @@ function FinancialManagement() {
                       })
                     )
                   }
-                  placeholder={
-                    movement.type ===
-                    'expense'
-                      ? 'Ex.: Internet'
-                      : 'Ex.: Pagamento de cliente'
-                  }
+                  placeholder="Ex.: Internet"
                   style={
                     fieldStyle
                   }
                 />
               </div>
 
-              <div>
-                <label
-                  style={
-                    fieldLabelStyle
-                  }
-                >
-                  VALOR
-                </label>
-
-                <input
-                  value={
-                    movement.amount
-                  }
-                  onChange={(
-                    event
-                  ) =>
-                    setMovement(
-                      (
-                        current
-                      ) => ({
-                        ...current,
-                        amount:
-                          event.target
-                            .value,
-                      })
-                    )
-                  }
-                  inputMode="decimal"
-                  placeholder="0,00"
-                  style={
-                    fieldStyle
-                  }
-                />
-              </div>
-
-              <div>
-                <label
-                  style={
-                    fieldLabelStyle
-                  }
-                >
-                  {movement.type ===
-                  'transfer'
-                    ? 'CONTA DE ORIGEM'
-                    : 'CONTA'}
-                </label>
-
-                <select
-                  value={
-                    movement.accountId
-                  }
-                  onChange={(
-                    event
-                  ) =>
-                    setMovement(
-                      (
-                        current
-                      ) => ({
-                        ...current,
-                        accountId:
-                          event.target
-                            .value,
-                      })
-                    )
-                  }
-                  style={
-                    fieldStyle
-                  }
-                >
-                  <option value="">
-                    Selecione
-                  </option>
-
-                  {accounts.map(
-                    (
-                      account
-                    ) => (
-                      <option
-                        key={
-                          account.id
-                        }
-                        value={
-                          account.id
-                        }
-                      >
-                        {
-                          account.name
-                        }{' '}
-                        —{' '}
-                        {
-                          getAccountLabel(
-                            account.type
-                          )
-                        }
-                      </option>
-                    )
-                  )}
-                </select>
-              </div>
-
-              {movement.type ===
-              'transfer' ? (
+              <div
+                style={{
+                  display:
+                    'grid',
+                  gridTemplateColumns:
+                    '1fr 1fr',
+                  gap:
+                    14,
+                }}
+              >
                 <div>
                   <label
                     style={
                       fieldLabelStyle
                     }
                   >
-                    CONTA DE DESTINO
+                    VALOR
                   </label>
 
-                  <select
+                  <input
                     value={
-                      movement.destinationAccountId
+                      expenseForm.amount
                     }
                     onChange={(
                       event
                     ) =>
-                      setMovement(
+                      setExpenseForm(
+                        (
+                          current
+                        ) => ({
+                          ...current,
+                          amount:
+                            event.target
+                              .value,
+                        })
+                      )
+                    }
+                    inputMode="decimal"
+                    placeholder="0,00"
+                    style={
+                      fieldStyle
+                    }
+                  />
+                </div>
+
+                <div>
+                  <label
+                    style={
+                      fieldLabelStyle
+                    }
+                  >
+                    DATA
+                  </label>
+
+                  <input
+                    type="date"
+                    value={
+                      expenseForm.date
+                    }
+                    onChange={(
+                      event
+                    ) =>
+                      setExpenseForm(
+                        (
+                          current
+                        ) => ({
+                          ...current,
+                          date:
+                            event.target
+                              .value,
+                        })
+                      )
+                    }
+                    style={
+                      fieldStyle
+                    }
+                  />
+                </div>
+              </div>
+
+              <div
+                style={{
+                  display:
+                    'grid',
+                  gridTemplateColumns:
+                    '1fr 1fr',
+                  gap:
+                    14,
+                }}
+              >
+                <div>
+                  <label
+                    style={
+                      fieldLabelStyle
+                    }
+                  >
+                    CATEGORIA
+                  </label>
+
+                  <select
+                    value={
+                      expenseForm.categoryId
+                    }
+                    onChange={(
+                      event
+                    ) => {
+                      const value =
+                        event.target
+                          .value;
+
+                      const selected =
+                        availableExpenseCategories.find(
+                          (
+                            item
+                          ) =>
+                            item.id ===
+                            value
+                        );
+
+                      setExpenseForm(
+                        (
+                          current
+                        ) => ({
+                          ...current,
+                          categoryId:
+                            selected?.virtual
+                              ? ''
+                              : value,
+                          categoryName:
+                            selected?.virtual
+                              ? selected.name
+                              : '',
+                        })
+                      );
+                    }}
+                    style={
+                      fieldStyle
+                    }
+                  >
+                    <option value="">
+                      Sem categoria
+                    </option>
+
+                    {availableExpenseCategories.map(
+                      (
+                        category
+                      ) => (
+                        <option
+                          key={
+                            category.id
+                          }
+                          value={
+                            category.id
+                          }
+                        >
+                          {
+                            category.name
+                          }
+                          {category.virtual
+                            ? ' (criar)'
+                            : ''}
+                        </option>
+                      )
+                    )}
+                  </select>
+                </div>
+
+                <div>
+                  <label
+                    style={
+                      fieldLabelStyle
+                    }
+                  >
+                    NOVA CATEGORIA
+                    (OPCIONAL)
+                  </label>
+
+                  <input
+                    value={
+                      expenseForm.categoryName
+                    }
+                    onChange={(
+                      event
+                    ) =>
+                      setExpenseForm(
+                        (
+                          current
+                        ) => ({
+                          ...current,
+                          categoryName:
+                            event.target
+                              .value,
+                          categoryId:
+                            '',
+                        })
+                      )
+                    }
+                    placeholder="Ex.: Prestação"
+                    style={
+                      fieldStyle
+                    }
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label
+                  style={
+                    fieldLabelStyle
+                  }
+                >
+                  OBSERVAÇÃO
+                </label>
+
+                <textarea
+                  value={
+                    expenseForm.notes
+                  }
+                  onChange={(
+                    event
+                  ) =>
+                    setExpenseForm(
+                      (
+                        current
+                      ) => ({
+                        ...current,
+                        notes:
+                          event.target
+                            .value,
+                      })
+                    )
+                  }
+                  rows={
+                    3
+                  }
+                  placeholder="Observações da despesa."
+                  style={{
+                    ...fieldStyle,
+                    height:
+                      'auto',
+                    minHeight:
+                      82,
+                    paddingTop:
+                      11,
+                    resize:
+                      'vertical',
+                  }}
+                />
+              </div>
+            </div>
+
+            <div
+              style={{
+                display:
+                  'flex',
+                justifyContent:
+                  'flex-end',
+                gap:
+                  9,
+                marginTop:
+                  20,
+              }}
+            >
+              <button
+                onClick={() =>
+                  setShowExpenseModal(
+                    false
+                  )
+                }
+                style={{
+                  height:
+                    44,
+                  padding:
+                    '0 15px',
+                  borderRadius:
+                    10,
+                  border:
+                    `1px solid ${COLORS.border}`,
+                  background:
+                    '#111',
+                  color:
+                    '#999',
+                  cursor:
+                    'pointer',
+                  fontSize:
+                    12,
+                  fontWeight:
+                    700,
+                }}
+              >
+                Cancelar
+              </button>
+
+              <button
+                onClick={
+                  saveExpense
+                }
+                disabled={
+                  saving
+                }
+                style={{
+                  height:
+                    44,
+                  padding:
+                    '0 18px',
+                  borderRadius:
+                    10,
+                  border: 0,
+                  background:
+                    COLORS.red,
+                  color:
+                    COLORS.white,
+                  cursor:
+                    saving
+                      ? 'default'
+                      : 'pointer',
+                  fontSize:
+                    12,
+                  fontWeight:
+                    900,
+                  opacity:
+                    saving
+                      ? 0.6
+                      : 1,
+                }}
+              >
+                {saving
+                  ? 'Salvando...'
+                  : 'Salvar despesa'}
+              </button>
+            </div>
+          </div>
+        </Modal>
+      )}
+
+      {showTransferModal && (
+        <Modal
+          title="Transferir dinheiro"
+          subtitle="Mova dinheiro entre Caixa, Reserva e Investimentos sem registrar receita ou despesa."
+          onClose={() =>
+            setShowTransferModal(
+              false
+            )
+          }
+        >
+          <div
+            style={{
+              padding:
+                22,
+            }}
+          >
+            <div
+              style={{
+                display:
+                  'grid',
+                gap:
+                  14,
+              }}
+            >
+              <div
+                style={{
+                  display:
+                    'grid',
+                  gridTemplateColumns:
+                    '1fr 1fr',
+                  gap:
+                    14,
+                }}
+              >
+                <div>
+                  <label
+                    style={
+                      fieldLabelStyle
+                    }
+                  >
+                    DE
+                  </label>
+
+                  <select
+                    value={
+                      transferForm.sourceAccountId
+                    }
+                    onChange={(
+                      event
+                    ) =>
+                      setTransferForm(
+                        (
+                          current
+                        ) => ({
+                          ...current,
+                          sourceAccountId:
+                            event.target
+                              .value,
+                        })
+                      )
+                    }
+                    style={
+                      fieldStyle
+                    }
+                  >
+                    <option value="">
+                      Selecione
+                    </option>
+
+                    {accounts.map(
+                      (
+                        account
+                      ) => (
+                        <option
+                          key={
+                            account.id
+                          }
+                          value={
+                            account.id
+                          }
+                        >
+                          {
+                            account.name
+                          }{' '}
+                          —{' '}
+                          {
+                            getAccountLabel(
+                              account.type
+                            )
+                          }
+                        </option>
+                      )
+                    )}
+                  </select>
+                </div>
+
+                <div>
+                  <label
+                    style={
+                      fieldLabelStyle
+                    }
+                  >
+                    PARA
+                  </label>
+
+                  <select
+                    value={
+                      transferForm.destinationAccountId
+                    }
+                    onChange={(
+                      event
+                    ) =>
+                      setTransferForm(
                         (
                           current
                         ) => ({
@@ -4550,220 +4902,105 @@ function FinancialManagement() {
                     )}
                   </select>
                 </div>
-              ) : (
-                <div>
-                  <label
-                    style={
-                      fieldLabelStyle
-                    }
-                  >
-                    DATA
-                  </label>
-
-                  <input
-                    type="date"
-                    value={
-                      movement.date
-                    }
-                    onChange={(
-                      event
-                    ) =>
-                      setMovement(
-                        (
-                          current
-                        ) => ({
-                          ...current,
-                          date:
-                            event.target
-                              .value,
-                        })
-                      )
-                    }
-                    style={
-                      fieldStyle
-                    }
-                  />
-                </div>
-              )}
-
-              {movement.type !==
-              'transfer' && (
-                <div>
-                  <label
-                    style={
-                      fieldLabelStyle
-                    }
-                  >
-                    CATEGORIA
-                  </label>
-
-                  <select
-                    value={
-                      movement.categoryId
-                    }
-                    onChange={(
-                      event
-                    ) => {
-                      const value =
-                        event.target
-                          .value;
-
-                      const virtual =
-                        categoryOptions.find(
-                          (
-                            category
-                          ) =>
-                            category.id ===
-                              value &&
-                            category.virtual
-                        );
-
-                      setMovement(
-                        (
-                          current
-                        ) => ({
-                          ...current,
-                          categoryId:
-                            virtual
-                              ? ''
-                              : value,
-                          categoryName:
-                            virtual
-                              ? virtual.name
-                              : '',
-                        })
-                      );
-                    }}
-                    style={
-                      fieldStyle
-                    }
-                  >
-                    <option value="">
-                      Sem categoria
-                    </option>
-
-                    {categoryOptions.map(
-                      (
-                        category
-                      ) => (
-                        <option
-                          key={
-                            category.id
-                          }
-                          value={
-                            category.id
-                          }
-                        >
-                          {
-                            category.name
-                          }
-                          {category.virtual
-                            ? ' (criar)'
-                            : ''}
-                        </option>
-                      )
-                    )}
-                  </select>
-                </div>
-              )}
-
-              {movement.type ===
-              'transfer' ? (
-                <div>
-                  <label
-                    style={
-                      fieldLabelStyle
-                    }
-                  >
-                    DATA
-                  </label>
-
-                  <input
-                    type="date"
-                    value={
-                      movement.date
-                    }
-                    onChange={(
-                      event
-                    ) =>
-                      setMovement(
-                        (
-                          current
-                        ) => ({
-                          ...current,
-                          date:
-                            event.target
-                              .value,
-                        })
-                      )
-                    }
-                    style={
-                      fieldStyle
-                    }
-                  />
-                </div>
-              ) : (
-                <div>
-                  <label
-                    style={
-                      fieldLabelStyle
-                    }
-                  >
-                    NOVA CATEGORIA
-                    (OPCIONAL)
-                  </label>
-
-                  <input
-                    value={
-                      movement.categoryName
-                    }
-                    onChange={(
-                      event
-                    ) =>
-                      setMovement(
-                        (
-                          current
-                        ) => ({
-                          ...current,
-                          categoryName:
-                            event.target
-                              .value,
-                          categoryId:
-                            '',
-                        })
-                      )
-                    }
-                    placeholder="Ex.: Prestação da casa"
-                    style={
-                      fieldStyle
-                    }
-                  />
-                </div>
-              )}
+              </div>
 
               <div
                 style={{
-                  gridColumn:
-                    '1 / -1',
+                  display:
+                    'grid',
+                  gridTemplateColumns:
+                    '1fr 1fr',
+                  gap:
+                    14,
                 }}
               >
+                <div>
+                  <label
+                    style={
+                      fieldLabelStyle
+                    }
+                  >
+                    VALOR
+                  </label>
+
+                  <input
+                    value={
+                      transferForm.amount
+                    }
+                    onChange={(
+                      event
+                    ) =>
+                      setTransferForm(
+                        (
+                          current
+                        ) => ({
+                          ...current,
+                          amount:
+                            event.target
+                              .value,
+                        })
+                      )
+                    }
+                    inputMode="decimal"
+                    placeholder="0,00"
+                    style={
+                      fieldStyle
+                    }
+                  />
+                </div>
+
+                <div>
+                  <label
+                    style={
+                      fieldLabelStyle
+                    }
+                  >
+                    DATA
+                  </label>
+
+                  <input
+                    type="date"
+                    value={
+                      transferForm.date
+                    }
+                    onChange={(
+                      event
+                    ) =>
+                      setTransferForm(
+                        (
+                          current
+                        ) => ({
+                          ...current,
+                          date:
+                            event.target
+                              .value,
+                        })
+                      )
+                    }
+                    style={
+                      fieldStyle
+                    }
+                  />
+                </div>
+              </div>
+
+              <div>
                 <label
                   style={
                     fieldLabelStyle
                   }
                 >
                   OBSERVAÇÃO
-                  (OPCIONAL)
                 </label>
 
                 <textarea
                   value={
-                    movement.notes
+                    transferForm.notes
                   }
                   onChange={(
                     event
                   ) =>
-                    setMovement(
+                    setTransferForm(
                       (
                         current
                       ) => ({
@@ -4774,8 +5011,10 @@ function FinancialManagement() {
                       })
                     )
                   }
-                  placeholder="Detalhes, vencimento, forma de pagamento ou observações."
-                  rows={3}
+                  rows={
+                    3
+                  }
+                  placeholder="Ex.: reforço da reserva."
                   style={{
                     ...fieldStyle,
                     height:
@@ -4791,57 +5030,29 @@ function FinancialManagement() {
               </div>
             </div>
 
-            {movement.type ===
-              'expense' && (
-              <div
-                style={{
-                  marginTop:
-                    15,
-                  padding: 13,
-                  borderRadius:
-                    11,
-                  background:
-                    'rgba(239,43,53,.06)',
-                  border:
-                    '1px solid rgba(239,43,53,.12)',
-                  color:
-                    '#999',
-                  fontSize: 11,
-                  lineHeight:
-                    1.5,
-                }}
-              >
-                Despesas da empresa devem sair da
-                conta da empresa. Despesas de casa
-                e lazer devem sair da conta pessoal.
-              </div>
-            )}
-
-            {movement.type ===
-              'transfer' && (
-              <div
-                style={{
-                  marginTop:
-                    15,
-                  padding: 13,
-                  borderRadius:
-                    11,
-                  background:
-                    'rgba(59,130,246,.06)',
-                  border:
-                    '1px solid rgba(59,130,246,.12)',
-                  color:
-                    '#999',
-                  fontSize: 11,
-                  lineHeight:
-                    1.5,
-                }}
-              >
-                Transferências apenas movem dinheiro
-                entre contas. Elas não entram como
-                receita ou despesa do período.
-              </div>
-            )}
+            <div
+              style={{
+                marginTop:
+                  15,
+                padding:
+                  13,
+                borderRadius:
+                  11,
+                background:
+                  'rgba(59,130,246,.06)',
+                border:
+                  '1px solid rgba(59,130,246,.12)',
+                color:
+                  '#999',
+                fontSize:
+                  11,
+                lineHeight:
+                  1.5,
+              }}
+            >
+              Transferência não altera o resultado. Ela apenas
+              muda onde o dinheiro está guardado.
+            </div>
 
             <div
               style={{
@@ -4849,19 +5060,21 @@ function FinancialManagement() {
                   'flex',
                 justifyContent:
                   'flex-end',
-                gap: 9,
+                gap:
+                  9,
                 marginTop:
                   20,
               }}
             >
               <button
                 onClick={() =>
-                  setShowMovementModal(
+                  setShowTransferModal(
                     false
                   )
                 }
                 style={{
-                  height: 44,
+                  height:
+                    44,
                   padding:
                     '0 15px',
                   borderRadius:
@@ -4885,22 +5098,23 @@ function FinancialManagement() {
 
               <button
                 onClick={
-                  saveMovement
+                  saveTransfer
                 }
                 disabled={
                   saving
                 }
                 style={{
-                  height: 44,
+                  height:
+                    44,
                   padding:
                     '0 18px',
                   borderRadius:
                     10,
                   border: 0,
                   background:
-                    COLORS.green,
+                    COLORS.blue,
                   color:
-                    '#041008',
+                    COLORS.white,
                   cursor:
                     saving
                       ? 'default'
@@ -4916,8 +5130,8 @@ function FinancialManagement() {
                 }}
               >
                 {saving
-                  ? 'Salvando...'
-                  : 'Salvar movimentação'}
+                  ? 'Transferindo...'
+                  : 'Confirmar transferência'}
               </button>
             </div>
           </div>
@@ -4927,7 +5141,7 @@ function FinancialManagement() {
       {showAccountModal && (
         <Modal
           title="Nova conta financeira"
-          subtitle="Crie a conta que vai representar onde seu dinheiro está guardado."
+          subtitle="Use somente para criar uma nova conta de Caixa, Reserva ou Investimentos."
           onClose={() =>
             setShowAccountModal(
               false
@@ -4936,14 +5150,16 @@ function FinancialManagement() {
         >
           <div
             style={{
-              padding: 22,
+              padding:
+                22,
             }}
           >
             <div
               style={{
                 display:
                   'grid',
-                gap: 14,
+                gap:
+                  14,
               }}
             >
               <div>
@@ -4973,7 +5189,7 @@ function FinancialManagement() {
                       })
                     )
                   }
-                  placeholder="Ex.: Conta Pessoal"
+                  placeholder="Ex.: Reserva"
                   style={
                     fieldStyle
                   }
@@ -5011,12 +5227,8 @@ function FinancialManagement() {
                     fieldStyle
                   }
                 >
-                  <option value="personal">
-                    Pessoal
-                  </option>
-
                   <option value="business">
-                    Empresa
+                    Caixa da Empresa
                   </option>
 
                   <option value="reserve">
@@ -5071,7 +5283,6 @@ function FinancialManagement() {
                   }
                 >
                   DESCRIÇÃO
-                  (OPCIONAL)
                 </label>
 
                 <textarea
@@ -5092,8 +5303,10 @@ function FinancialManagement() {
                       })
                     )
                   }
-                  rows={3}
-                  placeholder="Para que esta conta serve?"
+                  rows={
+                    3
+                  }
+                  placeholder="Para que essa conta serve?"
                   style={{
                     ...fieldStyle,
                     height:
@@ -5115,7 +5328,8 @@ function FinancialManagement() {
                   'flex',
                 justifyContent:
                   'flex-end',
-                gap: 9,
+                gap:
+                  9,
                 marginTop:
                   20,
               }}
@@ -5127,7 +5341,8 @@ function FinancialManagement() {
                   )
                 }
                 style={{
-                  height: 44,
+                  height:
+                    44,
                   padding:
                     '0 15px',
                   borderRadius:
@@ -5157,7 +5372,8 @@ function FinancialManagement() {
                   saving
                 }
                 style={{
-                  height: 44,
+                  height:
+                    44,
                   padding:
                     '0 18px',
                   borderRadius:
