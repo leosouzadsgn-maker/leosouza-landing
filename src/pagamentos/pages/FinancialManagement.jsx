@@ -22,7 +22,7 @@ const formatCurrency = (value) =>
   }).format(Number(value || 0));
 
 const formatDate = (value) => {
-  if (!value) return '?';
+  if (!value) return '—';
 
   return new Intl.DateTimeFormat('pt-BR').format(
     new Date(value)
@@ -284,6 +284,27 @@ function FinancialManagement() {
           }),
       ]);
 
+      if (accountsResponse.error) {
+        console.error(
+          'Erro ao carregar contas financeiras:',
+          accountsResponse.error
+        );
+      }
+
+      if (categoriesResponse.error) {
+        console.error(
+          'Erro ao carregar categorias financeiras:',
+          categoriesResponse.error
+        );
+      }
+
+      if (transactionsResponse.error) {
+        console.error(
+          'Erro ao carregar movimentações financeiras:',
+          transactionsResponse.error
+        );
+      }
+
       setAccounts(
         accountsResponse.error
           ? []
@@ -303,7 +324,7 @@ function FinancialManagement() {
       );
     } catch (err) {
       console.error(
-        'Erro ao carregar gest?o financeira:',
+        'Erro ao carregar gestão financeira:',
         err
       );
 
@@ -402,7 +423,12 @@ function FinancialManagement() {
     () =>
       accounts.find(
         (account) =>
-          normalize(account.type) === 'reserve'
+          [
+            'reserve',
+            'reserva',
+          ].includes(
+            normalize(account.type)
+          )
       ),
     [accounts]
   );
@@ -411,7 +437,12 @@ function FinancialManagement() {
     () =>
       accounts.find(
         (account) =>
-          normalize(account.type) === 'investment'
+          [
+            'investment',
+            'investimento',
+          ].includes(
+            normalize(account.type)
+          )
       ),
     [accounts]
   );
@@ -450,6 +481,41 @@ function FinancialManagement() {
   const latestTransactions =
     transactions.slice(0, 10);
 
+  const getAccountLabel = (type) => {
+    const normalized = normalize(type);
+
+    if (
+      [
+        'business',
+        'caixa',
+        'operacional',
+        'cash',
+      ].includes(normalized)
+    ) {
+      return 'Caixa da empresa';
+    }
+
+    if (
+      [
+        'reserve',
+        'reserva',
+      ].includes(normalized)
+    ) {
+      return 'Reserva';
+    }
+
+    if (
+      [
+        'investment',
+        'investimento',
+      ].includes(normalized)
+    ) {
+      return 'Investimentos';
+    }
+
+    return type || 'Conta';
+  };
+
   const getTransactionColor = (type) => {
     const normalized = normalize(type);
 
@@ -462,17 +528,19 @@ function FinancialManagement() {
     }
 
     if (
-      ['reserve', 'reserva'].includes(
-        normalized
-      )
+      [
+        'reserve',
+        'reserva',
+      ].includes(normalized)
     ) {
       return COLORS.blue;
     }
 
     if (
-      ['investment', 'investimento'].includes(
-        normalized
-      )
+      [
+        'investment',
+        'investimento',
+      ].includes(normalized)
     ) {
       return '#a855f7';
     }
@@ -486,6 +554,16 @@ function FinancialManagement() {
       ].includes(normalized)
     ) {
       return COLORS.yellow;
+    }
+
+    if (
+      [
+        'transfer_in',
+        'transfer_out',
+        'transferencia',
+      ].includes(normalized)
+    ) {
+      return COLORS.blue;
     }
 
     return COLORS.muted;
@@ -503,17 +581,19 @@ function FinancialManagement() {
     }
 
     if (
-      ['reserve', 'reserva'].includes(
-        normalized
-      )
+      [
+        'reserve',
+        'reserva',
+      ].includes(normalized)
     ) {
       return 'Reserva';
     }
 
     if (
-      ['investment', 'investimento'].includes(
-        normalized
-      )
+      [
+        'investment',
+        'investimento',
+      ].includes(normalized)
     ) {
       return 'Investimento';
     }
@@ -536,10 +616,10 @@ function FinancialManagement() {
         'transferencia',
       ].includes(normalized)
     ) {
-      return 'Transfer?ncia';
+      return 'Transferência';
     }
 
-    return type || 'Movimenta??o';
+    return type || 'Movimentação';
   };
 
   const navigate = (path) => {
@@ -627,7 +707,7 @@ function FinancialManagement() {
           fontFamily: 'Arial, sans-serif',
         }}
       >
-        Carregando Gest?o Financeira...
+        Carregando Gestão Financeira...
       </div>
     );
   }
@@ -705,7 +785,7 @@ function FinancialManagement() {
               marginTop: 5,
             }}
           >
-            KREATIVE SPORTS / L?O SOUZA
+            KREATIVE SPORTS / LÉO SOUZA
           </div>
         </div>
 
@@ -728,7 +808,7 @@ function FinancialManagement() {
           ],
           [
             'charges',
-            'Cobran?as',
+            'Cobranças',
             '/pagamentos/admin/cobrancas',
           ],
           [
@@ -748,7 +828,7 @@ function FinancialManagement() {
           ],
           [
             'wallet',
-            'Gest?o Financeira',
+            'Gestão Financeira',
             '/pagamentos/admin/financeiro',
           ],
           [
@@ -763,12 +843,12 @@ function FinancialManagement() {
           ],
           [
             'reports',
-            'Relat?rios',
+            'Relatórios',
             '/pagamentos/admin/relatorios',
           ],
           [
             'settings',
-            'Configura??es',
+            'Configurações',
             '/pagamentos/admin/configuracoes',
           ],
         ].map(([icon, label, path]) => {
@@ -895,7 +975,7 @@ function FinancialManagement() {
                 letterSpacing: '-.04em',
               }}
             >
-              Gest?o Financeira
+              Gestão Financeira
             </h1>
 
             <p
@@ -1034,7 +1114,7 @@ function FinancialManagement() {
                 marginTop: 6,
               }}
             >
-              Dispon?vel para opera??o
+              Disponível para operação
             </div>
           </Card>
 
@@ -1074,7 +1154,7 @@ function FinancialManagement() {
                 marginTop: 6,
               }}
             >
-              Seguran?a financeira
+              Segurança financeira
             </div>
           </Card>
 
@@ -1114,7 +1194,7 @@ function FinancialManagement() {
                 marginTop: 6,
               }}
             >
-              Patrim?nio investido
+              Patrimônio investido
             </div>
           </Card>
         </section>
@@ -1305,7 +1385,7 @@ function FinancialManagement() {
                     marginTop: 5,
                   }}
                 >
-                  Vis?o geral do dinheiro movimentado
+                  Visão geral do dinheiro movimentado
                 </div>
               </div>
             </div>
@@ -1324,7 +1404,7 @@ function FinancialManagement() {
                   borderRadius: 12,
                 }}
               >
-                Ainda n?o existem movimenta??es financeiras.
+                Ainda não existem movimentações financeiras.
               </div>
             ) : (
               <div
@@ -1462,7 +1542,7 @@ function FinancialManagement() {
                 marginBottom: 18,
               }}
             >
-              Onde seu dinheiro est?
+              Onde seu dinheiro está
             </div>
 
             {accounts.length === 0 ? (
@@ -1532,8 +1612,9 @@ function FinancialManagement() {
                           marginTop: 3,
                         }}
                       >
-                        {account.type ||
-                          'Conta'}
+                        {getAccountLabel(
+                          account.type
+                        )}
                       </div>
                     </div>
                   </div>
@@ -1583,7 +1664,7 @@ function FinancialManagement() {
                     fontSize: 17,
                   }}
                 >
-                  ?ltimas movimenta??es
+                  Últimas movimentações
                 </h2>
 
                 <div
@@ -1593,14 +1674,14 @@ function FinancialManagement() {
                     marginTop: 5,
                   }}
                 >
-                  Movimenta??es geradas pelo sistema
+                  Movimentações geradas pelo sistema
                 </div>
               </div>
             </div>
 
             {latestTransactions.length === 0 ? (
               <EmptyState>
-                Nenhuma movimenta??o registrada.
+                Nenhuma movimentação registrada.
               </EmptyState>
             ) : (
               <div
@@ -1747,7 +1828,7 @@ function FinancialManagement() {
                                     }}
                                   >
                                     {transaction.description ||
-                                      'Movimenta??o financeira'}
+                                      'Movimentação financeira'}
                                   </div>
 
                                   <div
@@ -1776,7 +1857,7 @@ function FinancialManagement() {
                             >
                               {transaction
                                 .financial_categories
-                                ?.name || '?'}
+                                ?.name || '—'}
                             </td>
 
                             <td
@@ -1844,7 +1925,7 @@ function FinancialManagement() {
                 marginBottom: 20,
               }}
             >
-              Onde o dinheiro est? saindo
+              Onde o dinheiro está saindo
             </div>
 
             {expenseCategories.length === 0 ? (
