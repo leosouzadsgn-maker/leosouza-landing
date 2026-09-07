@@ -364,10 +364,12 @@ function Charges() {
   const [clients, setClients] = useState([]);
   const [brands, setBrands] = useState([]);
 
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
+ const [loading, setLoading] = useState(true);
+const [refreshing, setRefreshing] = useState(false);
 
-  const [search, setSearch] = useState('');
+const [mobileOpen, setMobileOpen] = useState(false);
+
+const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] =
     useState('all');
 
