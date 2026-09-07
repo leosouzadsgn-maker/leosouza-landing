@@ -22,6 +22,8 @@ const COLORS = {
   green: '#22c55e',
 };
 
+const STORAGE_BUCKET = 'brand-logos';
+
 const normalize = (value) =>
   String(value || '')
     .toLowerCase()
@@ -43,46 +45,16 @@ function Icon({ name, size = 20 }) {
   const icons = {
     dashboard: (
       <>
-        <rect
-          x="3"
-          y="3"
-          width="7"
-          height="7"
-          rx="1"
-        />
-        <rect
-          x="14"
-          y="3"
-          width="7"
-          height="7"
-          rx="1"
-        />
-        <rect
-          x="3"
-          y="14"
-          width="7"
-          height="7"
-          rx="1"
-        />
-        <rect
-          x="14"
-          y="14"
-          width="7"
-          height="7"
-          rx="1"
-        />
+        <rect x="3" y="3" width="7" height="7" rx="1" />
+        <rect x="14" y="3" width="7" height="7" rx="1" />
+        <rect x="3" y="14" width="7" height="7" rx="1" />
+        <rect x="14" y="14" width="7" height="7" rx="1" />
       </>
     ),
 
     charges: (
       <>
-        <rect
-          x="3"
-          y="5"
-          width="18"
-          height="14"
-          rx="2"
-        />
+        <rect x="3" y="5" width="18" height="14" rx="2" />
         <path d="M3 10h18" />
         <path d="M7 15h4" />
       </>
@@ -90,11 +62,7 @@ function Icon({ name, size = 20 }) {
 
     clients: (
       <>
-        <circle
-          cx="9"
-          cy="7"
-          r="4"
-        />
+        <circle cx="9" cy="7" r="4" />
         <path d="M2 21a7 7 0 0 1 14 0" />
         <path d="M16 11a4 4 0 1 0 0-8" />
         <path d="M17 14a6 6 0 0 1 5 6" />
@@ -103,13 +71,7 @@ function Icon({ name, size = 20 }) {
 
     payments: (
       <>
-        <rect
-          x="2"
-          y="5"
-          width="20"
-          height="14"
-          rx="2"
-        />
+        <rect x="2" y="5" width="20" height="14" rx="2" />
         <path d="M2 10h20" />
         <path d="M6 15h4" />
       </>
@@ -142,11 +104,7 @@ function Icon({ name, size = 20 }) {
     tag: (
       <>
         <path d="M20.59 13.41 13.41 20.59a2 2 0 0 1-2.82 0L3.41 13.41a2 2 0 0 1 0-2.82l7.18-7.18A2 2 0 0 1 12 2.82H20a2 2 0 0 1 2 2v8a2 2 0 0 1-.59.59Z" />
-        <circle
-          cx="16.5"
-          cy="7.5"
-          r="1"
-        />
+        <circle cx="16.5" cy="7.5" r="1" />
       </>
     ),
 
@@ -163,11 +121,7 @@ function Icon({ name, size = 20 }) {
 
     settings: (
       <>
-        <circle
-          cx="12"
-          cy="12"
-          r="3"
-        />
+        <circle cx="12" cy="12" r="3" />
         <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.7 1.7-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V20h-2.4v-.2a1.7 1.7 0 0 0-1.03-1.56 1.7 1.7 0 0 0-1.88.34l-.06.06-1.7-1.7.06-.06A1.7 1.7 0 0 0 8.4 15a1.7 1.7 0 0 0-1.56-1.03H6v-2.4h.84A1.7 1.7 0 0 0 8.4 10a1.7 1.7 0 0 0-.34-1.88L8 8.06l1.7-1.7.06.06a1.7 1.7 0 0 0 1.88.34 1.7 1.7 0 0 0 1.03-1.56V5h2.4v.2a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.88-.34l.06-.06 1.7 1.7-.06.06A1.7 1.7 0 0 0 19.4 10a1.7 1.7 0 0 0 1.56 1.03h.84v2.4h-.84A1.7 1.7 0 0 0 19.4 15Z" />
       </>
     ),
@@ -181,11 +135,7 @@ function Icon({ name, size = 20 }) {
 
     search: (
       <>
-        <circle
-          cx="11"
-          cy="11"
-          r="7"
-        />
+        <circle cx="11" cy="11" r="7" />
         <path d="m20 20-4-4" />
       </>
     ),
@@ -234,6 +184,28 @@ function Icon({ name, size = 20 }) {
         <path d="M10 17l5-5-5-5" />
         <path d="M15 12H3" />
         <path d="M21 19V5a2 2 0 0 0-2-2h-5" />
+      </>
+    ),
+
+    upload: (
+      <>
+        <path d="M12 16V4" />
+        <path d="m7 9 5-5 5 5" />
+        <path d="M5 20h14" />
+      </>
+    ),
+
+    image: (
+      <>
+        <rect x="3" y="3" width="18" height="18" rx="2" />
+        <circle cx="8.5" cy="8.5" r="1.5" />
+        <path d="m21 15-5-5L5 21" />
+      </>
+    ),
+
+    check: (
+      <>
+        <path d="m5 12 4 4L19 6" />
       </>
     ),
   };
@@ -331,9 +303,7 @@ function Field({
 
 function Brands() {
   const [user, setUser] = useState(null);
-
-  const [brands, setBrands] =
-    useState([]);
+  const [brands, setBrands] = useState([]);
 
   const [loading, setLoading] =
     useState(true);
@@ -342,6 +312,9 @@ function Brands() {
     useState(false);
 
   const [saving, setSaving] =
+    useState(false);
+
+  const [uploading, setUploading] =
     useState(false);
 
   const [search, setSearch] =
@@ -417,9 +390,7 @@ function Brands() {
           return;
         }
 
-        setUser(
-          authenticatedUser
-        );
+        setUser(authenticatedUser);
 
         const {
           data,
@@ -507,8 +478,7 @@ function Brands() {
       () =>
         brands.filter(
           (brand) =>
-            brand.is_active !==
-            false
+            brand.is_active !== false
         ).length,
       [brands]
     );
@@ -521,10 +491,7 @@ function Brands() {
   };
 
   const openEdit = (brand) => {
-    setSelectedBrand(
-      brand
-    );
-
+    setSelectedBrand(brand);
     setMessage('');
 
     setForm({
@@ -554,6 +521,157 @@ function Brands() {
     });
 
     setModal('form');
+  };
+
+  const uploadLogo = async (
+    event
+  ) => {
+    const file =
+      event.target.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    if (
+      ![
+        'image/png',
+        'image/jpeg',
+        'image/webp',
+        'image/svg+xml',
+      ].includes(file.type)
+    ) {
+      setMessage(
+        'Formato inválido. Use PNG, JPG, WEBP ou SVG.'
+      );
+
+      event.target.value = '';
+      return;
+    }
+
+    if (
+      file.size >
+      5 * 1024 * 1024
+    ) {
+      setMessage(
+        'A logo deve ter no máximo 5 MB.'
+      );
+
+      event.target.value = '';
+      return;
+    }
+
+    try {
+      setUploading(true);
+      setMessage('');
+
+      const {
+        data: {
+          user: authenticatedUser,
+        },
+        error: authError,
+      } =
+        await supabase.auth.getUser();
+
+      if (authError) {
+        throw authError;
+      }
+
+      if (!authenticatedUser) {
+        window.location.href =
+          '/pagamentos/admin';
+        return;
+      }
+
+      const extension =
+        file.name.includes('.')
+          ? file.name
+              .split('.')
+              .pop()
+              .toLowerCase()
+          : 'png';
+
+      const safeName =
+        normalize(
+          file.name
+            .replace(/\.[^/.]+$/, '')
+        )
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(
+            /^-+|-+$/g,
+            ''
+          ) || 'logo';
+
+      const filePath =
+        `${authenticatedUser.id}/${Date.now()}-${safeName}.${extension}`;
+
+      const {
+        data,
+        error,
+      } =
+        await supabase.storage
+          .from(STORAGE_BUCKET)
+          .upload(
+            filePath,
+            file,
+            {
+              cacheControl: '3600',
+              upsert: false,
+              contentType:
+                file.type,
+            }
+          );
+
+      if (error) {
+        throw error;
+      }
+
+      const {
+        data: publicData,
+      } =
+        supabase.storage
+          .from(STORAGE_BUCKET)
+          .getPublicUrl(
+            data.path
+          );
+
+      const publicUrl =
+        publicData?.publicUrl;
+
+      if (!publicUrl) {
+        throw new Error(
+          'Não foi possível obter a URL pública da logo.'
+        );
+      }
+
+      setForm(
+        (current) => ({
+          ...current,
+          logo_url:
+            publicUrl,
+        })
+      );
+
+      setMessage(
+        'Logo enviada com sucesso.'
+      );
+
+      event.target.value = '';
+    } catch (error) {
+      console.error(
+        'Erro ao enviar logo:',
+        error
+      );
+
+      setMessage(
+        error?.message ||
+          'Não foi possível enviar a logo.'
+      );
+
+      event.target.value = '';
+    } finally {
+      setUploading(false);
+    }
   };
 
   const saveBrand =
@@ -633,7 +751,9 @@ function Brands() {
           } =
             await supabase
               .from('brands')
-              .update(payload)
+              .update(
+                payload
+              )
               .eq(
                 'id',
                 selectedBrand.id
@@ -853,6 +973,29 @@ function Brands() {
       display: none !important;
     }
 
+    .logo-upload {
+      border: 1px dashed rgba(255,255,255,.14);
+      border-radius: 12px;
+      padding: 15px;
+      background: #0b0b0b;
+    }
+
+    .logo-upload:hover {
+      border-color: rgba(239,43,53,.45);
+    }
+
+    .logo-preview {
+      width: 74px;
+      height: 74px;
+      border-radius: 14px;
+      background: #151515;
+      border: 1px solid rgba(255,255,255,.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
     .brands-modal-backdrop {
       position: fixed;
       inset: 0;
@@ -925,14 +1068,11 @@ function Brands() {
       <div
         style={{
           minHeight: '100vh',
-          background:
-            COLORS.bg,
+          background: COLORS.bg,
           color: '#fff',
           display: 'flex',
-          alignItems:
-            'center',
-          justifyContent:
-            'center',
+          alignItems: 'center',
+          justifyContent: 'center',
           fontFamily:
             'Inter, Arial, sans-serif',
         }}
@@ -945,17 +1085,12 @@ function Brands() {
   return (
     <div
       style={{
-        minHeight:
-          '100vh',
-        background:
-          COLORS.bg,
-        color:
-          COLORS.white,
+        minHeight: '100vh',
+        background: COLORS.bg,
+        color: COLORS.white,
       }}
     >
-      <style>
-        {styles}
-      </style>
+      <style>{styles}</style>
 
       <button
         className="brands-mobile"
@@ -965,8 +1100,7 @@ function Brands() {
           )
         }
         style={{
-          position:
-            'fixed',
+          position: 'fixed',
           top: 15,
           left: 15,
           zIndex: 160,
@@ -975,13 +1109,11 @@ function Brands() {
           borderRadius: 12,
           border:
             `1px solid ${COLORS.border}`,
-          background:
-            '#101010',
+          background: '#101010',
           color: '#fff',
-          alignItems:
-            'center',
-          justifyContent:
-            'center',
+          alignItems: 'center',
+          justifyContent: 'center',
+          cursor: 'pointer',
         }}
       >
         <Icon
@@ -992,15 +1124,11 @@ function Brands() {
 
       <aside
         className={`brands-sidebar ${
-          mobileOpen
-            ? 'open'
-            : ''
+          mobileOpen ? 'open' : ''
         }`}
         style={{
-          position:
-            'fixed',
-          inset:
-            '0 auto 0 0',
+          position: 'fixed',
+          inset: '0 auto 0 0',
           width: 258,
           background:
             COLORS.sidebar,
@@ -1008,12 +1136,9 @@ function Brands() {
             `1px solid ${COLORS.border}`,
           padding:
             '30px 18px 18px',
-          display:
-            'flex',
-          flexDirection:
-            'column',
-          overflowY:
-            'auto',
+          display: 'flex',
+          flexDirection: 'column',
+          overflowY: 'auto',
         }}
       >
         <div
@@ -1022,18 +1147,14 @@ function Brands() {
               '0 18px 28px',
             borderBottom:
               `1px solid ${COLORS.border}`,
-            marginBottom:
-              20,
+            marginBottom: 20,
           }}
         >
           <div
             style={{
-              color:
-                '#f3f3f3',
-              fontSize:
-                19,
-              fontWeight:
-                800,
+              color: '#f3f3f3',
+              fontSize: 19,
+              fontWeight: 800,
               letterSpacing:
                 '-.04em',
             }}
@@ -1043,12 +1164,9 @@ function Brands() {
 
           <div
             style={{
-              marginTop:
-                4,
-              fontSize:
-                10,
-              color:
-                '#aaa',
+              marginTop: 4,
+              fontSize: 10,
+              color: '#aaa',
               letterSpacing:
                 '.22em',
             }}
@@ -1058,12 +1176,9 @@ function Brands() {
 
           <div
             style={{
-              marginTop:
-                14,
-              color:
-                '#666',
-              fontSize:
-                9,
+              marginTop: 14,
+              color: '#666',
+              fontSize: 9,
               letterSpacing:
                 '.13em',
             }}
@@ -1074,10 +1189,8 @@ function Brands() {
 
         <div
           style={{
-            color:
-              '#666',
-            fontSize:
-              10,
+            color: '#666',
+            fontSize: 10,
             letterSpacing:
               '.14em',
             margin:
@@ -1099,27 +1212,19 @@ function Brands() {
 
             return (
               <div
-                key={
-                  path
-                }
+                key={path}
                 className="brands-nav"
                 onClick={() =>
-                  navigate(
-                    path
-                  )
+                  navigate(path)
                 }
                 style={{
-                  display:
-                    'flex',
-                  alignItems:
-                    'center',
+                  display: 'flex',
+                  alignItems: 'center',
                   gap: 13,
                   padding:
                     '12px 16px',
-                  borderRadius:
-                    10,
-                  marginBottom:
-                    4,
+                  borderRadius: 10,
+                  marginBottom: 4,
                   color:
                     active
                       ? '#fff'
@@ -1132,14 +1237,10 @@ function Brands() {
                     active
                       ? `2px solid ${COLORS.red}`
                       : '2px solid transparent',
-                  cursor:
-                    'pointer',
-                  fontSize:
-                    14,
+                  cursor: 'pointer',
+                  fontSize: 14,
                   fontWeight:
-                    active
-                      ? 700
-                      : 500,
+                    active ? 700 : 500,
                 }}
               >
                 <span
@@ -1153,12 +1254,8 @@ function Brands() {
                   }}
                 >
                   <Icon
-                    name={
-                      icon
-                    }
-                    size={
-                      19
-                    }
+                    name={icon}
+                    size={19}
                   />
                 </span>
 
@@ -1170,8 +1267,7 @@ function Brands() {
 
         <div
           style={{
-            marginTop:
-              'auto',
+            marginTop: 'auto',
             padding:
               '18px 18px 3px',
             borderTop:
@@ -1180,16 +1276,11 @@ function Brands() {
         >
           <div
             style={{
-              color:
-                '#777',
-              fontSize:
-                10,
-              marginBottom:
-                10,
-              overflow:
-                'hidden',
-              whiteSpace:
-                'nowrap',
+              color: '#777',
+              fontSize: 10,
+              marginBottom: 10,
+              overflow: 'hidden',
+              whiteSpace: 'nowrap',
               textOverflow:
                 'ellipsis',
             }}
@@ -1205,22 +1296,16 @@ function Brands() {
                 '/pagamentos/admin';
             }}
             style={{
-              display:
-                'flex',
-              alignItems:
-                'center',
+              display: 'flex',
+              alignItems: 'center',
               gap: 9,
               border: 0,
               background:
                 'transparent',
-              color:
-                '#aaa',
-              padding:
-                0,
-              cursor:
-                'pointer',
-              fontSize:
-                13,
+              color: '#aaa',
+              padding: 0,
+              cursor: 'pointer',
+              fontSize: 13,
             }}
           >
             <Icon
@@ -1236,26 +1321,21 @@ function Brands() {
       <main
         className="brands-main"
         style={{
-          marginLeft:
-            258,
+          marginLeft: 258,
           padding:
             '28px 30px 50px',
-          maxWidth:
-            1600,
+          maxWidth: 1600,
         }}
       >
         <header
           className="brands-header"
           style={{
-            display:
-              'flex',
-            alignItems:
-              'center',
+            display: 'flex',
+            alignItems: 'center',
             justifyContent:
               'space-between',
             gap: 20,
-            paddingBottom:
-              23,
+            paddingBottom: 23,
             borderBottom:
               `1px solid ${COLORS.border}`,
           }}
@@ -1263,10 +1343,8 @@ function Brands() {
           <div>
             <div
               style={{
-                fontSize:
-                  11,
-                color:
-                  '#666',
+                fontSize: 11,
+                color: '#666',
                 letterSpacing:
                   '.13em',
                 textTransform:
@@ -1280,8 +1358,7 @@ function Brands() {
               style={{
                 margin:
                   '7px 0 0',
-                fontSize:
-                  31,
+                fontSize: 31,
                 letterSpacing:
                   '-.045em',
               }}
@@ -1291,12 +1368,9 @@ function Brands() {
 
             <div
               style={{
-                marginTop:
-                  6,
-                color:
-                  '#777',
-                fontSize:
-                  13,
+                marginTop: 6,
+                color: '#777',
+                fontSize: 13,
               }}
             >
               Organize as operações que recebem suas cobranças.
@@ -1306,42 +1380,30 @@ function Brands() {
           <div
             className="brands-actions"
             style={{
-              display:
-                'flex',
-              alignItems:
-                'center',
+              display: 'flex',
+              alignItems: 'center',
               gap: 9,
             }}
           >
             <button
-              onClick={
-                loadBrands
-              }
-              disabled={
-                refreshing
-              }
+              onClick={loadBrands}
+              disabled={refreshing}
               title="Atualizar"
               style={{
-                width:
-                  42,
-                height:
-                  42,
-                borderRadius:
-                  10,
+                width: 42,
+                height: 42,
+                borderRadius: 10,
                 border:
                   `1px solid ${COLORS.border}`,
                 background:
                   COLORS.panel,
-                color:
-                  '#aaa',
-                display:
-                  'flex',
+                color: '#aaa',
+                display: 'flex',
                 alignItems:
                   'center',
                 justifyContent:
                   'center',
-                cursor:
-                  'pointer',
+                cursor: 'pointer',
                 opacity:
                   refreshing
                     ? .5
@@ -1355,34 +1417,27 @@ function Brands() {
             </button>
 
             <button
-              onClick={
-                openNew
-              }
+              onClick={openNew}
               style={{
-                height:
-                  42,
+                height: 42,
                 padding:
                   '0 16px',
-                borderRadius:
-                  10,
+                borderRadius: 10,
                 border: 0,
                 background:
                   COLORS.red,
-                color:
-                  '#fff',
-                display:
-                  'flex',
+                color: '#fff',
+                display: 'flex',
                 alignItems:
                   'center',
                 justifyContent:
                   'center',
                 gap: 8,
-                cursor:
-                  'pointer',
-                fontSize:
-                  13,
-                fontWeight:
-                  800,
+                cursor: 'pointer',
+                fontSize: 13,
+                fontWeight: 800,
+                boxShadow:
+                  '0 10px 25px rgba(239,43,53,.18)',
               }}
             >
               <Icon
@@ -1398,21 +1453,17 @@ function Brands() {
         <section
           className="brands-grid"
           style={{
-            display:
-              'grid',
+            display: 'grid',
             gridTemplateColumns:
               'repeat(3,minmax(0,1fr))',
             gap: 14,
-            marginTop:
-              20,
+            marginTop: 20,
           }}
         >
           <div
             style={{
-              padding:
-                20,
-              borderRadius:
-                14,
+              padding: 20,
+              borderRadius: 14,
               background:
                 COLORS.panel,
               border:
@@ -1421,10 +1472,8 @@ function Brands() {
           >
             <div
               style={{
-                color:
-                  '#777',
-                fontSize:
-                  12,
+                color: '#777',
+                fontSize: 12,
               }}
             >
               Total de marcas
@@ -1432,12 +1481,9 @@ function Brands() {
 
             <div
               style={{
-                marginTop:
-                  10,
-                fontSize:
-                  27,
-                fontWeight:
-                  800,
+                marginTop: 10,
+                fontSize: 27,
+                fontWeight: 800,
               }}
             >
               {brands.length}
@@ -1446,10 +1492,8 @@ function Brands() {
 
           <div
             style={{
-              padding:
-                20,
-              borderRadius:
-                14,
+              padding: 20,
+              borderRadius: 14,
               background:
                 COLORS.panel,
               border:
@@ -1458,10 +1502,8 @@ function Brands() {
           >
             <div
               style={{
-                color:
-                  '#777',
-                fontSize:
-                  12,
+                color: '#777',
+                fontSize: 12,
               }}
             >
               Marcas ativas
@@ -1469,12 +1511,9 @@ function Brands() {
 
             <div
               style={{
-                marginTop:
-                  10,
-                fontSize:
-                  27,
-                fontWeight:
-                  800,
+                marginTop: 10,
+                fontSize: 27,
+                fontWeight: 800,
                 color:
                   COLORS.green,
               }}
@@ -1485,10 +1524,8 @@ function Brands() {
 
           <div
             style={{
-              padding:
-                20,
-              borderRadius:
-                14,
+              padding: 20,
+              borderRadius: 14,
               background:
                 COLORS.panel,
               border:
@@ -1497,10 +1534,8 @@ function Brands() {
           >
             <div
               style={{
-                color:
-                  '#777',
-                fontSize:
-                  12,
+                color: '#777',
+                fontSize: 12,
               }}
             >
               Resultados
@@ -1508,12 +1543,9 @@ function Brands() {
 
             <div
               style={{
-                marginTop:
-                  10,
-                fontSize:
-                  27,
-                fontWeight:
-                  800,
+                marginTop: 10,
+                fontSize: 27,
+                fontWeight: 800,
               }}
             >
               {
@@ -1523,12 +1555,9 @@ function Brands() {
 
             <div
               style={{
-                color:
-                  '#555',
-                fontSize:
-                  10,
-                marginTop:
-                  3,
+                color: '#555',
+                fontSize: 10,
+                marginTop: 3,
               }}
             >
               após a pesquisa
@@ -1538,8 +1567,7 @@ function Brands() {
 
         <section
           style={{
-            marginTop:
-              18,
+            marginTop: 18,
           }}
         >
           <div
@@ -1559,8 +1587,7 @@ function Brands() {
                   'flex',
                 alignItems:
                   'center',
-                color:
-                  '#555',
+                color: '#555',
                 pointerEvents:
                   'none',
               }}
@@ -1572,22 +1599,16 @@ function Brands() {
             </div>
 
             <Input
-              value={
-                search
-              }
-              onChange={(
-                event
-              ) =>
+              value={search}
+              onChange={(event) =>
                 setSearch(
-                  event
-                    .target
+                  event.target
                     .value
                 )
               }
               placeholder="Pesquisar marca, projeto ou cliente..."
               style={{
-                paddingLeft:
-                  42,
+                paddingLeft: 42,
               }}
             />
           </div>
@@ -1596,13 +1617,11 @@ function Brands() {
         <section
           className="brands-grid"
           style={{
-            display:
-              'grid',
+            display: 'grid',
             gridTemplateColumns:
               'repeat(2,minmax(0,1fr))',
             gap: 16,
-            marginTop:
-              18,
+            marginTop: 18,
           }}
         >
           {filteredBrands.length ===
@@ -1613,36 +1632,29 @@ function Brands() {
                   '1 / -1',
                 padding:
                   '75px 20px',
-                borderRadius:
-                  15,
+                borderRadius: 15,
                 border:
                   `1px solid ${COLORS.border}`,
                 background:
                   COLORS.panel,
-                textAlign:
-                  'center',
+                textAlign: 'center',
               }}
             >
               <div
                 style={{
-                  width:
-                    56,
-                  height:
-                    56,
+                  width: 56,
+                  height: 56,
                   margin:
                     '0 auto 15px',
-                  borderRadius:
-                    15,
+                  borderRadius: 15,
                   background:
                     'rgba(255,255,255,.035)',
-                  display:
-                    'flex',
+                  display: 'flex',
                   alignItems:
                     'center',
                   justifyContent:
                     'center',
-                  color:
-                    '#666',
+                  color: '#666',
                 }}
               >
                 <Icon
@@ -1653,12 +1665,9 @@ function Brands() {
 
               <div
                 style={{
-                  color:
-                    '#aaa',
-                  fontSize:
-                    14,
-                  fontWeight:
-                    700,
+                  color: '#aaa',
+                  fontSize: 14,
+                  fontWeight: 700,
                 }}
               >
                 Nenhuma marca ou projeto cadastrado
@@ -1666,40 +1675,29 @@ function Brands() {
 
               <div
                 style={{
-                  color:
-                    '#555',
-                  marginTop:
-                    7,
-                  fontSize:
-                    12,
+                  color: '#555',
+                  marginTop: 7,
+                  fontSize: 12,
                 }}
               >
                 Cadastre a primeira operação da sua Central.
               </div>
 
               <button
-                onClick={
-                  openNew
-                }
+                onClick={openNew}
                 style={{
-                  marginTop:
-                    18,
-                  height:
-                    40,
+                  marginTop: 18,
+                  height: 40,
                   padding:
                     '0 16px',
-                  border:
-                    0,
-                  borderRadius:
-                    9,
+                  border: 0,
+                  borderRadius: 9,
                   background:
                     COLORS.red,
-                  color:
-                    '#fff',
+                  color: '#fff',
                   cursor:
                     'pointer',
-                  fontSize:
-                    12,
+                  fontSize: 12,
                   fontWeight:
                     800,
                 }}
@@ -1711,9 +1709,7 @@ function Brands() {
             filteredBrands.map(
               (brand) => (
                 <div
-                  key={
-                    brand.id
-                  }
+                  key={brand.id}
                   className="brand-card"
                   style={{
                     position:
@@ -1724,8 +1720,7 @@ function Brands() {
                       `1px solid ${COLORS.border}`,
                     borderRadius:
                       15,
-                    padding:
-                      20,
+                    padding: 20,
                     overflow:
                       'hidden',
                   }}
@@ -1769,28 +1764,7 @@ function Brands() {
                       }}
                     >
                       <div
-                        style={{
-                          width:
-                            58,
-                          height:
-                            58,
-                          borderRadius:
-                            14,
-                          background:
-                            '#171717',
-                          border:
-                            `1px solid ${COLORS.border}`,
-                          display:
-                            'flex',
-                          alignItems:
-                            'center',
-                          justifyContent:
-                            'center',
-                          overflow:
-                            'hidden',
-                          flexShrink:
-                            0,
-                        }}
+                        className="logo-preview"
                       >
                         {brand.logo_url ? (
                           <img
@@ -1901,10 +1875,8 @@ function Brands() {
                     >
                       <span
                         style={{
-                          width:
-                            7,
-                          height:
-                            7,
+                          width: 7,
+                          height: 7,
                           borderRadius:
                             '50%',
                           background:
@@ -1922,16 +1894,11 @@ function Brands() {
 
                   <div
                     style={{
-                      marginTop:
-                        17,
-                      minHeight:
-                        39,
-                      color:
-                        '#777',
-                      fontSize:
-                        12,
-                      lineHeight:
-                        1.55,
+                      marginTop: 17,
+                      minHeight: 39,
+                      color: '#777',
+                      fontSize: 12,
+                      lineHeight: 1.55,
                     }}
                   >
                     {brand.description ||
@@ -1945,8 +1912,7 @@ function Brands() {
                       flexWrap:
                         'wrap',
                       gap: 8,
-                      marginTop:
-                        15,
+                      marginTop: 15,
                     }}
                   >
                     {brand.email && (
@@ -1954,8 +1920,7 @@ function Brands() {
                         style={{
                           padding:
                             '6px 8px',
-                          borderRadius:
-                            7,
+                          borderRadius: 7,
                           background:
                             '#151515',
                           color:
@@ -1970,13 +1935,12 @@ function Brands() {
                       </span>
                     )}
 
-                    {brand.website && (
+                    {brand.phone && (
                       <span
                         style={{
                           padding:
                             '6px 8px',
-                          borderRadius:
-                            7,
+                          borderRadius: 7,
                           background:
                             '#151515',
                           color:
@@ -1986,7 +1950,7 @@ function Brands() {
                         }}
                       >
                         {
-                          brand.website
+                          brand.phone
                         }
                       </span>
                     )}
@@ -2001,10 +1965,8 @@ function Brands() {
                       alignItems:
                         'center',
                       gap: 8,
-                      marginTop:
-                        18,
-                      paddingTop:
-                        15,
+                      marginTop: 18,
+                      paddingTop: 15,
                       borderTop:
                         `1px solid ${COLORS.border}`,
                     }}
@@ -2144,13 +2106,10 @@ function Brands() {
         </section>
       </main>
 
-      {modal ===
-        'form' && (
+      {modal === 'form' && (
         <div
           className="brands-modal-backdrop"
-          onMouseDown={(
-            event
-          ) => {
+          onMouseDown={(event) => {
             if (
               event.target ===
               event.currentTarget
@@ -2365,28 +2324,144 @@ function Brands() {
                   />
                 </Field>
 
-                <Field label="URL da logo">
-                  <Input
-                    value={
-                      form.logo_url
-                    }
-                    onChange={(
-                      event
-                    ) =>
-                      setForm(
-                        (
-                          current
-                        ) => ({
-                          ...current,
-                          logo_url:
-                            event
-                              .target
-                              .value,
-                        })
-                      )
-                    }
-                    placeholder="https://..."
-                  />
+                <Field label="Logo">
+                  <div
+                    className="logo-upload"
+                  >
+                    <div
+                      style={{
+                        display:
+                          'flex',
+                        alignItems:
+                          'center',
+                        gap:
+                          14,
+                      }}
+                    >
+                      <div className="logo-preview">
+                        {form.logo_url ? (
+                          <img
+                            src={
+                              form.logo_url
+                            }
+                            alt="Pré-visualização da logo"
+                            style={{
+                              width:
+                                '100%',
+                              height:
+                                '100%',
+                              objectFit:
+                                'contain',
+                            }}
+                          />
+                        ) : (
+                          <Icon
+                            name="image"
+                            size={25}
+                          />
+                        )}
+                      </div>
+
+                      <div
+                        style={{
+                          flex: 1,
+                        }}
+                      >
+                        <div
+                          style={{
+                            color:
+                              '#ddd',
+                            fontSize:
+                              12,
+                            fontWeight:
+                              700,
+                          }}
+                        >
+                          {uploading
+                            ? 'Enviando logo...'
+                            : form.logo_url
+                            ? 'Logo selecionada'
+                            : 'Envie a logo da marca'}
+                        </div>
+
+                        <div
+                          style={{
+                            marginTop:
+                              5,
+                            color:
+                              '#666',
+                            fontSize:
+                              10,
+                            lineHeight:
+                              1.5,
+                          }}
+                        >
+                          PNG, JPG, WEBP ou SVG · máximo 5 MB
+                        </div>
+
+                        <label
+                          style={{
+                            display:
+                              'inline-flex',
+                            alignItems:
+                              'center',
+                            gap:
+                              7,
+                            marginTop:
+                              10,
+                            height:
+                              34,
+                            padding:
+                              '0 11px',
+                            borderRadius:
+                              8,
+                            border:
+                              `1px solid ${COLORS.border}`,
+                            background:
+                              '#151515',
+                            color:
+                              '#ddd',
+                            cursor:
+                              uploading
+                                ? 'wait'
+                                : 'pointer',
+                            fontSize:
+                              10,
+                            fontWeight:
+                              700,
+                            opacity:
+                              uploading
+                                ? .55
+                                : 1,
+                          }}
+                        >
+                          <Icon
+                            name="upload"
+                            size={14}
+                          />
+
+                          {uploading
+                            ? 'Enviando...'
+                            : 'Escolher arquivo'}
+
+                          <input
+                            type="file"
+                            accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                            onChange={
+                              uploadLogo
+                            }
+                            disabled={
+                              uploading
+                            }
+                            style={{
+                              display:
+                                'none',
+                            }}
+                          />
+                        </label>
+                      </div>
+                    </div>
+                  </div>
                 </Field>
 
                 <div
@@ -2405,8 +2480,7 @@ function Brands() {
                       style={{
                         display:
                           'flex',
-                        gap:
-                          8,
+                        gap: 8,
                       }}
                     >
                       <Input
@@ -2477,8 +2551,7 @@ function Brands() {
                       style={{
                         display:
                           'flex',
-                        gap:
-                          8,
+                        gap: 8,
                       }}
                     >
                       <Input
@@ -2754,7 +2827,8 @@ function Brands() {
                 <button
                   type="submit"
                   disabled={
-                    saving
+                    saving ||
+                    uploading
                   }
                   style={{
                     height:
@@ -2769,7 +2843,8 @@ function Brands() {
                     color:
                       '#fff',
                     cursor:
-                      saving
+                      saving ||
+                      uploading
                         ? 'wait'
                         : 'pointer',
                     fontSize:
@@ -2777,7 +2852,8 @@ function Brands() {
                     fontWeight:
                       800,
                     opacity:
-                      saving
+                      saving ||
+                      uploading
                         ? .6
                         : 1,
                   }}
