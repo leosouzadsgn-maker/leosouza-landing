@@ -12,6 +12,7 @@ const COLORS = {
   red: '#ef2b35',
   green: '#22c55e',
   yellow: '#f59e0b',
+  blue: '#3b82f6',
 };
 
 const formatCurrency = (value) =>
@@ -23,22 +24,9 @@ const formatCurrency = (value) =>
 const formatDate = (value) => {
   if (!value) return '—';
 
-  return new Intl.DateTimeFormat('pt-BR', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-  }).format(new Date(value));
-};
-
-const formatDateTime = (value) => {
-  if (!value) return '—';
-
-  return new Intl.DateTimeFormat('pt-BR', {
-    day: '2-digit',
-    month: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-  }).format(new Date(value));
+  return new Intl.DateTimeFormat('pt-BR').format(
+    new Date(value)
+  );
 };
 
 const normalize = (value) =>
@@ -46,128 +34,6 @@ const normalize = (value) =>
     .toLowerCase()
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '');
-
-const isPaidPayment = (payment) => {
-  const status = normalize(payment?.status);
-
-  return [
-    'paid',
-    'pago',
-    'approved',
-    'aprovado',
-    'completed',
-    'complete',
-    'succeeded',
-    'success',
-    'confirmed',
-    'confirmado',
-    'captured',
-    'capturado',
-  ].includes(status);
-};
-
-const isPaidCharge = (charge) => {
-  const status = normalize(charge?.status);
-
-  return [
-    'paid',
-    'pago',
-    'approved',
-    'aprovado',
-    'completed',
-    'complete',
-    'succeeded',
-    'success',
-    'confirmed',
-    'confirmado',
-    'captured',
-    'capturado',
-  ].includes(status);
-};
-
-const getChargeStatus = (charge) => {
-  const status = normalize(charge?.status);
-
-  if ([
-    'paid',
-    'pago',
-    'approved',
-    'aprovado',
-    'completed',
-    'complete',
-    'succeeded',
-    'success',
-    'confirmed',
-    'confirmado',
-    'captured',
-    'capturado',
-  ].includes(status)) {
-    return {
-      label: 'Pago',
-      color: COLORS.green,
-      background: 'rgba(34,197,94,.10)',
-    };
-  }
-
-  if ([
-    'cancelled',
-    'canceled',
-    'cancelado',
-    'expired',
-    'expirada',
-    'expirado',
-  ].includes(status)) {
-    return {
-      label: 'Cancelado',
-      color: COLORS.red,
-      background: 'rgba(239,43,53,.10)',
-    };
-  }
-
-  if ([
-    'overdue',
-    'atrasado',
-    'late',
-  ].includes(status)) {
-    return {
-      label: 'Atrasado',
-      color: COLORS.red,
-      background: 'rgba(239,43,53,.10)',
-    };
-  }
-
-  return {
-    label: 'Pendente',
-    color: COLORS.yellow,
-    background: 'rgba(245,158,11,.10)',
-  };
-};
-
-const getPaymentMethod = (payment) => {
-  const method = normalize(payment?.payment_method);
-
-  if (method.includes('pix')) return 'PIX';
-
-  if (
-    method.includes('credit') ||
-    method.includes('credito') ||
-    method.includes('card') ||
-    method.includes('cartao') ||
-    method.includes('cartão')
-  ) {
-    return 'Cartão';
-  }
-
-  if (method.includes('debit') || method.includes('debito')) {
-    return 'Débito';
-  }
-
-  if (!method) return 'Não informado';
-
-  return String(payment.payment_method)
-    .replace(/_/g, ' ')
-    .replace(/\b\w/g, (letter) => letter.toUpperCase());
-};
 
 function Icon({ name, size = 20 }) {
   const props = {
@@ -223,6 +89,14 @@ function Icon({ name, size = 20 }) {
       </>
     ),
 
+    wallet: (
+      <>
+        <path d="M3 7.5A2.5 2.5 0 0 1 5.5 5H20v14H5.5A2.5 2.5 0 0 1 3 16.5z" />
+        <path d="M3 8h14" />
+        <path d="M17 11h5v5h-5a2.5 2.5 0 0 1 0-5Z" />
+      </>
+    ),
+
     receipt: (
       <>
         <path d="M6 2h12v20l-3-2-3 2-3-2-3 2z" />
@@ -266,11 +140,11 @@ function Icon({ name, size = 20 }) {
       </>
     ),
 
-    wallet: (
+    logout: (
       <>
-        <path d="M3 7.5A2.5 2.5 0 0 1 5.5 5H20v14H5.5A2.5 2.5 0 0 1 3 16.5z" />
-        <path d="M3 8h14" />
-        <path d="M17 11h5v5h-5a2.5 2.5 0 0 1 0-5Z" />
+        <path d="M10 17l5-5-5-5" />
+        <path d="M15 12H3" />
+        <path d="M21 19V5a2 2 0 0 0-2-2h-5" />
       </>
     ),
 
@@ -282,114 +156,35 @@ function Icon({ name, size = 20 }) {
       </>
     ),
 
-    logout: (
+    arrowDown: (
       <>
-        <path d="M10 17l5-5-5-5" />
-        <path d="M15 12H3" />
-        <path d="M21 19V5a2 2 0 0 0-2-2h-5" />
+        <path d="M12 5v14" />
+        <path d="m19 12-7 7-7-7" />
       </>
     ),
 
-    info: (
+    arrowUp: (
       <>
-        <circle cx="12" cy="12" r="9" />
-        <path d="M12 11v5" />
-        <path d="M12 8h.01" />
+        <path d="M12 19V5" />
+        <path d="m5 12 7-7 7 7" />
       </>
     ),
   };
 
-  return <svg {...props}>{icons[name] || icons.info}</svg>;
+  return <svg {...props}>{icons[name]}</svg>;
 }
 
-function MetricCard({
-  title,
-  value,
-  description,
-  icon,
-  accent = COLORS.red,
-}) {
+function Card({ children, style = {} }) {
   return (
     <div
       style={{
-        position: 'relative',
-        minHeight: 145,
-        padding: 22,
-        borderRadius: 16,
+        background: COLORS.panel,
         border: `1px solid ${COLORS.border}`,
-        background:
-          'linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.018))',
-        boxShadow: '0 18px 45px rgba(0,0,0,.18)',
-        overflow: 'hidden',
+        borderRadius: 16,
+        ...style,
       }}
     >
-      <div
-        style={{
-          position: 'absolute',
-          inset: '0 auto 0 0',
-          width: 3,
-          background: accent,
-        }}
-      />
-
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'flex-start',
-        }}
-      >
-        <div>
-          <div
-            style={{
-              color: '#c7c7c7',
-              fontSize: 14,
-              fontWeight: 600,
-            }}
-          >
-            {title}
-          </div>
-
-          <div
-            style={{
-              marginTop: 12,
-              fontSize: 29,
-              fontWeight: 800,
-              letterSpacing: '-.03em',
-            }}
-          >
-            {value}
-          </div>
-        </div>
-
-        <div
-          style={{
-            width: 42,
-            height: 42,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderRadius: 12,
-            color: accent,
-            background: `${accent}14`,
-            border: `1px solid ${accent}30`,
-          }}
-        >
-          <Icon name={icon} size={22} />
-        </div>
-      </div>
-
-      <div
-        style={{
-          position: 'absolute',
-          left: 22,
-          bottom: 18,
-          color: '#777',
-          fontSize: 12,
-        }}
-      >
-        {description}
-      </div>
+      {children}
     </div>
   );
 }
@@ -409,21 +204,18 @@ function EmptyState({ children }) {
   );
 }
 
-function AdminDashboard() {
+function FinancialManagement() {
   const [user, setUser] = useState(null);
-  const [charges, setCharges] = useState([]);
-  const [payments, setPayments] = useState([]);
-  const [clients, setClients] = useState([]);
+  const [accounts, setAccounts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [transactions, setTransactions] = useState([]);
 
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [error, setError] = useState('');
 
-  const [period, setPeriod] = useState('month');
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const loadDashboard = useCallback(async () => {
-    setError('');
+  const loadFinancialData = useCallback(async () => {
     setRefreshing(true);
 
     try {
@@ -445,106 +237,79 @@ function AdminDashboard() {
 
       const ownerId = authenticatedUser.id;
 
-      const [chargesResponse, paymentsResponse, clientsResponse] =
-        await Promise.all([
-          supabase
-            .from('charges')
-            .select(
-              `
-                id,
-                owner_id,
-                brand_id,
-                client_id,
-                reference_code,
-                title,
-                description,
-                amount,
-                currency,
-                due_date,
-                status,
-                pix_enabled,
-                card_enabled,
-                max_installments,
-                fee_payer,
-                gateway,
-                gateway_checkout_id,
-                gateway_checkout_url,
-                paid_at,
-                created_at,
-                updated_at
-              `
+      const [
+        accountsResponse,
+        categoriesResponse,
+        transactionsResponse,
+      ] = await Promise.all([
+        supabase
+          .from('financial_accounts')
+          .select('*')
+          .eq('owner_id', ownerId)
+          .eq('is_active', true)
+          .order('created_at', {
+            ascending: true,
+          }),
+
+        supabase
+          .from('financial_categories')
+          .select('*')
+          .eq('owner_id', ownerId)
+          .eq('is_active', true)
+          .order('name', {
+            ascending: true,
+          }),
+
+        supabase
+          .from('financial_transactions')
+          .select(`
+            *,
+            financial_accounts (
+              id,
+              name,
+              account_type
+            ),
+            financial_categories (
+              id,
+              name,
+              category_type
             )
-            .eq('owner_id', ownerId)
-            .order('created_at', { ascending: false }),
+          `)
+          .eq('owner_id', ownerId)
+          .order('transaction_date', {
+            ascending: false,
+          })
+          .order('created_at', {
+            ascending: false,
+          }),
+      ]);
 
-          supabase
-            .from('payments')
-            .select(
-              `
-                id,
-                owner_id,
-                charge_id,
-                gateway,
-                gateway_transaction_id,
-                gateway_order_id,
-                gateway_invoice_id,
-                amount,
-                fee_amount,
-                net_amount,
-                payment_method,
-                installments,
-                status,
-                paid_at,
-                created_at,
-                updated_at
-              `
-            )
-            .eq('owner_id', ownerId)
-            .order('created_at', { ascending: false }),
-
-          supabase
-            .from('clients')
-            .select(
-              `
-                id,
-                owner_id,
-                brand_id,
-                name,
-                document,
-                email,
-                phone,
-                notes,
-                is_active,
-                created_at,
-                updated_at
-              `
-            )
-            .eq('owner_id', ownerId)
-            .order('created_at', { ascending: false }),
-        ]);
-
-      if (chargesResponse.error) {
-        throw chargesResponse.error;
-      }
-
-      if (paymentsResponse.error) {
-        throw paymentsResponse.error;
-      }
-
-      if (clientsResponse.error) {
-        throw clientsResponse.error;
-      }
-
-      setCharges(chargesResponse.data || []);
-      setPayments(paymentsResponse.data || []);
-      setClients(clientsResponse.data || []);
-    } catch (err) {
-      console.error('Erro ao carregar dashboard:', err);
-
-      setError(
-        err?.message ||
-          'Não foi possível carregar os dados do dashboard.'
+      setAccounts(
+        accountsResponse.error
+          ? []
+          : accountsResponse.data || []
       );
+
+      setCategories(
+        categoriesResponse.error
+          ? []
+          : categoriesResponse.data || []
+      );
+
+      setTransactions(
+        transactionsResponse.error
+          ? []
+          : transactionsResponse.data || []
+      );
+    } catch (err) {
+      console.error(
+        'Erro ao carregar gestão financeira:',
+        err
+      );
+
+      setAccounts([]);
+      setCategories([]);
+      setTransactions([]);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -552,251 +317,234 @@ function AdminDashboard() {
   }, []);
 
   useEffect(() => {
-    loadDashboard();
-  }, [loadDashboard]);
+    loadFinancialData();
+  }, [loadFinancialData]);
 
-  const clientMap = useMemo(() => {
-    return Object.fromEntries(
-      clients.map((client) => [client.id, client])
-    );
-  }, [clients]);
-
-  const rangeStart = useMemo(() => {
-    const now = new Date();
-
-    if (period === 'today') {
-      now.setHours(0, 0, 0, 0);
-      return now;
-    }
-
-    if (period === '7d') {
-      now.setHours(0, 0, 0, 0);
-      now.setDate(now.getDate() - 6);
-      return now;
-    }
-
-    if (period === 'month') {
-      now.setHours(0, 0, 0, 0);
-      now.setDate(1);
-      return now;
-    }
-
-    now.setHours(0, 0, 0, 0);
-    now.setMonth(0, 1);
-
-    return now;
-  }, [period]);
-
-  const filteredCharges = useMemo(() => {
-    return charges.filter((charge) => {
-      if (!charge.created_at) return false;
-
-      return new Date(charge.created_at) >= rangeStart;
-    });
-  }, [charges, rangeStart]);
-
-  const filteredPayments = useMemo(() => {
-    return payments.filter((payment) => {
-      if (!isPaidPayment(payment)) return false;
-      if (!payment.paid_at) return false;
-
-      return new Date(payment.paid_at) >= rangeStart;
-    });
-  }, [payments, rangeStart]);
-
-  const billing = useMemo(() => {
-    return filteredCharges.reduce(
-      (total, charge) => total + Number(charge.amount || 0),
-      0
-    );
-  }, [filteredCharges]);
-
-  const received = useMemo(() => {
-    return filteredPayments.reduce(
-      (total, payment) => total + Number(payment.amount || 0),
-      0
-    );
-  }, [filteredPayments]);
-
-  const fees = useMemo(() => {
-    return filteredPayments.reduce(
-      (total, payment) => total + Number(payment.fee_amount || 0),
-      0
-    );
-  }, [filteredPayments]);
-
-  const net = useMemo(() => {
-    return filteredPayments.reduce((total, payment) => {
-      const amount = Number(payment.amount || 0);
-      const fee = Number(payment.fee_amount || 0);
-
-      const paymentNet =
-        payment.net_amount !== null &&
-        payment.net_amount !== undefined
-          ? Number(payment.net_amount)
-          : amount - fee;
-
-      return total + paymentNet;
-    }, 0);
-  }, [filteredPayments]);
-
-  const pending = useMemo(() => {
-    const paidChargeIds = new Set(
-      payments
-        .filter(isPaidPayment)
-        .map((payment) => payment.charge_id)
-        .filter(Boolean)
-    );
-
-    return filteredCharges.reduce((total, charge) => {
-      if (isPaidCharge(charge)) {
-        return total;
-      }
-
-      if (paidChargeIds.has(charge.id)) {
-        return total;
-      }
-
-      const status = normalize(charge.status);
-
-      if (
-        [
-          'cancelled',
-          'canceled',
-          'cancelado',
-          'expired',
-          'expirada',
-          'expirado',
-        ].includes(status)
-      ) {
-        return total;
-      }
-
-      return total + Number(charge.amount || 0);
-    }, 0);
-  }, [filteredCharges, payments]);
-
-  const paymentMethods = useMemo(() => {
-    const result = {};
-
-    filteredPayments.forEach((payment) => {
-      const method = getPaymentMethod(payment);
-
-      if (!result[method]) {
-        result[method] = {
-          count: 0,
-          amount: 0,
-        };
-      }
-
-      result[method].count += 1;
-      result[method].amount += Number(payment.amount || 0);
-    });
-
-    return Object.entries(result)
-      .sort((a, b) => b[1].amount - a[1].amount)
-      .map(([name, values]) => ({
-        name,
-        ...values,
-      }));
-  }, [filteredPayments]);
-
-  const chart = useMemo(() => {
-    const now = new Date();
-
-    let numberOfDays = 7;
-
-    if (period === 'today') {
-      numberOfDays = 1;
-    }
-
-    if (period === '7d') {
-      numberOfDays = 7;
-    }
-
-    if (period === 'month') {
-      numberOfDays = now.getDate();
-    }
-
-    if (period === 'year') {
-      numberOfDays = 12;
-    }
-
-    const days = [];
-
-    if (period === 'year') {
-      for (let i = 11; i >= 0; i -= 1) {
-        const current = new Date(
-          now.getFullYear(),
-          now.getMonth() - i,
-          1
-        );
-
-        const next = new Date(
-          current.getFullYear(),
-          current.getMonth() + 1,
-          1
-        );
-
-        const value = filteredPayments
-          .filter((payment) => {
-            const paidAt = new Date(payment.paid_at);
-
-            return paidAt >= current && paidAt < next;
-          })
-          .reduce(
-            (total, payment) => total + Number(payment.amount || 0),
-            0
-          );
-
-        days.push({
-          label: current.toLocaleDateString('pt-BR', {
-            month: 'short',
-          }),
-          value,
-        });
-      }
-
-      return days;
-    }
-
-    for (let i = numberOfDays - 1; i >= 0; i -= 1) {
-      const current = new Date(now);
-      current.setHours(0, 0, 0, 0);
-      current.setDate(current.getDate() - i);
-
-      const next = new Date(current);
-      next.setDate(next.getDate() + 1);
-
-      const value = filteredPayments
-        .filter((payment) => {
-          const paidAt = new Date(payment.paid_at);
-
-          return paidAt >= current && paidAt < next;
-        })
+  const income = useMemo(
+    () =>
+      transactions
+        .filter(
+          (transaction) =>
+            normalize(transaction.type) === 'income' &&
+            normalize(transaction.status) !== 'cancelled'
+        )
         .reduce(
-          (total, payment) => total + Number(payment.amount || 0),
+          (total, transaction) =>
+            total + Number(transaction.amount || 0),
           0
-        );
-
-      days.push({
-        label: current.toLocaleDateString('pt-BR', {
-          day: '2-digit',
-          month: '2-digit',
-        }),
-        value,
-      });
-    }
-
-    return days;
-  }, [filteredPayments, period]);
-
-  const maxChartValue = Math.max(
-    ...chart.map((item) => item.value),
-    1
+        ),
+    [transactions]
   );
 
-  const recentCharges = filteredCharges.slice(0, 6);
+  const expenses = useMemo(
+    () =>
+      transactions
+        .filter(
+          (transaction) =>
+            normalize(transaction.type) === 'expense' &&
+            normalize(transaction.status) !== 'cancelled'
+        )
+        .reduce(
+          (total, transaction) =>
+            total + Number(transaction.amount || 0),
+          0
+        ),
+    [transactions]
+  );
+
+  const withdrawals = useMemo(
+    () =>
+      transactions
+        .filter(
+          (transaction) =>
+            [
+              'withdrawal',
+              'retirada',
+              'pro-labore',
+              'prolabore',
+            ].includes(normalize(transaction.type)) &&
+            normalize(transaction.status) !== 'cancelled'
+        )
+        .reduce(
+          (total, transaction) =>
+            total + Number(transaction.amount || 0),
+          0
+        ),
+    [transactions]
+  );
+
+  const totalAccountBalance = useMemo(
+    () =>
+      accounts.reduce(
+        (total, account) =>
+          total + Number(account.current_balance || 0),
+        0
+      ),
+    [accounts]
+  );
+
+  const businessAccount = useMemo(
+    () =>
+      accounts.find((account) =>
+        [
+          'business',
+          'caixa',
+          'operacional',
+          'cash',
+        ].includes(
+          normalize(account.account_type)
+        )
+      ),
+    [accounts]
+  );
+
+  const reserveAccount = useMemo(
+    () =>
+      accounts.find(
+        (account) =>
+          normalize(account.account_type) === 'reserve'
+      ),
+    [accounts]
+  );
+
+  const investmentAccount = useMemo(
+    () =>
+      accounts.find(
+        (account) =>
+          normalize(account.account_type) === 'investment'
+      ),
+    [accounts]
+  );
+
+  const netResult =
+    income - expenses - withdrawals;
+
+  const expenseCategories = useMemo(() => {
+    const map = {};
+
+    transactions
+      .filter(
+        (transaction) =>
+          normalize(transaction.type) === 'expense'
+      )
+      .forEach((transaction) => {
+        const category =
+          transaction.financial_categories?.name ||
+          'Sem categoria';
+
+        map[category] =
+          (map[category] || 0) +
+          Number(transaction.amount || 0);
+      });
+
+    return Object.entries(map)
+      .map(([name, amount]) => ({
+        name,
+        amount,
+      }))
+      .sort(
+        (a, b) => b.amount - a.amount
+      );
+  }, [transactions]);
+
+  const latestTransactions =
+    transactions.slice(0, 10);
+
+  const getTransactionColor = (type) => {
+    const normalized = normalize(type);
+
+    if (normalized === 'income') {
+      return COLORS.green;
+    }
+
+    if (normalized === 'expense') {
+      return COLORS.red;
+    }
+
+    if (
+      ['reserve', 'reserva'].includes(
+        normalized
+      )
+    ) {
+      return COLORS.blue;
+    }
+
+    if (
+      ['investment', 'investimento'].includes(
+        normalized
+      )
+    ) {
+      return '#a855f7';
+    }
+
+    if (
+      [
+        'withdrawal',
+        'retirada',
+        'pro-labore',
+        'prolabore',
+      ].includes(normalized)
+    ) {
+      return COLORS.yellow;
+    }
+
+    return COLORS.muted;
+  };
+
+  const getTransactionLabel = (type) => {
+    const normalized = normalize(type);
+
+    if (normalized === 'income') {
+      return 'Entrada';
+    }
+
+    if (normalized === 'expense') {
+      return 'Despesa';
+    }
+
+    if (
+      ['reserve', 'reserva'].includes(
+        normalized
+      )
+    ) {
+      return 'Reserva';
+    }
+
+    if (
+      ['investment', 'investimento'].includes(
+        normalized
+      )
+    ) {
+      return 'Investimento';
+    }
+
+    if (
+      [
+        'withdrawal',
+        'retirada',
+        'pro-labore',
+        'prolabore',
+      ].includes(normalized)
+    ) {
+      return 'Retirada';
+    }
+
+    if (
+      [
+        'transfer_in',
+        'transfer_out',
+        'transferencia',
+      ].includes(normalized)
+    ) {
+      return 'Transferência';
+    }
+
+    return type || 'Movimentação';
+  };
+
+  const navigate = (path) => {
+    window.location.href = path;
+  };
 
   const styles = `
     * {
@@ -807,65 +555,61 @@ function AdminDashboard() {
       margin: 0;
     }
 
-    .cp-nav {
+    .fm-nav {
       transition: transform .2s ease;
     }
 
-    .cp-row:hover {
-      background: rgba(255,255,255,.025);
-    }
-
-    .cp-mobile {
+    .fm-mobile {
       display: none !important;
     }
 
-    @media (max-width: 1000px) {
-      .cp-nav {
+    .fm-card {
+      transition: border-color .2s ease, transform .2s ease;
+    }
+
+    .fm-card:hover {
+      border-color: rgba(255,255,255,.15) !important;
+    }
+
+    @media (max-width: 1050px) {
+      .fm-nav {
         transform: translateX(-100%);
         position: fixed !important;
-        z-index: 30;
+        z-index: 50;
       }
 
-      .cp-nav.open {
+      .fm-nav.open {
         transform: translateX(0);
       }
 
-      .cp-main {
+      .fm-main {
         margin-left: 0 !important;
       }
 
-      .cp-mobile {
+      .fm-mobile {
         display: flex !important;
       }
 
-      .cp-grid {
+      .fm-grid-4 {
         grid-template-columns: repeat(2, 1fr) !important;
       }
 
-      .cp-wide {
+      .fm-grid-2 {
         grid-template-columns: 1fr !important;
       }
     }
 
-    @media (max-width: 620px) {
-      .cp-grid {
+    @media (max-width: 650px) {
+      .fm-grid-4 {
         grid-template-columns: 1fr !important;
       }
 
-      .cp-main {
+      .fm-main {
         padding: 72px 18px 40px !important;
       }
 
-      .cp-header {
-        align-items: flex-start !important;
-      }
-
-      .cp-title {
-        font-size: 25px !important;
-      }
-
-      .cp-user {
-        display: none !important;
+      .fm-header-actions {
+        flex-wrap: wrap;
       }
     }
   `;
@@ -883,7 +627,7 @@ function AdminDashboard() {
           fontFamily: 'Arial, sans-serif',
         }}
       >
-        Carregando Central de Pagamentos...
+        Carregando Gestão Financeira...
       </div>
     );
   }
@@ -900,13 +644,15 @@ function AdminDashboard() {
       <style>{styles}</style>
 
       <button
-        className="cp-mobile"
-        onClick={() => setMobileOpen((value) => !value)}
+        className="fm-mobile"
+        onClick={() =>
+          setMobileOpen((value) => !value)
+        }
         style={{
           position: 'fixed',
           top: 15,
           left: 15,
-          zIndex: 40,
+          zIndex: 60,
           width: 42,
           height: 42,
           borderRadius: 12,
@@ -922,7 +668,9 @@ function AdminDashboard() {
       </button>
 
       <aside
-        className={`cp-nav ${mobileOpen ? 'open' : ''}`}
+        className={`fm-nav ${
+          mobileOpen ? 'open' : ''
+        }`}
         style={{
           position: 'fixed',
           top: 0,
@@ -973,63 +721,97 @@ function AdminDashboard() {
         </div>
 
         {[
-  ['dashboard', 'Dashboard'],
-  ['charges', 'Cobranças'],
-  ['clients', 'Clientes'],
-  ['payments', 'Pagamentos'],
-  ['chart', 'Faturamento'],
-  ['wallet', 'Gestão Financeira'],
-  ['receipt', 'Comprovantes'],
-  ['tag', 'Marcas / Projetos'],
-  ['reports', 'Relatórios'],
-  ['settings', 'Configurações'],
-].map(([icon, label], index) => (
-          <div
-            key={label}
-            onClick={() => {
-              setMobileOpen(false);
+          [
+            'dashboard',
+            'Dashboard',
+            '/pagamentos/admin/dashboard',
+          ],
+          [
+            'charges',
+            'Cobranças',
+            '/pagamentos/admin/cobrancas',
+          ],
+          [
+            'clients',
+            'Clientes',
+            '/pagamentos/admin/clientes',
+          ],
+          [
+            'payments',
+            'Pagamentos',
+            '/pagamentos/admin/pagamentos',
+          ],
+          [
+            'chart',
+            'Faturamento',
+            '/pagamentos/admin/faturamento',
+          ],
+          [
+            'wallet',
+            'Gestão Financeira',
+            '/pagamentos/admin/financeiro',
+          ],
+          [
+            'receipt',
+            'Comprovantes',
+            '/pagamentos/admin/comprovantes',
+          ],
+          [
+            'tag',
+            'Marcas / Projetos',
+            '/pagamentos/admin/marcas',
+          ],
+          [
+            'reports',
+            'Relatórios',
+            '/pagamentos/admin/relatorios',
+          ],
+          [
+            'settings',
+            'Configurações',
+            '/pagamentos/admin/configuracoes',
+          ],
+        ].map(([icon, label, path]) => {
+          const active =
+            path ===
+            '/pagamentos/admin/financeiro';
 
-              const routes = {
-                dashboard: '/pagamentos/admin/dashboard',
-                charges: '/pagamentos/admin/cobrancas',
-                clients: '/pagamentos/admin/clientes',
-                payments: '/pagamentos/admin/pagamentos',
-                chart: '/pagamentos/admin/faturamento',
-                wallet: '/pagamentos/admin/financeiro',
-                receipt: '/pagamentos/admin/comprovantes',
-                tag: '/pagamentos/admin/marcas',
-                reports: '/pagamentos/admin/relatorios',
-                settings: '/pagamentos/admin/configuracoes',
-              };
-
-              const destination = routes[icon];
-
-              if (destination && destination !== window.location.pathname) {
-                window.location.href = destination;
-              }
-            }}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 12,
-              padding: '11px 12px',
-              borderRadius: 10,
-              marginBottom: 4,
-              color:
-                index === 0 ? COLORS.white : '#888',
-              background:
-                index === 0
+          return (
+            <div
+              key={label}
+              onClick={() => {
+                setMobileOpen(false);
+                navigate(path);
+              }}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 12,
+                padding: '11px 12px',
+                borderRadius: 10,
+                marginBottom: 4,
+                color: active
+                  ? COLORS.white
+                  : '#888',
+                background: active
                   ? 'rgba(239,43,53,.12)'
                   : 'transparent',
-              cursor: 'pointer',
-              fontSize: 13,
-              fontWeight: index === 0 ? 700 : 500,
-            }}
-          >
-            <Icon name={icon} size={18} />
-            {label}
-          </div>
-        ))}
+                cursor: 'pointer',
+                fontSize: 13,
+                fontWeight: active
+                  ? 700
+                  : 500,
+              }}
+            >
+              <Icon
+                name={icon}
+                size={18}
+              />
+
+              {label}
+            </div>
+          );
+        })}
 
         <div
           style={{
@@ -1039,7 +821,6 @@ function AdminDashboard() {
           }}
         >
           <div
-            className="cp-user"
             style={{
               fontSize: 11,
               color: '#777',
@@ -1055,7 +836,8 @@ function AdminDashboard() {
           <button
             onClick={async () => {
               await supabase.auth.signOut();
-              window.location.href = '/pagamentos/admin';
+              window.location.href =
+                '/pagamentos/admin';
             }}
             style={{
               display: 'flex',
@@ -1068,27 +850,30 @@ function AdminDashboard() {
               padding: 0,
             }}
           >
-            <Icon name="logout" size={17} />
+            <Icon
+              name="logout"
+              size={17}
+            />
             Sair
           </button>
         </div>
       </aside>
 
       <main
-        className="cp-main"
+        className="fm-main"
         style={{
           marginLeft: 245,
-          padding: '30px 34px 50px',
+          padding: '30px 34px 60px',
           maxWidth: 1500,
         }}
       >
         <header
-          className="cp-header"
           style={{
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
             marginBottom: 30,
+            gap: 20,
           }}
         >
           <div>
@@ -1104,52 +889,41 @@ function AdminDashboard() {
             </div>
 
             <h1
-              className="cp-title"
               style={{
                 fontSize: 30,
                 margin: '7px 0 0',
                 letterSpacing: '-.04em',
               }}
             >
-              Visão geral
+              Gestão Financeira
             </h1>
+
+            <p
+              style={{
+                margin: '7px 0 0',
+                color: '#666',
+                fontSize: 13,
+              }}
+            >
+              Controle o dinheiro da empresa,
+              despesas, reservas e investimentos.
+            </p>
           </div>
 
           <div
+            className="fm-header-actions"
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: 10,
+              gap: 9,
             }}
           >
-            <select
-              value={period}
-              onChange={(event) =>
-                setPeriod(event.target.value)
-              }
-              style={{
-                height: 40,
-                padding: '0 12px',
-                borderRadius: 10,
-                border: `1px solid ${COLORS.border}`,
-                background: COLORS.panel,
-                color: '#ddd',
-                outline: 'none',
-              }}
-            >
-              <option value="today">Hoje</option>
-              <option value="7d">Últimos 7 dias</option>
-              <option value="month">Este mês</option>
-              <option value="year">Este ano</option>
-            </select>
-
             <button
-              onClick={loadDashboard}
+              onClick={loadFinancialData}
               disabled={refreshing}
-              title="Atualizar dados"
               style={{
-                width: 40,
-                height: 40,
+                width: 42,
+                height: 42,
                 borderRadius: 10,
                 border: `1px solid ${COLORS.border}`,
                 background: COLORS.panel,
@@ -1160,50 +934,22 @@ function AdminDashboard() {
                 cursor: refreshing
                   ? 'default'
                   : 'pointer',
-                opacity: refreshing ? 0.5 : 1,
+                opacity: refreshing
+                  ? 0.5
+                  : 1,
               }}
+              title="Atualizar dados"
             >
-              <Icon name="refresh" size={18} />
+              <Icon
+                name="refresh"
+                size={18}
+              />
             </button>
-
-            <div
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: 12,
-                background: COLORS.red,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontWeight: 800,
-              }}
-            >
-              LS
-            </div>
           </div>
         </header>
 
-        {error && (
-          <div
-            style={{
-              padding: 14,
-              marginBottom: 20,
-              borderRadius: 12,
-              border:
-                '1px solid rgba(239,43,53,.35)',
-              background:
-                'rgba(239,43,53,.08)',
-              color: '#ff9da3',
-              fontSize: 13,
-            }}
-          >
-            Não foi possível carregar os dados:{' '}
-            {error}
-          </div>
-        )}
-
         <section
-          className="cp-grid"
+          className="fm-grid-4"
           style={{
             display: 'grid',
             gridTemplateColumns:
@@ -1212,52 +958,325 @@ function AdminDashboard() {
             marginBottom: 18,
           }}
         >
-          <MetricCard
-            title="Faturamento"
-            value={formatCurrency(billing)}
-            description="Cobranças criadas no período"
-            icon="chart"
-          />
+          <Card
+            className="fm-card"
+            style={{
+              padding: 20,
+              borderLeft:
+                `3px solid ${COLORS.white}`,
+            }}
+          >
+            <div
+              style={{
+                color: '#777',
+                fontSize: 12,
+              }}
+            >
+              Saldo total
+            </div>
 
-          <MetricCard
-            title="Recebido"
-            value={formatCurrency(received)}
-            description="Pagamentos confirmados"
-            icon="wallet"
-            accent={COLORS.green}
-          />
+            <div
+              style={{
+                fontSize: 27,
+                fontWeight: 800,
+                marginTop: 10,
+              }}
+            >
+              {formatCurrency(
+                totalAccountBalance
+              )}
+            </div>
 
-          <MetricCard
-            title="A receber"
-            value={formatCurrency(pending)}
-            description="Cobranças ainda pendentes"
-            icon="charges"
-            accent={COLORS.yellow}
-          />
+            <div
+              style={{
+                color: '#555',
+                fontSize: 11,
+                marginTop: 6,
+              }}
+            >
+              Todas as contas
+            </div>
+          </Card>
 
-          <MetricCard
-            title="Cobranças"
-            value={filteredCharges.length}
-            description="Criadas no período"
-            icon="receipt"
-          />
+          <Card
+            className="fm-card"
+            style={{
+              padding: 20,
+              borderLeft:
+                `3px solid ${COLORS.green}`,
+            }}
+          >
+            <div
+              style={{
+                color: '#777',
+                fontSize: 12,
+              }}
+            >
+              Caixa da empresa
+            </div>
+
+            <div
+              style={{
+                fontSize: 27,
+                fontWeight: 800,
+                marginTop: 10,
+              }}
+            >
+              {formatCurrency(
+                businessAccount?.current_balance || 0
+              )}
+            </div>
+
+            <div
+              style={{
+                color: '#555',
+                fontSize: 11,
+                marginTop: 6,
+              }}
+            >
+              Disponível para operação
+            </div>
+          </Card>
+
+          <Card
+            className="fm-card"
+            style={{
+              padding: 20,
+              borderLeft:
+                `3px solid ${COLORS.blue}`,
+            }}
+          >
+            <div
+              style={{
+                color: '#777',
+                fontSize: 12,
+              }}
+            >
+              Reserva
+            </div>
+
+            <div
+              style={{
+                fontSize: 27,
+                fontWeight: 800,
+                marginTop: 10,
+              }}
+            >
+              {formatCurrency(
+                reserveAccount?.current_balance || 0
+              )}
+            </div>
+
+            <div
+              style={{
+                color: '#555',
+                fontSize: 11,
+                marginTop: 6,
+              }}
+            >
+              Segurança financeira
+            </div>
+          </Card>
+
+          <Card
+            className="fm-card"
+            style={{
+              padding: 20,
+              borderLeft:
+                '3px solid #a855f7',
+            }}
+          >
+            <div
+              style={{
+                color: '#777',
+                fontSize: 12,
+              }}
+            >
+              Investimentos
+            </div>
+
+            <div
+              style={{
+                fontSize: 27,
+                fontWeight: 800,
+                marginTop: 10,
+              }}
+            >
+              {formatCurrency(
+                investmentAccount?.current_balance || 0
+              )}
+            </div>
+
+            <div
+              style={{
+                color: '#555',
+                fontSize: 11,
+                marginTop: 6,
+              }}
+            >
+              Patrimônio investido
+            </div>
+          </Card>
         </section>
 
         <section
-          className="cp-wide"
+          className="fm-grid-4"
           style={{
             display: 'grid',
             gridTemplateColumns:
-              'minmax(0, 2fr) minmax(300px, 1fr)',
+              'repeat(4, 1fr)',
+            gap: 14,
+            marginBottom: 18,
+          }}
+        >
+          <Card
+            style={{
+              padding: 18,
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 9,
+                color: COLORS.green,
+                fontSize: 12,
+                fontWeight: 700,
+              }}
+            >
+              <Icon
+                name="arrowDown"
+                size={17}
+              />
+              ENTRADAS
+            </div>
+
+            <strong
+              style={{
+                display: 'block',
+                fontSize: 22,
+                marginTop: 10,
+              }}
+            >
+              {formatCurrency(income)}
+            </strong>
+          </Card>
+
+          <Card
+            style={{
+              padding: 18,
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 9,
+                color: COLORS.red,
+                fontSize: 12,
+                fontWeight: 700,
+              }}
+            >
+              <Icon
+                name="arrowUp"
+                size={17}
+              />
+              DESPESAS
+            </div>
+
+            <strong
+              style={{
+                display: 'block',
+                fontSize: 22,
+                marginTop: 10,
+              }}
+            >
+              {formatCurrency(expenses)}
+            </strong>
+          </Card>
+
+          <Card
+            style={{
+              padding: 18,
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 9,
+                color: COLORS.yellow,
+                fontSize: 12,
+                fontWeight: 700,
+              }}
+            >
+              <Icon
+                name="wallet"
+                size={17}
+              />
+              RETIRADAS
+            </div>
+
+            <strong
+              style={{
+                display: 'block',
+                fontSize: 22,
+                marginTop: 10,
+              }}
+            >
+              {formatCurrency(withdrawals)}
+            </strong>
+          </Card>
+
+          <Card
+            style={{
+              padding: 18,
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 9,
+                color:
+                  netResult >= 0
+                    ? COLORS.green
+                    : COLORS.red,
+                fontSize: 12,
+                fontWeight: 700,
+              }}
+            >
+              RESULTADO
+            </div>
+
+            <strong
+              style={{
+                display: 'block',
+                fontSize: 22,
+                marginTop: 10,
+                color:
+                  netResult >= 0
+                    ? COLORS.white
+                    : COLORS.red,
+              }}
+            >
+              {formatCurrency(netResult)}
+            </strong>
+          </Card>
+        </section>
+
+        <section
+          className="fm-grid-2"
+          style={{
+            display: 'grid',
+            gridTemplateColumns:
+              'minmax(0, 1.5fr) minmax(300px, 1fr)',
             gap: 18,
             marginBottom: 18,
           }}
         >
-          <div
+          <Card
             style={{
-              background: COLORS.panel,
-              border: `1px solid ${COLORS.border}`,
-              borderRadius: 16,
               padding: 22,
             }}
           >
@@ -1272,172 +1291,279 @@ function AdminDashboard() {
               <div>
                 <h2
                   style={{
-                    fontSize: 17,
                     margin: 0,
+                    fontSize: 17,
                   }}
                 >
-                  Receita recebida
+                  Fluxo financeiro
                 </h2>
 
                 <div
                   style={{
-                    fontSize: 12,
                     color: '#666',
+                    fontSize: 12,
                     marginTop: 5,
                   }}
                 >
-                  Pagamentos confirmados no período
+                  Visão geral do dinheiro movimentado
                 </div>
               </div>
-
-              <strong
-                style={{
-                  fontSize: 20,
-                }}
-              >
-                {formatCurrency(received)}
-              </strong>
             </div>
 
-            {chart.every(
-              (item) => item.value === 0
-            ) ? (
-              <EmptyState>
-                Sem movimentações no período.
-              </EmptyState>
+            {income === 0 && expenses === 0 ? (
+              <div
+                style={{
+                  height: 220,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#666',
+                  fontSize: 13,
+                  border:
+                    `1px dashed ${COLORS.border}`,
+                  borderRadius: 12,
+                }}
+              >
+                Ainda não existem movimentações financeiras.
+              </div>
             ) : (
-              <>
-                <div
-                  style={{
-                    height: 250,
-                    display: 'flex',
-                    alignItems: 'flex-end',
-                    gap: 6,
-                    borderBottom: `1px solid ${COLORS.border}`,
-                    padding: '15px 0 0',
-                  }}
-                >
-                  {chart.map((item, index) => (
-                    <div
-                      key={`${item.label}-${index}`}
-                      title={`${item.label} · ${formatCurrency(
-                        item.value
-                      )}`}
+              <div
+                style={{
+                  display: 'grid',
+                  gap: 20,
+                }}
+              >
+                <div>
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      marginBottom: 8,
+                      fontSize: 12,
+                    }}
+                  >
+                    <span
                       style={{
-                        flex: 1,
-                        height: '100%',
-                        display: 'flex',
-                        alignItems: 'flex-end',
-                        minWidth: 2,
+                        color: '#888',
                       }}
                     >
-                      <div
-                        style={{
-                          width: '100%',
-                          height: `${Math.max(
-                            3,
-                            (item.value /
-                              maxChartValue) *
-                              100
-                          )}%`,
-                          background:
-                            COLORS.red,
-                          borderRadius:
-                            '5px 5px 0 0',
-                          opacity: 0.9,
-                        }}
-                      />
-                    </div>
-                  ))}
+                      Entradas
+                    </span>
+
+                    <strong>
+                      {formatCurrency(income)}
+                    </strong>
+                  </div>
+
+                  <div
+                    style={{
+                      height: 10,
+                      background: '#1d1d1d',
+                      borderRadius: 20,
+                      overflow: 'hidden',
+                    }}
+                  >
+                    <div
+                      style={{
+                        height: '100%',
+                        width:
+                          income + expenses > 0
+                            ? `${Math.min(
+                                100,
+                                (income /
+                                  Math.max(
+                                    income,
+                                    expenses
+                                  )) *
+                                  100
+                              )}%`
+                            : '0%',
+                        background: COLORS.green,
+                        borderRadius: 20,
+                      }}
+                    />
+                  </div>
                 </div>
 
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent:
-                      'space-between',
-                    color: '#555',
-                    fontSize: 10,
-                    marginTop: 8,
-                  }}
-                >
-                  <span>{chart[0]?.label}</span>
-                  <span>
-                    {chart[chart.length - 1]?.label}
-                  </span>
+                <div>
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      marginBottom: 8,
+                      fontSize: 12,
+                    }}
+                  >
+                    <span
+                      style={{
+                        color: '#888',
+                      }}
+                    >
+                      Despesas
+                    </span>
+
+                    <strong>
+                      {formatCurrency(expenses)}
+                    </strong>
+                  </div>
+
+                  <div
+                    style={{
+                      height: 10,
+                      background: '#1d1d1d',
+                      borderRadius: 20,
+                      overflow: 'hidden',
+                    }}
+                  >
+                    <div
+                      style={{
+                        height: '100%',
+                        width:
+                          income + expenses > 0
+                            ? `${Math.min(
+                                100,
+                                (expenses /
+                                  Math.max(
+                                    income,
+                                    expenses
+                                  )) *
+                                  100
+                              )}%`
+                            : '0%',
+                        background: COLORS.red,
+                        borderRadius: 20,
+                      }}
+                    />
+                  </div>
                 </div>
-              </>
+              </div>
             )}
-          </div>
+          </Card>
 
-          <div
+          <Card
             style={{
-              background: COLORS.panel,
-              border: `1px solid ${COLORS.border}`,
-              borderRadius: 16,
               padding: 22,
             }}
           >
             <h2
               style={{
+                margin: 0,
                 fontSize: 17,
-                margin: '0 0 20px',
               }}
             >
-              Resumo financeiro
+              Contas financeiras
             </h2>
 
-            {[
-              ['Faturamento bruto', billing],
-              ['Recebido', received],
-              ['A receber', pending],
-              ['Taxas InfinitePay', fees],
-              ['Líquido recebido', net],
-            ].map(([label, value], index) => (
+            <div
+              style={{
+                color: '#666',
+                fontSize: 12,
+                marginTop: 5,
+                marginBottom: 18,
+              }}
+            >
+              Onde seu dinheiro está
+            </div>
+
+            {accounts.length === 0 ? (
               <div
-                key={label}
                 style={{
-                  display: 'flex',
-                  justifyContent:
-                    'space-between',
-                  padding: '12px 0',
-                  borderBottom:
-                    index === 4
-                      ? 'none'
-                      : `1px solid ${COLORS.border}`,
+                  color: '#666',
+                  textAlign: 'center',
+                  padding: 30,
                   fontSize: 13,
                 }}
               >
-                <span
+                Nenhuma conta cadastrada.
+              </div>
+            ) : (
+              accounts.map((account) => (
+                <div
+                  key={account.id}
                   style={{
-                    color: '#777',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '13px 0',
+                    borderBottom:
+                      `1px solid ${COLORS.border}`,
                   }}
                 >
-                  {label}
-                </span>
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 10,
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 34,
+                        height: 34,
+                        borderRadius: 10,
+                        background:
+                          'rgba(255,255,255,.04)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: '#aaa',
+                      }}
+                    >
+                      <Icon
+                        name="wallet"
+                        size={17}
+                      />
+                    </div>
 
-                <strong>
-                  {formatCurrency(value)}
-                </strong>
-              </div>
-            ))}
-          </div>
+                    <div>
+                      <div
+                        style={{
+                          fontSize: 13,
+                          fontWeight: 700,
+                        }}
+                      >
+                        {account.name}
+                      </div>
+
+                      <div
+                        style={{
+                          color: '#555',
+                          fontSize: 10,
+                          marginTop: 3,
+                        }}
+                      >
+                        {account.account_type ||
+                          'Conta'}
+                      </div>
+                    </div>
+                  </div>
+
+                  <strong
+                    style={{
+                      fontSize: 13,
+                    }}
+                  >
+                    {formatCurrency(
+                      account.current_balance
+                    )}
+                  </strong>
+                </div>
+              ))
+            )}
+          </Card>
         </section>
 
         <section
-          className="cp-wide"
+          className="fm-grid-2"
           style={{
             display: 'grid',
             gridTemplateColumns:
-              'minmax(0, 2fr) minmax(300px, 1fr)',
+              'minmax(0, 1.5fr) minmax(300px, 1fr)',
             gap: 18,
           }}
         >
-          <div
+          <Card
             style={{
-              background: COLORS.panel,
-              border: `1px solid ${COLORS.border}`,
-              borderRadius: 16,
               padding: 22,
               overflow: 'hidden',
             }}
@@ -1453,38 +1579,28 @@ function AdminDashboard() {
               <div>
                 <h2
                   style={{
-                    fontSize: 17,
                     margin: 0,
+                    fontSize: 17,
                   }}
                 >
-                  Últimas cobranças
+                  Últimas movimentações
                 </h2>
 
                 <div
                   style={{
-                    fontSize: 12,
                     color: '#666',
+                    fontSize: 12,
                     marginTop: 5,
                   }}
                 >
-                  Dados reais do sistema
+                  Movimentações geradas pelo sistema
                 </div>
               </div>
-
-              <span
-                style={{
-                  fontSize: 12,
-                  color: '#666',
-                }}
-              >
-                {filteredCharges.length}{' '}
-                no período
-              </span>
             </div>
 
-            {recentCharges.length === 0 ? (
+            {latestTransactions.length === 0 ? (
               <EmptyState>
-                Nenhuma cobrança criada ainda.
+                Nenhuma movimentação registrada.
               </EmptyState>
             ) : (
               <div
@@ -1495,9 +1611,8 @@ function AdminDashboard() {
                 <table
                   style={{
                     width: '100%',
-                    borderCollapse:
-                      'collapse',
-                    minWidth: 650,
+                    borderCollapse: 'collapse',
+                    minWidth: 580,
                   }}
                 >
                   <thead>
@@ -1505,139 +1620,196 @@ function AdminDashboard() {
                       style={{
                         color: '#555',
                         fontSize: 10,
-                        textTransform:
-                          'uppercase',
-                        letterSpacing: '.08em',
+                        textTransform: 'uppercase',
                         textAlign: 'left',
+                        letterSpacing: '.08em',
                       }}
                     >
-                      {[
-                        'Cliente',
-                        'Cobrança',
-                        'Valor',
-                        'Status',
-                        'Data',
-                      ].map((heading) => (
-                        <th
-                          key={heading}
-                          style={{
-                            padding:
-                              '10px 8px',
-                            borderBottom: `1px solid ${COLORS.border}`,
-                          }}
-                        >
-                          {heading}
-                        </th>
-                      ))}
+                      <th
+                        style={{
+                          padding: '9px 7px',
+                          borderBottom:
+                            `1px solid ${COLORS.border}`,
+                        }}
+                      >
+                        Movimento
+                      </th>
+
+                      <th
+                        style={{
+                          padding: '9px 7px',
+                          borderBottom:
+                            `1px solid ${COLORS.border}`,
+                        }}
+                      >
+                        Categoria
+                      </th>
+
+                      <th
+                        style={{
+                          padding: '9px 7px',
+                          borderBottom:
+                            `1px solid ${COLORS.border}`,
+                        }}
+                      >
+                        Data
+                      </th>
+
+                      <th
+                        style={{
+                          padding: '9px 7px',
+                          borderBottom:
+                            `1px solid ${COLORS.border}`,
+                          textAlign: 'right',
+                        }}
+                      >
+                        Valor
+                      </th>
                     </tr>
                   </thead>
 
                   <tbody>
-                    {recentCharges.map(
-                      (charge) => {
-                        const client =
-                          clientMap[
-                            charge.client_id
-                          ];
-
-                        const status =
-                          getChargeStatus(
-                            charge
+                    {latestTransactions.map(
+                      (transaction) => {
+                        const color =
+                          getTransactionColor(
+                            transaction.type
                           );
+
+                        const normalized =
+                          normalize(
+                            transaction.type
+                          );
+
+                        const isOutgoing = [
+                          'expense',
+                          'withdrawal',
+                          'retirada',
+                          'pro-labore',
+                          'prolabore',
+                          'reserve',
+                          'reserva',
+                          'investment',
+                          'investimento',
+                          'transfer_out',
+                        ].includes(
+                          normalized
+                        );
 
                         return (
                           <tr
-                            className="cp-row"
-                            key={charge.id}
+                            key={transaction.id}
                           >
                             <td
                               style={{
-                                padding:
-                                  '13px 8px',
-                                borderBottom: `1px solid ${COLORS.border}`,
-                                fontSize: 13,
+                                padding: '13px 7px',
+                                borderBottom:
+                                  `1px solid ${COLORS.border}`,
                               }}
                             >
-                              {client?.name ||
-                                'Cliente não informado'}
-                            </td>
-
-                            <td
-                              style={{
-                                padding:
-                                  '13px 8px',
-                                borderBottom: `1px solid ${COLORS.border}`,
-                                fontSize: 13,
-                              }}
-                            >
-                              <div>
-                                {charge.title ||
-                                  'Cobrança'}
-                              </div>
-
-                              <small
+                              <div
                                 style={{
-                                  color:
-                                    '#555',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: 9,
                                 }}
                               >
-                                {
-                                  charge.reference_code
-                                }
-                              </small>
+                                <div
+                                  style={{
+                                    width: 30,
+                                    height: 30,
+                                    borderRadius: 9,
+                                    background:
+                                      `${color}15`,
+                                    color,
+                                    display: 'flex',
+                                    alignItems:
+                                      'center',
+                                    justifyContent:
+                                      'center',
+                                  }}
+                                >
+                                  <Icon
+                                    name={
+                                      isOutgoing
+                                        ? 'arrowUp'
+                                        : 'arrowDown'
+                                    }
+                                    size={15}
+                                  />
+                                </div>
+
+                                <div>
+                                  <div
+                                    style={{
+                                      fontSize: 12,
+                                      fontWeight: 700,
+                                    }}
+                                  >
+                                    {transaction.description ||
+                                      'Movimentação financeira'}
+                                  </div>
+
+                                  <div
+                                    style={{
+                                      fontSize: 10,
+                                      color: '#555',
+                                      marginTop: 3,
+                                    }}
+                                  >
+                                    {getTransactionLabel(
+                                      transaction.type
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
                             </td>
 
                             <td
                               style={{
-                                padding:
-                                  '13px 8px',
-                                borderBottom: `1px solid ${COLORS.border}`,
-                                fontWeight: 700,
+                                padding: '13px 7px',
+                                borderBottom:
+                                  `1px solid ${COLORS.border}`,
+                                color: '#777',
+                                fontSize: 11,
                               }}
                             >
-                              {formatCurrency(
-                                charge.amount
+                              {transaction
+                                .financial_categories
+                                ?.name || '—'}
+                            </td>
+
+                            <td
+                              style={{
+                                padding: '13px 7px',
+                                borderBottom:
+                                  `1px solid ${COLORS.border}`,
+                                color: '#777',
+                                fontSize: 11,
+                              }}
+                            >
+                              {formatDate(
+                                transaction.transaction_date
                               )}
                             </td>
 
                             <td
                               style={{
-                                padding:
-                                  '13px 8px',
-                                borderBottom: `1px solid ${COLORS.border}`,
-                              }}
-                            >
-                              <span
-                                style={{
-                                  padding:
-                                    '5px 8px',
-                                  borderRadius:
-                                    20,
-                                  fontSize: 11,
-                                  background:
-                                    status.background,
-                                  color:
-                                    status.color,
-                                }}
-                              >
-                                {
-                                  status.label
-                                }
-                              </span>
-                            </td>
-
-                            <td
-                              style={{
-                                padding:
-                                  '13px 8px',
-                                borderBottom: `1px solid ${COLORS.border}`,
-                                color:
-                                  '#777',
+                                padding: '13px 7px',
+                                borderBottom:
+                                  `1px solid ${COLORS.border}`,
+                                textAlign: 'right',
+                                color,
+                                fontWeight: 800,
                                 fontSize: 12,
                               }}
                             >
-                              {formatDateTime(
-                                charge.created_at
+                              {isOutgoing
+                                ? '- '
+                                : '+ '}
+
+                              {formatCurrency(
+                                transaction.amount
                               )}
                             </td>
                           </tr>
@@ -1648,283 +1820,123 @@ function AdminDashboard() {
                 </table>
               </div>
             )}
-          </div>
+          </Card>
 
-          <div
+          <Card
             style={{
-              background: COLORS.panel,
-              border: `1px solid ${COLORS.border}`,
-              borderRadius: 16,
               padding: 22,
             }}
           >
             <h2
               style={{
+                margin: 0,
                 fontSize: 17,
-                margin: '0 0 18px',
               }}
             >
-              Meios de pagamento
+              Despesas por categoria
             </h2>
 
-            {paymentMethods.length === 0 ? (
-              <EmptyState>
-                Nenhum pagamento confirmado.
-              </EmptyState>
-            ) : (
-              <div>
-                {paymentMethods.map(
-                  (method) => {
-                    const percentage =
-                      received > 0
-                        ? (method.amount /
-                            received) *
-                          100
-                        : 0;
+            <div
+              style={{
+                color: '#666',
+                fontSize: 12,
+                marginTop: 5,
+                marginBottom: 20,
+              }}
+            >
+              Onde o dinheiro está saindo
+            </div>
 
-                    return (
+            {expenseCategories.length === 0 ? (
+              <div
+                style={{
+                  padding: '40px 10px',
+                  textAlign: 'center',
+                  color: '#666',
+                  fontSize: 13,
+                }}
+              >
+                Nenhuma despesa registrada.
+              </div>
+            ) : (
+              expenseCategories
+                .slice(0, 8)
+                .map((category) => {
+                  const percentage =
+                    expenses > 0
+                      ? (category.amount /
+                          expenses) *
+                        100
+                      : 0;
+
+                  return (
+                    <div
+                      key={category.name}
+                      style={{
+                        marginBottom: 17,
+                      }}
+                    >
                       <div
-                        key={method.name}
                         style={{
-                          marginBottom: 18,
+                          display: 'flex',
+                          justifyContent:
+                            'space-between',
+                          marginBottom: 7,
+                          fontSize: 12,
+                        }}
+                      >
+                        <span
+                          style={{
+                            color: '#aaa',
+                          }}
+                        >
+                          {category.name}
+                        </span>
+
+                        <strong>
+                          {formatCurrency(
+                            category.amount
+                          )}
+                        </strong>
+                      </div>
+
+                      <div
+                        style={{
+                          height: 6,
+                          background: '#1d1d1d',
+                          borderRadius: 20,
+                          overflow: 'hidden',
                         }}
                       >
                         <div
                           style={{
-                            display:
-                              'flex',
-                            justifyContent:
-                              'space-between',
-                            alignItems:
-                              'center',
-                            marginBottom: 7,
-                          }}
-                        >
-                          <span
-                            style={{
-                              fontSize: 13,
-                              color:
-                                '#bbb',
-                            }}
-                          >
-                            {method.name}
-                          </span>
-
-                          <strong
-                            style={{
-                              fontSize: 13,
-                            }}
-                          >
-                            {formatCurrency(
-                              method.amount
-                            )}
-                          </strong>
-                        </div>
-
-                        <div
-                          style={{
-                            height: 7,
-                            borderRadius: 20,
+                            width: `${percentage}%`,
+                            height: '100%',
                             background:
-                              '#1c1c1c',
-                            overflow:
-                              'hidden',
+                              COLORS.red,
+                            borderRadius: 20,
                           }}
-                        >
-                          <div
-                            style={{
-                              width: `${percentage}%`,
-                              height: '100%',
-                              background:
-                                COLORS.red,
-                              borderRadius:
-                                20,
-                            }}
-                          />
-                        </div>
-
-                        <div
-                          style={{
-                            marginTop: 5,
-                            fontSize: 10,
-                            color:
-                              '#555',
-                          }}
-                        >
-                          {method.count}{' '}
-                          pagamento
-                          {method.count !== 1
-                            ? 's'
-                            : ''}{' '}
-                          ·{' '}
-                          {percentage.toFixed(
-                            1
-                          )}
-                          %
-                        </div>
+                        />
                       </div>
-                    );
-                  }
-                )}
 
-                <div
-                  style={{
-                    marginTop: 24,
-                    paddingTop: 18,
-                    borderTop: `1px solid ${COLORS.border}`,
-                    fontSize: 12,
-                    color: '#777',
-                  }}
-                >
-                  Taxas registradas:{' '}
-                  <strong
-                    style={{
-                      color: '#ddd',
-                    }}
-                  >
-                    {formatCurrency(fees)}
-                  </strong>
-                </div>
-              </div>
+                      <div
+                        style={{
+                          color: '#555',
+                          fontSize: 10,
+                          marginTop: 4,
+                        }}
+                      >
+                        {percentage.toFixed(1)}%
+                      </div>
+                    </div>
+                  );
+                })
             )}
-          </div>
-        </section>
-
-        <section
-          style={{
-            marginTop: 18,
-            display: 'grid',
-            gridTemplateColumns:
-              'repeat(3, 1fr)',
-            gap: 14,
-          }}
-        >
-          <div
-            style={{
-              padding: 18,
-              background: COLORS.panel,
-              border: `1px solid ${COLORS.border}`,
-              borderRadius: 16,
-            }}
-          >
-            <div
-              style={{
-                color: '#666',
-                fontSize: 11,
-                textTransform:
-                  'uppercase',
-                letterSpacing: '.08em',
-              }}
-            >
-              Clientes
-            </div>
-
-            <strong
-              style={{
-                display: 'block',
-                marginTop: 8,
-                fontSize: 25,
-              }}
-            >
-              {clients.length}
-            </strong>
-
-            <div
-              style={{
-                marginTop: 5,
-                color: '#555',
-                fontSize: 11,
-              }}
-            >
-              clientes cadastrados
-            </div>
-          </div>
-
-          <div
-            style={{
-              padding: 18,
-              background: COLORS.panel,
-              border: `1px solid ${COLORS.border}`,
-              borderRadius: 16,
-            }}
-          >
-            <div
-              style={{
-                color: '#666',
-                fontSize: 11,
-                textTransform:
-                  'uppercase',
-                letterSpacing: '.08em',
-              }}
-            >
-              Pagamentos
-            </div>
-
-            <strong
-              style={{
-                display: 'block',
-                marginTop: 8,
-                fontSize: 25,
-              }}
-            >
-              {filteredPayments.length}
-            </strong>
-
-            <div
-              style={{
-                marginTop: 5,
-                color: '#555',
-                fontSize: 11,
-              }}
-            >
-              confirmados no período
-            </div>
-          </div>
-
-          <div
-            style={{
-              padding: 18,
-              background: COLORS.panel,
-              border: `1px solid ${COLORS.border}`,
-              borderRadius: 16,
-            }}
-          >
-            <div
-              style={{
-                color: '#666',
-                fontSize: 11,
-                textTransform:
-                  'uppercase',
-                letterSpacing: '.08em',
-              }}
-            >
-              Líquido
-            </div>
-
-            <strong
-              style={{
-                display: 'block',
-                marginTop: 8,
-                fontSize: 25,
-              }}
-            >
-              {formatCurrency(net)}
-            </strong>
-
-            <div
-              style={{
-                marginTop: 5,
-                color: '#555',
-                fontSize: 11,
-              }}
-            >
-              após taxas registradas
-            </div>
-          </div>
+          </Card>
         </section>
       </main>
     </div>
   );
 }
 
-export default AdminDashboard;
+export default FinancialManagement;
