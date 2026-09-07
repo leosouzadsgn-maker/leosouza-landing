@@ -1,4 +1,4 @@
-﻿import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { supabase } from '../lib/supabase';
 
 const COLORS = {
@@ -22,7 +22,7 @@ const formatCurrency = (value) =>
   }).format(Number(value || 0));
 
 const formatDate = (value) => {
-  if (!value) return 'â€”';
+  if (!value) return '?';
 
   return new Intl.DateTimeFormat('pt-BR').format(
     new Date(value)
@@ -303,7 +303,7 @@ function FinancialManagement() {
       );
     } catch (err) {
       console.error(
-        'Erro ao carregar gestÃ£o financeira:',
+        'Erro ao carregar gest?o financeira:',
         err
       );
 
@@ -536,10 +536,10 @@ function FinancialManagement() {
         'transferencia',
       ].includes(normalized)
     ) {
-      return 'TransferÃªncia';
+      return 'Transfer?ncia';
     }
 
-    return type || 'MovimentaÃ§Ã£o';
+    return type || 'Movimenta??o';
   };
 
   const navigate = (path) => {
@@ -627,7 +627,7 @@ function FinancialManagement() {
           fontFamily: 'Arial, sans-serif',
         }}
       >
-        Carregando GestÃ£o Financeira...
+        Carregando Gest?o Financeira...
       </div>
     );
   }
@@ -705,7 +705,7 @@ function FinancialManagement() {
               marginTop: 5,
             }}
           >
-            KREATIVE SPORTS / LÃ‰O SOUZA
+            KREATIVE SPORTS / L?O SOUZA
           </div>
         </div>
 
@@ -728,7 +728,7 @@ function FinancialManagement() {
           ],
           [
             'charges',
-            'CobranÃ§as',
+            'Cobran?as',
             '/pagamentos/admin/cobrancas',
           ],
           [
@@ -748,7 +748,7 @@ function FinancialManagement() {
           ],
           [
             'wallet',
-            'GestÃ£o Financeira',
+            'Gest?o Financeira',
             '/pagamentos/admin/financeiro',
           ],
           [
@@ -763,12 +763,12 @@ function FinancialManagement() {
           ],
           [
             'reports',
-            'RelatÃ³rios',
+            'Relat?rios',
             '/pagamentos/admin/relatorios',
           ],
           [
             'settings',
-            'ConfiguraÃ§Ãµes',
+            'Configura??es',
             '/pagamentos/admin/configuracoes',
           ],
         ].map(([icon, label, path]) => {
@@ -895,7 +895,7 @@ function FinancialManagement() {
                 letterSpacing: '-.04em',
               }}
             >
-              GestÃ£o Financeira
+              Gest?o Financeira
             </h1>
 
             <p
@@ -1034,7 +1034,7 @@ function FinancialManagement() {
                 marginTop: 6,
               }}
             >
-              DisponÃ­vel para operaÃ§Ã£o
+              Dispon?vel para opera??o
             </div>
           </Card>
 
@@ -1074,7 +1074,7 @@ function FinancialManagement() {
                 marginTop: 6,
               }}
             >
-              SeguranÃ§a financeira
+              Seguran?a financeira
             </div>
           </Card>
 
@@ -1114,7 +1114,7 @@ function FinancialManagement() {
                 marginTop: 6,
               }}
             >
-              PatrimÃ´nio investido
+              Patrim?nio investido
             </div>
           </Card>
         </section>
@@ -1305,7 +1305,7 @@ function FinancialManagement() {
                     marginTop: 5,
                   }}
                 >
-                  VisÃ£o geral do dinheiro movimentado
+                  Vis?o geral do dinheiro movimentado
                 </div>
               </div>
             </div>
@@ -1324,7 +1324,7 @@ function FinancialManagement() {
                   borderRadius: 12,
                 }}
               >
-                Ainda nÃ£o existem movimentaÃ§Ãµes financeiras.
+                Ainda n?o existem movimenta??es financeiras.
               </div>
             ) : (
               <div
@@ -1462,7 +1462,7 @@ function FinancialManagement() {
                 marginBottom: 18,
               }}
             >
-              Onde seu dinheiro estÃ¡
+              Onde seu dinheiro est?
             </div>
 
             {accounts.length === 0 ? (
@@ -1583,7 +1583,7 @@ function FinancialManagement() {
                     fontSize: 17,
                   }}
                 >
-                  Ãšltimas movimentaÃ§Ãµes
+                  ?ltimas movimenta??es
                 </h2>
 
                 <div
@@ -1593,14 +1593,14 @@ function FinancialManagement() {
                     marginTop: 5,
                   }}
                 >
-                  MovimentaÃ§Ãµes geradas pelo sistema
+                  Movimenta??es geradas pelo sistema
                 </div>
               </div>
             </div>
 
             {latestTransactions.length === 0 ? (
               <EmptyState>
-                Nenhuma movimentaÃ§Ã£o registrada.
+                Nenhuma movimenta??o registrada.
               </EmptyState>
             ) : (
               <div
@@ -1747,7 +1747,7 @@ function FinancialManagement() {
                                     }}
                                   >
                                     {transaction.description ||
-                                      'MovimentaÃ§Ã£o financeira'}
+                                      'Movimenta??o financeira'}
                                   </div>
 
                                   <div
@@ -1776,7 +1776,7 @@ function FinancialManagement() {
                             >
                               {transaction
                                 .financial_categories
-                                ?.name || 'â€”'}
+                                ?.name || '?'}
                             </td>
 
                             <td
@@ -1844,7 +1844,7 @@ function FinancialManagement() {
                 marginBottom: 20,
               }}
             >
-              Onde o dinheiro estÃ¡ saindo
+              Onde o dinheiro est? saindo
             </div>
 
             {expenseCategories.length === 0 ? (
