@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+﻿import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { supabase } from '../lib/supabase';
 
 const COLORS = {
@@ -22,7 +22,7 @@ const formatCurrency = (value) =>
   }).format(Number(value || 0));
 
 const formatDate = (value) => {
-  if (!value) return '—';
+  if (!value) return 'â€”';
 
   return new Intl.DateTimeFormat('pt-BR').format(
     new Date(value)
@@ -267,12 +267,12 @@ function FinancialManagement() {
             financial_accounts (
               id,
               name,
-              account_type
+              type
             ),
             financial_categories (
               id,
               name,
-              category_type
+              type
             )
           `)
           .eq('owner_id', ownerId)
@@ -303,7 +303,7 @@ function FinancialManagement() {
       );
     } catch (err) {
       console.error(
-        'Erro ao carregar gestão financeira:',
+        'Erro ao carregar gestÃ£o financeira:',
         err
       );
 
@@ -392,7 +392,7 @@ function FinancialManagement() {
           'operacional',
           'cash',
         ].includes(
-          normalize(account.account_type)
+          normalize(account.type)
         )
       ),
     [accounts]
@@ -402,7 +402,7 @@ function FinancialManagement() {
     () =>
       accounts.find(
         (account) =>
-          normalize(account.account_type) === 'reserve'
+          normalize(account.type) === 'reserve'
       ),
     [accounts]
   );
@@ -411,7 +411,7 @@ function FinancialManagement() {
     () =>
       accounts.find(
         (account) =>
-          normalize(account.account_type) === 'investment'
+          normalize(account.type) === 'investment'
       ),
     [accounts]
   );
@@ -536,10 +536,10 @@ function FinancialManagement() {
         'transferencia',
       ].includes(normalized)
     ) {
-      return 'Transferência';
+      return 'TransferÃªncia';
     }
 
-    return type || 'Movimentação';
+    return type || 'MovimentaÃ§Ã£o';
   };
 
   const navigate = (path) => {
@@ -627,7 +627,7 @@ function FinancialManagement() {
           fontFamily: 'Arial, sans-serif',
         }}
       >
-        Carregando Gestão Financeira...
+        Carregando GestÃ£o Financeira...
       </div>
     );
   }
@@ -705,7 +705,7 @@ function FinancialManagement() {
               marginTop: 5,
             }}
           >
-            KREATIVE SPORTS / LÉO SOUZA
+            KREATIVE SPORTS / LÃ‰O SOUZA
           </div>
         </div>
 
@@ -728,7 +728,7 @@ function FinancialManagement() {
           ],
           [
             'charges',
-            'Cobranças',
+            'CobranÃ§as',
             '/pagamentos/admin/cobrancas',
           ],
           [
@@ -748,7 +748,7 @@ function FinancialManagement() {
           ],
           [
             'wallet',
-            'Gestão Financeira',
+            'GestÃ£o Financeira',
             '/pagamentos/admin/financeiro',
           ],
           [
@@ -763,12 +763,12 @@ function FinancialManagement() {
           ],
           [
             'reports',
-            'Relatórios',
+            'RelatÃ³rios',
             '/pagamentos/admin/relatorios',
           ],
           [
             'settings',
-            'Configurações',
+            'ConfiguraÃ§Ãµes',
             '/pagamentos/admin/configuracoes',
           ],
         ].map(([icon, label, path]) => {
@@ -895,7 +895,7 @@ function FinancialManagement() {
                 letterSpacing: '-.04em',
               }}
             >
-              Gestão Financeira
+              GestÃ£o Financeira
             </h1>
 
             <p
@@ -1034,7 +1034,7 @@ function FinancialManagement() {
                 marginTop: 6,
               }}
             >
-              Disponível para operação
+              DisponÃ­vel para operaÃ§Ã£o
             </div>
           </Card>
 
@@ -1074,7 +1074,7 @@ function FinancialManagement() {
                 marginTop: 6,
               }}
             >
-              Segurança financeira
+              SeguranÃ§a financeira
             </div>
           </Card>
 
@@ -1114,7 +1114,7 @@ function FinancialManagement() {
                 marginTop: 6,
               }}
             >
-              Patrimônio investido
+              PatrimÃ´nio investido
             </div>
           </Card>
         </section>
@@ -1305,7 +1305,7 @@ function FinancialManagement() {
                     marginTop: 5,
                   }}
                 >
-                  Visão geral do dinheiro movimentado
+                  VisÃ£o geral do dinheiro movimentado
                 </div>
               </div>
             </div>
@@ -1324,7 +1324,7 @@ function FinancialManagement() {
                   borderRadius: 12,
                 }}
               >
-                Ainda não existem movimentações financeiras.
+                Ainda nÃ£o existem movimentaÃ§Ãµes financeiras.
               </div>
             ) : (
               <div
@@ -1462,7 +1462,7 @@ function FinancialManagement() {
                 marginBottom: 18,
               }}
             >
-              Onde seu dinheiro está
+              Onde seu dinheiro estÃ¡
             </div>
 
             {accounts.length === 0 ? (
@@ -1532,7 +1532,7 @@ function FinancialManagement() {
                           marginTop: 3,
                         }}
                       >
-                        {account.account_type ||
+                        {account.type ||
                           'Conta'}
                       </div>
                     </div>
@@ -1583,7 +1583,7 @@ function FinancialManagement() {
                     fontSize: 17,
                   }}
                 >
-                  Últimas movimentações
+                  Ãšltimas movimentaÃ§Ãµes
                 </h2>
 
                 <div
@@ -1593,14 +1593,14 @@ function FinancialManagement() {
                     marginTop: 5,
                   }}
                 >
-                  Movimentações geradas pelo sistema
+                  MovimentaÃ§Ãµes geradas pelo sistema
                 </div>
               </div>
             </div>
 
             {latestTransactions.length === 0 ? (
               <EmptyState>
-                Nenhuma movimentação registrada.
+                Nenhuma movimentaÃ§Ã£o registrada.
               </EmptyState>
             ) : (
               <div
@@ -1747,7 +1747,7 @@ function FinancialManagement() {
                                     }}
                                   >
                                     {transaction.description ||
-                                      'Movimentação financeira'}
+                                      'MovimentaÃ§Ã£o financeira'}
                                   </div>
 
                                   <div
@@ -1776,7 +1776,7 @@ function FinancialManagement() {
                             >
                               {transaction
                                 .financial_categories
-                                ?.name || '—'}
+                                ?.name || 'â€”'}
                             </td>
 
                             <td
@@ -1844,7 +1844,7 @@ function FinancialManagement() {
                 marginBottom: 20,
               }}
             >
-              Onde o dinheiro está saindo
+              Onde o dinheiro estÃ¡ saindo
             </div>
 
             {expenseCategories.length === 0 ? (
