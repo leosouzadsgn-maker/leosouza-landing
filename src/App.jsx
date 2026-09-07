@@ -3,6 +3,7 @@ import React, { lazy, Suspense } from 'react';
 import AdminDashboard from './pagamentos/pages/AdminDashboard';
 import FinancialManagement from './pagamentos/pages/FinancialManagement';
 import Charges from './pagamentos/pages/Charges';
+import Brands from './pagamentos/pages/Brands';
 
 import Hero from './sections/Hero/Hero';
 import Manifesto from './sections/Manifesto/Manifesto';
@@ -26,9 +27,6 @@ import TreinamentoKreative from './treinamento/TreinamentoKreative';
 /*
 =====================================================
 CENTRAL DE PAGAMENTOS
-
-O AdminLogin é carregado somente quando a rota
-/pagamentos/admin for acessada.
 =====================================================
 */
 
@@ -61,8 +59,7 @@ function LoadingPage() {
         justifyContent: 'center',
         background: '#070707',
         color: '#ffffff',
-        fontFamily:
-          'Inter, Arial, sans-serif',
+        fontFamily: 'Inter, Arial, sans-serif',
       }}
     >
       Carregando...
@@ -74,16 +71,6 @@ function LoadingPage() {
 =====================================================
 PÁGINA DE RETORNO DO PAGAMENTO
 =====================================================
-
-Esta página é o destino para onde o cliente
-será redirecionado depois do checkout.
-
-IMPORTANTE:
-A confirmação definitiva do pagamento continuará
-sendo feita pelo webhook da InfinitePay.
-
-Esta tela é apenas a experiência de retorno.
-=====================================================
 */
 
 function PaymentReturnPage() {
@@ -91,8 +78,7 @@ function PaymentReturnPage() {
     window.location.search
   );
 
-  const chargeId =
-    params.get('charge_id');
+  const chargeId = params.get('charge_id');
 
   return (
     <main
@@ -105,8 +91,7 @@ function PaymentReturnPage() {
         alignItems: 'center',
         justifyContent: 'center',
         padding: 24,
-        fontFamily:
-          'Inter, Arial, sans-serif',
+        fontFamily: 'Inter, Arial, sans-serif',
       }}
     >
       <section
@@ -156,8 +141,7 @@ function PaymentReturnPage() {
 
         <p
           style={{
-            margin:
-              '10px auto 0',
+            margin: '10px auto 0',
             maxWidth: 390,
             color: '#888',
             fontSize: 13,
@@ -208,12 +192,11 @@ function PaymentReturnPage() {
 }
 
 function App() {
-  const path =
-    window.location.pathname;
+  const path = window.location.pathname;
 
   /*
   =====================================================
-  CENTRAL DE PAGAMENTOS - LOGIN ADMIN
+  CENTRAL DE PAGAMENTOS - LOGIN
   =====================================================
   */
 
@@ -222,11 +205,7 @@ function App() {
     path === '/pagamentos/admin/'
   ) {
     return (
-      <Suspense
-        fallback={
-          <LoadingPage />
-        }
-      >
+      <Suspense fallback={<LoadingPage />}>
         <AdminLogin />
       </Suspense>
     );
@@ -239,10 +218,8 @@ function App() {
   */
 
   if (
-    path ===
-      '/pagamentos/admin/dashboard' ||
-    path ===
-      '/pagamentos/admin/dashboard/'
+    path === '/pagamentos/admin/dashboard' ||
+    path === '/pagamentos/admin/dashboard/'
   ) {
     return <AdminDashboard />;
   }
@@ -254,12 +231,23 @@ function App() {
   */
 
   if (
-    path ===
-      '/pagamentos/admin/cobrancas' ||
-    path ===
-      '/pagamentos/admin/cobrancas/'
+    path === '/pagamentos/admin/cobrancas' ||
+    path === '/pagamentos/admin/cobrancas/'
   ) {
     return <Charges />;
+  }
+
+  /*
+  =====================================================
+  CENTRAL DE PAGAMENTOS - MARCAS / PROJETOS
+  =====================================================
+  */
+
+  if (
+    path === '/pagamentos/admin/marcas' ||
+    path === '/pagamentos/admin/marcas/'
+  ) {
+    return <Brands />;
   }
 
   /*
@@ -269,10 +257,8 @@ function App() {
   */
 
   if (
-    path ===
-      '/pagamentos/admin/financeiro' ||
-    path ===
-      '/pagamentos/admin/financeiro/'
+    path === '/pagamentos/admin/financeiro' ||
+    path === '/pagamentos/admin/financeiro/'
   ) {
     return <FinancialManagement />;
   }
@@ -284,25 +270,21 @@ function App() {
   */
 
   if (
-    path ===
-      '/pagamentos/confirmado' ||
-    path ===
-      '/pagamentos/confirmado/'
+    path === '/pagamentos/confirmado' ||
+    path === '/pagamentos/confirmado/'
   ) {
     return <PaymentReturnPage />;
   }
 
   /*
   =====================================================
-  TREINAMENTO COMERCIAL KREATIVE
+  TREINAMENTO KREATIVE
   =====================================================
   */
 
   if (
-    path ===
-      '/treinamentokreative' ||
-    path ===
-      '/treinamentokreative/'
+    path === '/treinamentokreative' ||
+    path === '/treinamentokreative/'
   ) {
     return <TreinamentoKreative />;
   }
@@ -313,25 +295,19 @@ function App() {
   =====================================================
   */
 
-  if (
-    path.startsWith(
-      '/admin/propostas'
-    )
-  ) {
+  if (path.startsWith('/admin/propostas')) {
     return <ProposalAdmin />;
   }
 
   /*
   =====================================================
-  PROPOSTA FERNANDO BARTENDER
+  PROPOSTA FERNANDO
   =====================================================
   */
 
   if (
-    path ===
-      '/proposta/fernando-veiga' ||
-    path ===
-      '/proposta/fernando-veiga/'
+    path === '/proposta/fernando-veiga' ||
+    path === '/proposta/fernando-veiga/'
   ) {
     return <ProposalFernando />;
   }
@@ -342,9 +318,7 @@ function App() {
   =====================================================
   */
 
-  if (
-    path.includes('/direcao')
-  ) {
+  if (path.includes('/direcao')) {
     return <ProposalDirection />;
   }
 
@@ -354,9 +328,7 @@ function App() {
   =====================================================
   */
 
-  if (
-    path.includes('/planos')
-  ) {
+  if (path.includes('/planos')) {
     return <ProposalPlans />;
   }
 
@@ -367,9 +339,7 @@ function App() {
   */
 
   if (
-    /^\/proposta\/[^/]+\/contexto\/?$/.test(
-      path
-    )
+    /^\/proposta\/[^/]+\/contexto\/?$/.test(path)
   ) {
     return <ProposalContext />;
   }
@@ -381,9 +351,7 @@ function App() {
   */
 
   if (
-    /^\/proposta\/[^/]+\/diagnostico\/?$/.test(
-      path
-    )
+    /^\/proposta\/[^/]+\/diagnostico\/?$/.test(path)
   ) {
     return <ProposalDiagnostico />;
   }
@@ -394,11 +362,7 @@ function App() {
   =====================================================
   */
 
-  if (
-    /^\/proposta\/[^/]+\/?$/.test(
-      path
-    )
-  ) {
+  if (/^\/proposta\/[^/]+\/?$/.test(path)) {
     return <ProposalEntry />;
   }
 
