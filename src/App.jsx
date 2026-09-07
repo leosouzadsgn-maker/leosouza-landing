@@ -4,6 +4,7 @@ import AdminDashboard from './pagamentos/pages/AdminDashboard';
 import FinancialManagement from './pagamentos/pages/FinancialManagement';
 import Charges from './pagamentos/pages/Charges';
 import Brands from './pagamentos/pages/Brands';
+import Clients from './pagamentos/pages/Clients';
 
 import Hero from './sections/Hero/Hero';
 import Manifesto from './sections/Manifesto/Manifesto';
@@ -23,12 +24,6 @@ import ProposalAdmin from './proposal/pages/ProposalAdmin';
 import ProposalFernando from './proposal/pages/ProposalFernando';
 
 import TreinamentoKreative from './treinamento/TreinamentoKreative';
-
-/*
-=====================================================
-CENTRAL DE PAGAMENTOS
-=====================================================
-*/
 
 const AdminLogin = lazy(
   () => import('./pagamentos/pages/AdminLogin')
@@ -66,12 +61,6 @@ function LoadingPage() {
     </main>
   );
 }
-
-/*
-=====================================================
-PÁGINA DE RETORNO DO PAGAMENTO
-=====================================================
-*/
 
 function PaymentReturnPage() {
   const params = new URLSearchParams(
@@ -194,12 +183,6 @@ function PaymentReturnPage() {
 function App() {
   const path = window.location.pathname;
 
-  /*
-  =====================================================
-  CENTRAL DE PAGAMENTOS - LOGIN
-  =====================================================
-  */
-
   if (
     path === '/pagamentos/admin' ||
     path === '/pagamentos/admin/'
@@ -211,24 +194,12 @@ function App() {
     );
   }
 
-  /*
-  =====================================================
-  CENTRAL DE PAGAMENTOS - DASHBOARD
-  =====================================================
-  */
-
   if (
     path === '/pagamentos/admin/dashboard' ||
     path === '/pagamentos/admin/dashboard/'
   ) {
     return <AdminDashboard />;
   }
-
-  /*
-  =====================================================
-  CENTRAL DE PAGAMENTOS - COBRANÇAS
-  =====================================================
-  */
 
   if (
     path === '/pagamentos/admin/cobrancas' ||
@@ -237,11 +208,12 @@ function App() {
     return <Charges />;
   }
 
-  /*
-  =====================================================
-  CENTRAL DE PAGAMENTOS - MARCAS / PROJETOS
-  =====================================================
-  */
+  if (
+    path === '/pagamentos/admin/clientes' ||
+    path === '/pagamentos/admin/clientes/'
+  ) {
+    return <Clients />;
+  }
 
   if (
     path === '/pagamentos/admin/marcas' ||
@@ -250,24 +222,12 @@ function App() {
     return <Brands />;
   }
 
-  /*
-  =====================================================
-  CENTRAL DE PAGAMENTOS - GESTÃO FINANCEIRA
-  =====================================================
-  */
-
   if (
     path === '/pagamentos/admin/financeiro' ||
     path === '/pagamentos/admin/financeiro/'
   ) {
     return <FinancialManagement />;
   }
-
-  /*
-  =====================================================
-  RETORNO DO CHECKOUT INFINITEPAY
-  =====================================================
-  */
 
   if (
     path === '/pagamentos/confirmado' ||
@@ -276,12 +236,6 @@ function App() {
     return <PaymentReturnPage />;
   }
 
-  /*
-  =====================================================
-  TREINAMENTO KREATIVE
-  =====================================================
-  */
-
   if (
     path === '/treinamentokreative' ||
     path === '/treinamentokreative/'
@@ -289,21 +243,11 @@ function App() {
     return <TreinamentoKreative />;
   }
 
-  /*
-  =====================================================
-  ADMIN DE PROPOSTAS
-  =====================================================
-  */
-
-  if (path.startsWith('/admin/propostas')) {
+  if (
+    path.startsWith('/admin/propostas')
+  ) {
     return <ProposalAdmin />;
   }
-
-  /*
-  =====================================================
-  PROPOSTA FERNANDO
-  =====================================================
-  */
 
   if (
     path === '/proposta/fernando-veiga' ||
@@ -312,65 +256,37 @@ function App() {
     return <ProposalFernando />;
   }
 
-  /*
-  =====================================================
-  DIREÇÃO
-  =====================================================
-  */
-
   if (path.includes('/direcao')) {
     return <ProposalDirection />;
   }
-
-  /*
-  =====================================================
-  PLANOS
-  =====================================================
-  */
 
   if (path.includes('/planos')) {
     return <ProposalPlans />;
   }
 
-  /*
-  =====================================================
-  CONTEXTO
-  =====================================================
-  */
-
   if (
-    /^\/proposta\/[^/]+\/contexto\/?$/.test(path)
+    /^\/proposta\/[^/]+\/contexto\/?$/.test(
+      path
+    )
   ) {
     return <ProposalContext />;
   }
 
-  /*
-  =====================================================
-  DIAGNÓSTICO
-  =====================================================
-  */
-
   if (
-    /^\/proposta\/[^/]+\/diagnostico\/?$/.test(path)
+    /^\/proposta\/[^/]+\/diagnostico\/?$/.test(
+      path
+    )
   ) {
     return <ProposalDiagnostico />;
   }
 
-  /*
-  =====================================================
-  ENTRADA DA PROPOSTA
-  =====================================================
-  */
-
-  if (/^\/proposta\/[^/]+\/?$/.test(path)) {
+  if (
+    /^\/proposta\/[^/]+\/?$/.test(
+      path
+    )
+  ) {
     return <ProposalEntry />;
   }
-
-  /*
-  =====================================================
-  SITE PRINCIPAL
-  =====================================================
-  */
 
   return <MainSite />;
 }
