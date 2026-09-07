@@ -3,9 +3,8 @@ import { createClient } from '@supabase/supabase-js';
 const SUPABASE_URL =
   'https://tjbzzkvdsnubsndqmzsd.supabase.co';
 
-const SUPABASE_ANON_KEY =
-  process.env.SUPABASE_ANON_KEY ||
-  process.env.VITE_SUPABASE_ANON_KEY;
+const SUPABASE_SERVICE_ROLE_KEY =
+  process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 const INFINITEPAY_HANDLE =
   process.env.INFINITEPAY_HANDLE;
@@ -64,18 +63,12 @@ export default async function handler(
   }
 
   try {
-    /*
-    =====================================================
-    CONFIGURAÇÃO
-    =====================================================
-    */
-
-    if (!SUPABASE_ANON_KEY) {
+    if (!SUPABASE_SERVICE_ROLE_KEY) {
       return json(res, 500, {
         success: false,
-        code: 'MISSING_SUPABASE_ANON_KEY',
+        code: 'MISSING_SUPABASE_SERVICE_ROLE_KEY',
         message:
-          'A chave pública do Supabase não está disponível no servidor.',
+          'SUPABASE_SERVICE_ROLE_KEY não está disponível no servidor.',
       });
     }
 
@@ -87,12 +80,6 @@ export default async function handler(
           'INFINITEPAY_HANDLE não configurado.',
       });
     }
-
-    /*
-    =====================================================
-    SESSÃO
-    =====================================================
-    */
 
     const authorization =
       req.headers.authorization || '';
@@ -113,41 +100,23 @@ export default async function handler(
       });
     }
 
-    /*
-    =====================================================
-    SUPABASE
-    =====================================================
-    */
-
-    const supabase =
+    const supabaseAdmin =
       createClient(
         SUPABASE_URL,
-        SUPABASE_ANON_KEY,
+        SUPABASE_SERVICE_ROLE_KEY,
         {
           auth: {
             autoRefreshToken: false,
             persistSession: false,
           },
-          global: {
-            headers: {
-              Authorization:
-                `Bearer ${token}`,
-            },
-          },
         }
       );
-
-    /*
-    =====================================================
-    USUÁRIO AUTENTICADO
-    =====================================================
-    */
 
     const {
       data: userData,
       error: userError,
     } =
-      await supabase.auth.getUser(
+      await supabaseAdmin.auth.getUser(
         token
       );
 
@@ -171,12 +140,6 @@ export default async function handler(
     const ownerId =
       userData.user.id;
 
-    /*
-    =====================================================
-    COBRANÇA
-    =====================================================
-    */
-
     const chargeId =
       req.body?.charge_id;
 
@@ -193,7 +156,7 @@ export default async function handler(
       data: charge,
       error: chargeError,
     } =
-      await supabase
+      await supabaseAdmin
         .from('charges')
         .select(`
           id,
@@ -242,12 +205,6 @@ export default async function handler(
       });
     }
 
-    /*
-    =====================================================
-    CHECKOUT JÁ EXISTENTE
-    =====================================================
-    */
-
     if (
       charge.gateway_checkout_url
     ) {
@@ -258,12 +215,6 @@ export default async function handler(
           charge.gateway_checkout_url,
       });
     }
-
-    /*
-    =====================================================
-    COBRANÇA CANCELADA
-    =====================================================
-    */
 
     if (
       charge.status === 'cancelled' ||
@@ -277,17 +228,11 @@ export default async function handler(
       });
     }
 
-    /*
-    =====================================================
-    CLIENTE
-    =====================================================
-    */
-
     const {
       data: client,
       error: clientError,
     } =
-      await supabase
+      await supabaseAdmin
         .from('clients')
         .select(`
           id,
@@ -324,12 +269,6 @@ export default async function handler(
       });
     }
 
-    /*
-    =====================================================
-    VALOR
-    =====================================================
-    */
-
     const amount =
       Number(
         charge.amount || 0
@@ -352,12 +291,6 @@ export default async function handler(
       });
     }
 
-    /*
-    =====================================================
-    FORMAS DE PAGAMENTO
-    =====================================================
-    */
-
     if (
       charge.pix_enabled === false &&
       charge.card_enabled === false
@@ -369,12 +302,6 @@ export default async function handler(
           'A cobrança precisa ter pelo menos uma forma de pagamento habilitada.',
       });
     }
-
-    /*
-    =====================================================
-    PAYLOAD INFINITEPAY
-    =====================================================
-    */
 
     const payload = {
       handle:
@@ -401,12 +328,6 @@ export default async function handler(
         },
       ],
     };
-
-    /*
-    =====================================================
-    CLIENTE NO CHECKOUT
-    =====================================================
-    */
 
     if (
       client.name ||
@@ -444,12 +365,6 @@ export default async function handler(
       }
     }
 
-    /*
-    =====================================================
-    LOG SEGURO
-    =====================================================
-    */
-
     console.log(
       'Criando checkout InfinitePay:',
       {
@@ -458,22 +373,8 @@ export default async function handler(
         referenceCode:
           charge.reference_code,
         amountInCents,
-        supabaseConfigured:
-          Boolean(
-            SUPABASE_ANON_KEY
-          ),
-        infinitePayConfigured:
-          Boolean(
-            INFINITEPAY_HANDLE
-          ),
       }
     );
-
-    /*
-    =====================================================
-    INFINITEPAY API
-    =====================================================
-    */
 
     const infinitePayResponse =
       await fetch(
@@ -502,12 +403,6 @@ export default async function handler(
         null;
     }
 
-    /*
-    =====================================================
-    ERRO INFINITEPAY
-    =====================================================
-    */
-
     if (
       !infinitePayResponse.ok ||
       !infinitePayData?.url
@@ -531,16 +426,10 @@ export default async function handler(
       });
     }
 
-    /*
-    =====================================================
-    SALVA CHECKOUT
-    =====================================================
-    */
-
     const {
       error: updateError,
     } =
-      await supabase
+      await supabaseAdmin
         .from('charges')
         .update({
           gateway:
@@ -576,12 +465,6 @@ export default async function handler(
           infinitePayData.url,
       });
     }
-
-    /*
-    =====================================================
-    SUCESSO
-    =====================================================
-    */
 
     return json(res, 200, {
       success: true,
