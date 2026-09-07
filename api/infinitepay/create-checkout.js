@@ -1,10 +1,10 @@
 import { createClient } from '@supabase/supabase-js';
 
 const SUPABASE_URL =
-  process.env.SUPABASE_URL ||
-  process.env.VITE_SUPABASE_URL;
+  'https://tjbzzkvdsnubsndqmzsd.supabase.co';
 
-const SUPABASE_PUBLIC_KEY =
+const SUPABASE_ANON_KEY =
+  process.env.SUPABASE_ANON_KEY ||
   process.env.VITE_SUPABASE_ANON_KEY;
 
 const INFINITEPAY_HANDLE =
@@ -24,15 +24,10 @@ function json(res, status, body) {
     .json(body);
 }
 
-function onlyDigits(value) {
-  return String(value || '').replace(
-    /\D/g,
-    ''
-  );
-}
-
 function normalizePhone(value) {
-  const digits = onlyDigits(value);
+  const digits = String(
+    value || ''
+  ).replace(/\D/g, '');
 
   if (!digits) {
     return null;
@@ -63,37 +58,24 @@ export default async function handler(
     return json(res, 405, {
       success: false,
       code: 'METHOD_NOT_ALLOWED',
-      message: 'Método não permitido.',
+      message:
+        'Método não permitido.',
     });
   }
 
   try {
     /*
     =====================================================
-    CONFIGURAÇÃO DO SERVIDOR
-    =====================================================
-    Para esta função usamos a chave pública do Supabase
-    + o JWT do usuário autenticado.
-
-    O RLS continua protegendo charges e clients.
+    CONFIGURAÇÃO
     =====================================================
     */
 
-    if (!SUPABASE_URL) {
+    if (!SUPABASE_ANON_KEY) {
       return json(res, 500, {
         success: false,
-        code: 'MISSING_SUPABASE_URL',
+        code: 'MISSING_SUPABASE_ANON_KEY',
         message:
-          'SUPABASE_URL ou VITE_SUPABASE_URL não está disponível no servidor.',
-      });
-    }
-
-    if (!SUPABASE_PUBLIC_KEY) {
-      return json(res, 500, {
-        success: false,
-        code: 'MISSING_SUPABASE_PUBLIC_KEY',
-        message:
-          'VITE_SUPABASE_ANON_KEY não está disponível no servidor.',
+          'A chave pública do Supabase não está disponível no servidor.',
       });
     }
 
@@ -108,7 +90,7 @@ export default async function handler(
 
     /*
     =====================================================
-    SESSÃO DO ADMINISTRADOR
+    SESSÃO
     =====================================================
     */
 
@@ -133,14 +115,14 @@ export default async function handler(
 
     /*
     =====================================================
-    CLIENTE SUPABASE COM JWT DO USUÁRIO
+    SUPABASE
     =====================================================
     */
 
-    const supabaseUser =
+    const supabase =
       createClient(
         SUPABASE_URL,
-        SUPABASE_PUBLIC_KEY,
+        SUPABASE_ANON_KEY,
         {
           auth: {
             autoRefreshToken: false,
@@ -157,7 +139,7 @@ export default async function handler(
 
     /*
     =====================================================
-    CONFIRMA USUÁRIO
+    USUÁRIO AUTENTICADO
     =====================================================
     */
 
@@ -165,7 +147,7 @@ export default async function handler(
       data: userData,
       error: userError,
     } =
-      await supabaseUser.auth.getUser(
+      await supabase.auth.getUser(
         token
       );
 
@@ -174,7 +156,7 @@ export default async function handler(
       !userData?.user
     ) {
       console.error(
-        'Sessão inválida:',
+        'Erro ao validar sessão:',
         userError
       );
 
@@ -211,7 +193,7 @@ export default async function handler(
       data: charge,
       error: chargeError,
     } =
-      await supabaseUser
+      await supabase
         .from('charges')
         .select(`
           id,
@@ -262,7 +244,7 @@ export default async function handler(
 
     /*
     =====================================================
-    REUTILIZA CHECKOUT EXISTENTE
+    CHECKOUT JÁ EXISTENTE
     =====================================================
     */
 
@@ -279,15 +261,13 @@ export default async function handler(
 
     /*
     =====================================================
-    NÃO GERAR PARA CANCELADA
+    COBRANÇA CANCELADA
     =====================================================
     */
 
     if (
-      charge.status ===
-        'cancelled' ||
-      charge.status ===
-        'canceled'
+      charge.status === 'cancelled' ||
+      charge.status === 'canceled'
     ) {
       return json(res, 400, {
         success: false,
@@ -307,7 +287,7 @@ export default async function handler(
       data: client,
       error: clientError,
     } =
-      await supabaseUser
+      await supabase
         .from('clients')
         .select(`
           id,
@@ -376,9 +356,6 @@ export default async function handler(
     =====================================================
     FORMAS DE PAGAMENTO
     =====================================================
-    InfinitePay usa o checkout da conta para Pix/cartão.
-    Os campos abaixo ficam registrados na nossa cobrança.
-    =====================================================
     */
 
     if (
@@ -427,7 +404,7 @@ export default async function handler(
 
     /*
     =====================================================
-    DADOS DO CLIENTE
+    CLIENTE NO CHECKOUT
     =====================================================
     */
 
@@ -448,14 +425,14 @@ export default async function handler(
           client.email;
       }
 
-      const normalizedPhone =
+      const phone =
         normalizePhone(
           client.phone
         );
 
-      if (normalizedPhone) {
+      if (phone) {
         payload.customer.phone_number =
-          normalizedPhone;
+          phone;
       }
 
       if (
@@ -474,24 +451,18 @@ export default async function handler(
     */
 
     console.log(
-      'InfinitePay create-checkout:',
+      'Criando checkout InfinitePay:',
       {
         chargeId:
           charge.id,
         referenceCode:
           charge.reference_code,
         amountInCents,
-        authenticated:
-          Boolean(ownerId),
-        hasSupabaseUrl:
+        supabaseConfigured:
           Boolean(
-            SUPABASE_URL
+            SUPABASE_ANON_KEY
           ),
-        hasSupabasePublicKey:
-          Boolean(
-            SUPABASE_PUBLIC_KEY
-          ),
-        hasInfinitePayHandle:
+        infinitePayConfigured:
           Boolean(
             INFINITEPAY_HANDLE
           ),
@@ -500,7 +471,7 @@ export default async function handler(
 
     /*
     =====================================================
-    CHAMADA À INFINITEPAY
+    INFINITEPAY API
     =====================================================
     */
 
@@ -533,7 +504,7 @@ export default async function handler(
 
     /*
     =====================================================
-    ERRO DA INFINITEPAY
+    ERRO INFINITEPAY
     =====================================================
     */
 
@@ -562,14 +533,14 @@ export default async function handler(
 
     /*
     =====================================================
-    SALVA URL DO CHECKOUT
+    SALVA CHECKOUT
     =====================================================
     */
 
     const {
       error: updateError,
     } =
-      await supabaseUser
+      await supabase
         .from('charges')
         .update({
           gateway:
