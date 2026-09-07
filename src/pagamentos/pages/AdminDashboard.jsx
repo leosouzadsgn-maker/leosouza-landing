@@ -987,8 +987,25 @@ function AdminDashboard() {
           <div
             key={label}
             onClick={() => {
-              if (index === 0) {
-                setMobileOpen(false);
+              setMobileOpen(false);
+
+              const routes = {
+                dashboard: '/pagamentos/admin/dashboard',
+                charges: '/pagamentos/admin/cobrancas',
+                clients: '/pagamentos/admin/clientes',
+                payments: '/pagamentos/admin/pagamentos',
+                chart: '/pagamentos/admin/faturamento',
+                wallet: '/pagamentos/admin/financeiro',
+                receipt: '/pagamentos/admin/comprovantes',
+                tag: '/pagamentos/admin/marcas',
+                reports: '/pagamentos/admin/relatorios',
+                settings: '/pagamentos/admin/configuracoes',
+              };
+
+              const destination = routes[icon];
+
+              if (destination && destination !== window.location.pathname) {
+                window.location.href = destination;
               }
             }}
             style={{
