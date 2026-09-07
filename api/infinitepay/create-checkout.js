@@ -23,32 +23,6 @@ function json(res, status, body) {
     .json(body);
 }
 
-function normalizePhone(value) {
-  const digits = String(
-    value || ''
-  ).replace(/\D/g, '');
-
-  if (!digits) {
-    return null;
-  }
-
-  if (
-    digits.startsWith('55') &&
-    digits.length >= 12
-  ) {
-    return `+${digits}`;
-  }
-
-  if (
-    digits.length >= 10 &&
-    digits.length <= 11
-  ) {
-    return `+55${digits}`;
-  }
-
-  return value;
-}
-
 export default async function handler(
   req,
   res
@@ -66,7 +40,8 @@ export default async function handler(
     if (!SUPABASE_SERVICE_ROLE_KEY) {
       return json(res, 500, {
         success: false,
-        code: 'MISSING_SUPABASE_SERVICE_ROLE_KEY',
+        code:
+          'MISSING_SUPABASE_SERVICE_ROLE_KEY',
         message:
           'SUPABASE_SERVICE_ROLE_KEY não está disponível no servidor.',
       });
@@ -75,7 +50,8 @@ export default async function handler(
     if (!INFINITEPAY_HANDLE) {
       return json(res, 500, {
         success: false,
-        code: 'MISSING_INFINITEPAY_HANDLE',
+        code:
+          'MISSING_INFINITEPAY_HANDLE',
         message:
           'INFINITEPAY_HANDLE não configurado.',
       });
@@ -228,47 +204,6 @@ export default async function handler(
       });
     }
 
-    const {
-      data: client,
-      error: clientError,
-    } =
-      await supabaseAdmin
-        .from('clients')
-        .select(`
-          id,
-          owner_id,
-          name,
-          email,
-          phone,
-          is_active
-        `)
-        .eq(
-          'id',
-          charge.client_id
-        )
-        .eq(
-          'owner_id',
-          ownerId
-        )
-        .single();
-
-    if (
-      clientError ||
-      !client
-    ) {
-      console.error(
-        'Erro ao localizar cliente:',
-        clientError
-      );
-
-      return json(res, 400, {
-        success: false,
-        code: 'CLIENT_NOT_FOUND',
-        message:
-          'O cliente da cobrança não foi encontrado.',
-      });
-    }
-
     const amount =
       Number(
         charge.amount || 0
@@ -303,12 +238,23 @@ export default async function handler(
       });
     }
 
+    /*
+     * IMPORTANTE:
+     * Neste teste estamos enviando somente os campos
+     * do checkout que já foram validados pela API:
+     *
+     * - handle
+     * - redirect_url
+     * - webhook_url
+     * - order_nsu
+     * - items
+     *
+     * O bloco "customer" foi removido temporariamente
+     * para isolar o erro do checkout.
+     */
     const payload = {
       handle:
         INFINITEPAY_HANDLE,
-
-      order_nsu:
-        charge.reference_code,
 
       redirect_url:
         `${SITE_URL}/pagamentos/confirmado?charge_id=${encodeURIComponent(
@@ -318,52 +264,20 @@ export default async function handler(
       webhook_url:
         `${SITE_URL}/api/webhooks/infinitepay`,
 
+      order_nsu:
+        charge.reference_code,
+
       items: [
         {
           quantity: 1,
           price:
             amountInCents,
           description:
-            charge.title,
+            charge.title ||
+            'Cobrança',
         },
       ],
     };
-
-    if (
-      client.name ||
-      client.email ||
-      client.phone
-    ) {
-      payload.customer = {};
-
-      if (client.name) {
-        payload.customer.name =
-          client.name;
-      }
-
-      if (client.email) {
-        payload.customer.email =
-          client.email;
-      }
-
-      const phone =
-        normalizePhone(
-          client.phone
-        );
-
-      if (phone) {
-        payload.customer.phone_number =
-          phone;
-      }
-
-      if (
-        Object.keys(
-          payload.customer
-        ).length === 0
-      ) {
-        delete payload.customer;
-      }
-    }
 
     console.log(
       'Criando checkout InfinitePay:',
@@ -372,7 +286,15 @@ export default async function handler(
           charge.id,
         referenceCode:
           charge.reference_code,
-        amountInCents,
+        amount:
+          amount,
+        amountInCents:
+          amountInCents,
+        payload: {
+          ...payload,
+          handle:
+            INFINITEPAY_HANDLE,
+        },
       }
     );
 
@@ -403,6 +325,18 @@ export default async function handler(
         null;
     }
 
+    console.log(
+      'Resposta InfinitePay:',
+      {
+        status:
+          infinitePayResponse.status,
+        ok:
+          infinitePayResponse.ok,
+        data:
+          infinitePayData,
+      }
+    );
+
     if (
       !infinitePayResponse.ok ||
       !infinitePayData?.url
@@ -419,10 +353,13 @@ export default async function handler(
 
       return json(res, 502, {
         success: false,
-        code: 'INFINITEPAY_CHECKOUT_ERROR',
+        code:
+          'INFINITEPAY_CHECKOUT_ERROR',
         message:
           infinitePayData?.message ||
           'A InfinitePay não retornou um checkout válido.',
+        gateway_status:
+          infinitePayResponse.status,
       });
     }
 
@@ -458,7 +395,8 @@ export default async function handler(
 
       return json(res, 500, {
         success: false,
-        code: 'SAVE_CHECKOUT_ERROR',
+        code:
+          'SAVE_CHECKOUT_ERROR',
         message:
           'Checkout criado, mas não foi possível salvar o link na cobrança.',
         url:
