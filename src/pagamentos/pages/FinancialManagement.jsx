@@ -131,44 +131,6 @@ function Icon({ name, size = 20 }) {
       </>
     ),
 
-    plus: (
-      <>
-        <path d="M12 5v14" />
-        <path d="M5 12h14" />
-      </>
-    ),
-
-    arrowDown: (
-      <>
-        <path d="M12 5v14" />
-        <path d="m19 12-7 7-7-7" />
-      </>
-    ),
-
-    arrowUp: (
-      <>
-        <path d="M12 19V5" />
-        <path d="m5 12 7-7 7 7" />
-      </>
-    ),
-
-    transfer: (
-      <>
-        <path d="M7 7h12" />
-        <path d="m15 3 4 4-4 4" />
-        <path d="M17 17H5" />
-        <path d="m9 13-4 4 4 4" />
-      </>
-    ),
-
-    target: (
-      <>
-        <circle cx="12" cy="12" r="9" />
-        <circle cx="12" cy="12" r="5" />
-        <circle cx="12" cy="12" r="1" />
-      </>
-    ),
-
     refresh: (
       <>
         <path d="M20 11a8.1 8.1 0 0 0-14.8-4L3 10" />
@@ -186,13 +148,6 @@ function Icon({ name, size = 20 }) {
       </>
     ),
 
-    close: (
-      <>
-        <path d="M6 6l12 12" />
-        <path d="M18 6 6 18" />
-      </>
-    ),
-
     menu: (
       <>
         <path d="M4 7h16" />
@@ -200,15 +155,26 @@ function Icon({ name, size = 20 }) {
         <path d="M4 17h16" />
       </>
     ),
+
+    arrowDown: (
+      <>
+        <path d="M12 5v14" />
+        <path d="m19 12-7 7-7-7" />
+      </>
+    ),
+
+    arrowUp: (
+      <>
+        <path d="M12 19V5" />
+        <path d="m5 12 7-7 7 7" />
+      </>
+    ),
   };
 
   return <svg {...props}>{icons[name]}</svg>;
 }
 
-function Card({
-  children,
-  style = {},
-}) {
+function Card({ children, style = {} }) {
   return (
     <div
       style={{
@@ -223,43 +189,33 @@ function Card({
   );
 }
 
+function EmptyState({ children }) {
+  return (
+    <div
+      style={{
+        padding: '42px 20px',
+        textAlign: 'center',
+        color: COLORS.muted,
+        fontSize: 14,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
 function FinancialManagement() {
   const [user, setUser] = useState(null);
-
   const [accounts, setAccounts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [transactions, setTransactions] = useState([]);
-  const [goals, setGoals] = useState([]);
-  const [rules, setRules] = useState([]);
 
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [error, setError] = useState('');
 
-  const [modal, setModal] = useState(null);
-
-  const [transactionType, setTransactionType] =
-    useState('expense');
-
-  const [form, setForm] = useState({
-    description: '',
-    amount: '',
-    category_id: '',
-    account_id: '',
-    transaction_date:
-      new Date().toISOString().split('T')[0],
-    notes: '',
-  });
-
-  const [transferForm, setTransferForm] = useState({
-    from_account_id: '',
-    to_account_id: '',
-    amount: '',
-    description: '',
-  });
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const loadFinancialData = useCallback(async () => {
-    setError('');
     setRefreshing(true);
 
     try {
@@ -268,7 +224,9 @@ function FinancialManagement() {
         error: authError,
       } = await supabase.auth.getUser();
 
-      if (authError) throw authError;
+      if (authError) {
+        throw authError;
+      }
 
       if (!authenticatedUser) {
         window.location.href = '/pagamentos/admin';
@@ -283,8 +241,6 @@ function FinancialManagement() {
         accountsResponse,
         categoriesResponse,
         transactionsResponse,
-        goalsResponse,
-        rulesResponse,
       ] = await Promise.all([
         supabase
           .from('financial_accounts')
@@ -311,12 +267,12 @@ function FinancialManagement() {
             financial_accounts (
               id,
               name,
-              type
+              account_type
             ),
             financial_categories (
               id,
               name,
-              type
+              category_type
             )
           `)
           .eq('owner_id', ownerId)
@@ -326,60 +282,34 @@ function FinancialManagement() {
           .order('created_at', {
             ascending: false,
           }),
-
-        supabase
-          .from('financial_goals')
-          .select('*')
-          .eq('owner_id', ownerId)
-          .order('created_at', {
-            ascending: false,
-          }),
-
-        supabase
-          .from('financial_allocation_rules')
-          .select('*')
-          .eq('owner_id', ownerId)
-          .eq('is_active', true)
-          .order('created_at', {
-            ascending: false,
-          }),
       ]);
 
-      if (accountsResponse.error) {
-        throw accountsResponse.error;
-      }
+      setAccounts(
+        accountsResponse.error
+          ? []
+          : accountsResponse.data || []
+      );
 
-      if (categoriesResponse.error) {
-        throw categoriesResponse.error;
-      }
+      setCategories(
+        categoriesResponse.error
+          ? []
+          : categoriesResponse.data || []
+      );
 
-      if (transactionsResponse.error) {
-        throw transactionsResponse.error;
-      }
-
-      if (goalsResponse.error) {
-        throw goalsResponse.error;
-      }
-
-      if (rulesResponse.error) {
-        throw rulesResponse.error;
-      }
-
-      setAccounts(accountsResponse.data || []);
-      setCategories(categoriesResponse.data || []);
-      setTransactions(transactionsResponse.data || []);
-      setGoals(goalsResponse.data || []);
-      setRules(rulesResponse.data || []);
+      setTransactions(
+        transactionsResponse.error
+          ? []
+          : transactionsResponse.data || []
+      );
     } catch (err) {
       console.error(
         'Erro ao carregar gestão financeira:',
         err
       );
 
-      setError(
-        err?.message ||
-          'Não foi possível carregar a gestão financeira.'
-      );
+      setAccounts([]);
+      setCategories([]);
+      setTransactions([]);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -427,41 +357,12 @@ function FinancialManagement() {
       transactions
         .filter(
           (transaction) =>
-            normalize(transaction.type) ===
-              'withdrawal' &&
-            normalize(transaction.status) !== 'cancelled'
-        )
-        .reduce(
-          (total, transaction) =>
-            total + Number(transaction.amount || 0),
-          0
-        ),
-    [transactions]
-  );
-
-  const reserves = useMemo(
-    () =>
-      transactions
-        .filter(
-          (transaction) =>
-            normalize(transaction.type) === 'reserve' &&
-            normalize(transaction.status) !== 'cancelled'
-        )
-        .reduce(
-          (total, transaction) =>
-            total + Number(transaction.amount || 0),
-          0
-        ),
-    [transactions]
-  );
-
-  const investments = useMemo(
-    () =>
-      transactions
-        .filter(
-          (transaction) =>
-            normalize(transaction.type) ===
-              'investment' &&
+            [
+              'withdrawal',
+              'retirada',
+              'pro-labore',
+              'prolabore',
+            ].includes(normalize(transaction.type)) &&
             normalize(transaction.status) !== 'cancelled'
         )
         .reduce(
@@ -484,9 +385,15 @@ function FinancialManagement() {
 
   const businessAccount = useMemo(
     () =>
-      accounts.find(
-        (account) =>
-          normalize(account.type) === 'business'
+      accounts.find((account) =>
+        [
+          'business',
+          'caixa',
+          'operacional',
+          'cash',
+        ].includes(
+          normalize(account.account_type)
+        )
       ),
     [accounts]
   );
@@ -495,7 +402,7 @@ function FinancialManagement() {
     () =>
       accounts.find(
         (account) =>
-          normalize(account.type) === 'reserve'
+          normalize(account.account_type) === 'reserve'
       ),
     [accounts]
   );
@@ -504,17 +411,13 @@ function FinancialManagement() {
     () =>
       accounts.find(
         (account) =>
-          normalize(account.type) === 'investment'
+          normalize(account.account_type) === 'investment'
       ),
     [accounts]
   );
 
-  const availableCash =
-    totalAccountBalance -
-    Number(reserveAccount?.current_balance || 0) -
-    Number(investmentAccount?.current_balance || 0);
-
-  const netResult = income - expenses - withdrawals;
+  const netResult =
+    income - expenses - withdrawals;
 
   const expenseCategories = useMemo(() => {
     const map = {};
@@ -539,13 +442,13 @@ function FinancialManagement() {
         name,
         amount,
       }))
-      .sort((a, b) => b.amount - a.amount);
+      .sort(
+        (a, b) => b.amount - a.amount
+      );
   }, [transactions]);
 
-  const latestTransactions = transactions.slice(
-    0,
-    10
-  );
+  const latestTransactions =
+    transactions.slice(0, 10);
 
   const getTransactionColor = (type) => {
     const normalized = normalize(type);
@@ -558,15 +461,30 @@ function FinancialManagement() {
       return COLORS.red;
     }
 
-    if (normalized === 'reserve') {
+    if (
+      ['reserve', 'reserva'].includes(
+        normalized
+      )
+    ) {
       return COLORS.blue;
     }
 
-    if (normalized === 'investment') {
+    if (
+      ['investment', 'investimento'].includes(
+        normalized
+      )
+    ) {
       return '#a855f7';
     }
 
-    if (normalized === 'withdrawal') {
+    if (
+      [
+        'withdrawal',
+        'retirada',
+        'pro-labore',
+        'prolabore',
+      ].includes(normalized)
+    ) {
       return COLORS.yellow;
     }
 
@@ -576,243 +494,52 @@ function FinancialManagement() {
   const getTransactionLabel = (type) => {
     const normalized = normalize(type);
 
-    if (normalized === 'income') return 'Entrada';
-    if (normalized === 'expense') return 'Despesa';
-    if (normalized === 'reserve') return 'Reserva';
-    if (normalized === 'investment') {
-      return 'Investimento';
-    }
-    if (normalized === 'withdrawal') {
-      return 'Retirada';
+    if (normalized === 'income') {
+      return 'Entrada';
     }
 
-    return type || 'Movimentação';
-  };
-
-  const openTransactionModal = (type) => {
-    setTransactionType(type);
-
-    const defaultCategory =
-      categories.find(
-        (category) =>
-          normalize(category.type) ===
-          normalize(type)
-      )?.id || '';
-
-    setForm({
-      description: '',
-      amount: '',
-      category_id: defaultCategory,
-      account_id:
-        businessAccount?.id ||
-        accounts[0]?.id ||
-        '',
-      transaction_date:
-        new Date().toISOString().split('T')[0],
-      notes: '',
-    });
-
-    setModal('transaction');
-  };
-
-  const createTransaction = async (event) => {
-    event.preventDefault();
-
-    if (!form.description.trim()) {
-      setError('Informe uma descrição.');
-      return;
-    }
-
-    const amount = Number(
-      String(form.amount).replace(',', '.')
-    );
-
-    if (!amount || amount <= 0) {
-      setError('Informe um valor válido.');
-      return;
-    }
-
-    if (!form.account_id) {
-      setError('Selecione a conta.');
-      return;
-    }
-
-    try {
-      setRefreshing(true);
-      setError('');
-
-      const {
-        data: { user: authenticatedUser },
-      } = await supabase.auth.getUser();
-
-      if (!authenticatedUser) {
-        window.location.href =
-          '/pagamentos/admin';
-        return;
-      }
-
-      const { error: insertError } =
-        await supabase
-          .from('financial_transactions')
-          .insert({
-            owner_id:
-              authenticatedUser.id,
-            account_id:
-              form.account_id,
-            category_id:
-              form.category_id || null,
-            type: transactionType,
-            amount,
-            description:
-              form.description.trim(),
-            transaction_date:
-              form.transaction_date,
-            status: 'confirmed',
-            notes:
-              form.notes.trim() || null,
-          });
-
-      if (insertError) {
-        throw insertError;
-      }
-
-      setModal(null);
-
-      await loadFinancialData();
-    } catch (err) {
-      console.error(
-        'Erro ao criar movimentação:',
-        err
-      );
-
-      setError(
-        err?.message ||
-          'Não foi possível registrar a movimentação.'
-      );
-
-      setRefreshing(false);
-    }
-  };
-
-  const createTransfer = async (event) => {
-    event.preventDefault();
-
-    const amount = Number(
-      String(transferForm.amount).replace(',', '.')
-    );
-
-    if (!transferForm.from_account_id) {
-      setError('Selecione a conta de origem.');
-      return;
-    }
-
-    if (!transferForm.to_account_id) {
-      setError('Selecione a conta de destino.');
-      return;
+    if (normalized === 'expense') {
+      return 'Despesa';
     }
 
     if (
-      transferForm.from_account_id ===
-      transferForm.to_account_id
+      ['reserve', 'reserva'].includes(
+        normalized
+      )
     ) {
-      setError(
-        'A conta de origem e destino precisam ser diferentes.'
-      );
-      return;
+      return 'Reserva';
     }
 
-    if (!amount || amount <= 0) {
-      setError('Informe um valor válido.');
-      return;
+    if (
+      ['investment', 'investimento'].includes(
+        normalized
+      )
+    ) {
+      return 'Investimento';
     }
 
-    try {
-      setRefreshing(true);
-      setError('');
-
-      const {
-        data: { user: authenticatedUser },
-      } = await supabase.auth.getUser();
-
-      if (!authenticatedUser) {
-        window.location.href =
-          '/pagamentos/admin';
-        return;
-      }
-
-      const baseDescription =
-        transferForm.description.trim() ||
-        'Transferência entre contas';
-
-      const { error: outgoingError } =
-        await supabase
-          .from('financial_transactions')
-          .insert({
-            owner_id:
-              authenticatedUser.id,
-            account_id:
-              transferForm.from_account_id,
-            type: 'transfer_out',
-            amount,
-            description:
-              `${baseDescription} → saída`,
-            transaction_date:
-              new Date()
-                .toISOString()
-                .split('T')[0],
-            status: 'confirmed',
-          });
-
-      if (outgoingError) {
-        throw outgoingError;
-      }
-
-      const { error: incomingError } =
-        await supabase
-          .from('financial_transactions')
-          .insert({
-            owner_id:
-              authenticatedUser.id,
-            account_id:
-              transferForm.to_account_id,
-            type: 'transfer_in',
-            amount,
-            description:
-              `${baseDescription} → entrada`,
-            transaction_date:
-              new Date()
-                .toISOString()
-                .split('T')[0],
-            status: 'confirmed',
-          });
-
-      if (incomingError) {
-        throw incomingError;
-      }
-
-      setTransferForm({
-        from_account_id: '',
-        to_account_id: '',
-        amount: '',
-        description: '',
-      });
-
-      setModal(null);
-
-      await loadFinancialData();
-    } catch (err) {
-      console.error(
-        'Erro ao criar transferência:',
-        err
-      );
-
-      setError(
-        err?.message ||
-          'Não foi possível realizar a transferência.'
-      );
-
-      setRefreshing(false);
+    if (
+      [
+        'withdrawal',
+        'retirada',
+        'pro-labore',
+        'prolabore',
+      ].includes(normalized)
+    ) {
+      return 'Retirada';
     }
+
+    if (
+      [
+        'transfer_in',
+        'transfer_out',
+        'transferencia',
+      ].includes(normalized)
+    ) {
+      return 'Transferência';
+    }
+
+    return type || 'Movimentação';
   };
 
   const navigate = (path) => {
@@ -884,15 +611,8 @@ function FinancialManagement() {
       .fm-header-actions {
         flex-wrap: wrap;
       }
-
-      .fm-modal {
-        width: calc(100vw - 30px) !important;
-      }
     }
   `;
-
-  const [mobileOpen, setMobileOpen] =
-    useState(false);
 
   if (loading) {
     return (
@@ -1051,47 +771,47 @@ function FinancialManagement() {
             'Configurações',
             '/pagamentos/admin/configuracoes',
           ],
-        ].map(
-          ([icon, label, path]) => {
-            const active =
-              path ===
-              '/pagamentos/admin/financeiro';
+        ].map(([icon, label, path]) => {
+          const active =
+            path ===
+            '/pagamentos/admin/financeiro';
 
-            return (
-              <div
-                key={label}
-                onClick={() =>
-                  navigate(path)
-                }
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 12,
-                  padding: '11px 12px',
-                  borderRadius: 10,
-                  marginBottom: 4,
-                  color: active
-                    ? COLORS.white
-                    : '#888',
-                  background: active
-                    ? 'rgba(239,43,53,.12)'
-                    : 'transparent',
-                  cursor: 'pointer',
-                  fontSize: 13,
-                  fontWeight: active
-                    ? 700
-                    : 500,
-                }}
-              >
-                <Icon
-                  name={icon}
-                  size={18}
-                />
-                {label}
-              </div>
-            );
-          }
-        )}
+          return (
+            <div
+              key={label}
+              onClick={() => {
+                setMobileOpen(false);
+                navigate(path);
+              }}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 12,
+                padding: '11px 12px',
+                borderRadius: 10,
+                marginBottom: 4,
+                color: active
+                  ? COLORS.white
+                  : '#888',
+                background: active
+                  ? 'rgba(239,43,53,.12)'
+                  : 'transparent',
+                cursor: 'pointer',
+                fontSize: 13,
+                fontWeight: active
+                  ? 700
+                  : 500,
+              }}
+            >
+              <Icon
+                name={icon}
+                size={18}
+              />
+
+              {label}
+            </div>
+          );
+        })}
 
         <div
           style={{
@@ -1150,8 +870,7 @@ function FinancialManagement() {
         <header
           style={{
             display: 'flex',
-            justifyContent:
-              'space-between',
+            justifyContent: 'space-between',
             alignItems: 'center',
             marginBottom: 30,
             gap: 20,
@@ -1163,8 +882,7 @@ function FinancialManagement() {
                 fontSize: 11,
                 color: '#666',
                 letterSpacing: '.12em',
-                textTransform:
-                  'uppercase',
+                textTransform: 'uppercase',
               }}
             >
               Central de Pagamentos
@@ -1182,8 +900,7 @@ function FinancialManagement() {
 
             <p
               style={{
-                margin:
-                  '7px 0 0',
+                margin: '7px 0 0',
                 color: '#666',
                 fontSize: 13,
               }}
@@ -1202,88 +919,6 @@ function FinancialManagement() {
             }}
           >
             <button
-              onClick={() =>
-                openTransactionModal(
-                  'income'
-                )
-              }
-              style={{
-                height: 42,
-                padding: '0 14px',
-                borderRadius: 10,
-                border: `1px solid rgba(34,197,94,.25)`,
-                background:
-                  'rgba(34,197,94,.08)',
-                color: COLORS.green,
-                display: 'flex',
-                alignItems: 'center',
-                gap: 7,
-                cursor: 'pointer',
-                fontWeight: 700,
-              }}
-            >
-              <Icon
-                name="plus"
-                size={17}
-              />
-              Entrada
-            </button>
-
-            <button
-              onClick={() =>
-                openTransactionModal(
-                  'expense'
-                )
-              }
-              style={{
-                height: 42,
-                padding: '0 14px',
-                borderRadius: 10,
-                border: `1px solid rgba(239,43,53,.25)`,
-                background:
-                  'rgba(239,43,53,.08)',
-                color: COLORS.red,
-                display: 'flex',
-                alignItems: 'center',
-                gap: 7,
-                cursor: 'pointer',
-                fontWeight: 700,
-              }}
-            >
-              <Icon
-                name="plus"
-                size={17}
-              />
-              Despesa
-            </button>
-
-            <button
-              onClick={() =>
-                setModal('transfer')
-              }
-              style={{
-                height: 42,
-                padding: '0 14px',
-                borderRadius: 10,
-                border: `1px solid ${COLORS.border}`,
-                background:
-                  COLORS.panel,
-                color: '#ddd',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 7,
-                cursor: 'pointer',
-                fontWeight: 700,
-              }}
-            >
-              <Icon
-                name="transfer"
-                size={17}
-              />
-              Transferir
-            </button>
-
-            <button
               onClick={loadFinancialData}
               disabled={refreshing}
               style={{
@@ -1291,13 +926,11 @@ function FinancialManagement() {
                 height: 42,
                 borderRadius: 10,
                 border: `1px solid ${COLORS.border}`,
-                background:
-                  COLORS.panel,
+                background: COLORS.panel,
                 color: '#aaa',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent:
-                  'center',
+                justifyContent: 'center',
                 cursor: refreshing
                   ? 'default'
                   : 'pointer',
@@ -1305,6 +938,7 @@ function FinancialManagement() {
                   ? 0.5
                   : 1,
               }}
+              title="Atualizar dados"
             >
               <Icon
                 name="refresh"
@@ -1313,24 +947,6 @@ function FinancialManagement() {
             </button>
           </div>
         </header>
-
-        {error && (
-          <div
-            style={{
-              padding: 14,
-              marginBottom: 20,
-              borderRadius: 12,
-              border:
-                '1px solid rgba(239,43,53,.35)',
-              background:
-                'rgba(239,43,53,.08)',
-              color: '#ff9da3',
-              fontSize: 13,
-            }}
-          >
-            {error}
-          </div>
-        )}
 
         <section
           className="fm-grid-4"
@@ -1407,10 +1023,7 @@ function FinancialManagement() {
               }}
             >
               {formatCurrency(
-                Number(
-                  businessAccount?.current_balance ||
-                    0
-                )
+                businessAccount?.current_balance || 0
               )}
             </div>
 
@@ -1450,10 +1063,7 @@ function FinancialManagement() {
               }}
             >
               {formatCurrency(
-                Number(
-                  reserveAccount?.current_balance ||
-                    0
-                )
+                reserveAccount?.current_balance || 0
               )}
             </div>
 
@@ -1493,10 +1103,7 @@ function FinancialManagement() {
               }}
             >
               {formatCurrency(
-                Number(
-                  investmentAccount?.current_balance ||
-                    0
-                )
+                investmentAccount?.current_balance || 0
               )}
             </div>
 
@@ -1617,9 +1224,7 @@ function FinancialManagement() {
                 marginTop: 10,
               }}
             >
-              {formatCurrency(
-                withdrawals
-              )}
+              {formatCurrency(withdrawals)}
             </strong>
           </Card>
 
@@ -1655,9 +1260,7 @@ function FinancialManagement() {
                     : COLORS.red,
               }}
             >
-              {formatCurrency(
-                netResult
-              )}
+              {formatCurrency(netResult)}
             </strong>
           </Card>
         </section>
@@ -1680,8 +1283,7 @@ function FinancialManagement() {
             <div
               style={{
                 display: 'flex',
-                justifyContent:
-                  'space-between',
+                justifyContent: 'space-between',
                 alignItems: 'center',
                 marginBottom: 20,
               }}
@@ -1708,15 +1310,13 @@ function FinancialManagement() {
               </div>
             </div>
 
-            {income === 0 &&
-            expenses === 0 ? (
+            {income === 0 && expenses === 0 ? (
               <div
                 style={{
                   height: 220,
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent:
-                    'center',
+                  justifyContent: 'center',
                   color: '#666',
                   fontSize: 13,
                   border:
@@ -1737,8 +1337,7 @@ function FinancialManagement() {
                   <div
                     style={{
                       display: 'flex',
-                      justifyContent:
-                        'space-between',
+                      justifyContent: 'space-between',
                       marginBottom: 8,
                       fontSize: 12,
                     }}
@@ -1752,29 +1351,23 @@ function FinancialManagement() {
                     </span>
 
                     <strong>
-                      {formatCurrency(
-                        income
-                      )}
+                      {formatCurrency(income)}
                     </strong>
                   </div>
 
                   <div
                     style={{
                       height: 10,
-                      background:
-                        '#1d1d1d',
+                      background: '#1d1d1d',
                       borderRadius: 20,
-                      overflow:
-                        'hidden',
+                      overflow: 'hidden',
                     }}
                   >
                     <div
                       style={{
                         height: '100%',
                         width:
-                          income +
-                            expenses >
-                          0
+                          income + expenses > 0
                             ? `${Math.min(
                                 100,
                                 (income /
@@ -1785,8 +1378,7 @@ function FinancialManagement() {
                                   100
                               )}%`
                             : '0%',
-                        background:
-                          COLORS.green,
+                        background: COLORS.green,
                         borderRadius: 20,
                       }}
                     />
@@ -1797,8 +1389,7 @@ function FinancialManagement() {
                   <div
                     style={{
                       display: 'flex',
-                      justifyContent:
-                        'space-between',
+                      justifyContent: 'space-between',
                       marginBottom: 8,
                       fontSize: 12,
                     }}
@@ -1812,29 +1403,23 @@ function FinancialManagement() {
                     </span>
 
                     <strong>
-                      {formatCurrency(
-                        expenses
-                      )}
+                      {formatCurrency(expenses)}
                     </strong>
                   </div>
 
                   <div
                     style={{
                       height: 10,
-                      background:
-                        '#1d1d1d',
+                      background: '#1d1d1d',
                       borderRadius: 20,
-                      overflow:
-                        'hidden',
+                      overflow: 'hidden',
                     }}
                   >
                     <div
                       style={{
                         height: '100%',
                         width:
-                          income +
-                            expenses >
-                          0
+                          income + expenses > 0
                             ? `${Math.min(
                                 100,
                                 (expenses /
@@ -1845,8 +1430,7 @@ function FinancialManagement() {
                                   100
                               )}%`
                             : '0%',
-                        background:
-                          COLORS.red,
+                        background: COLORS.red,
                         borderRadius: 20,
                       }}
                     />
@@ -1893,86 +1477,78 @@ function FinancialManagement() {
                 Nenhuma conta cadastrada.
               </div>
             ) : (
-              accounts.map(
-                (account) => (
+              accounts.map((account) => (
+                <div
+                  key={account.id}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '13px 0',
+                    borderBottom:
+                      `1px solid ${COLORS.border}`,
+                  }}
+                >
                   <div
-                    key={account.id}
                     style={{
                       display: 'flex',
-                      alignItems:
-                        'center',
-                      justifyContent:
-                        'space-between',
-                      padding:
-                        '13px 0',
-                      borderBottom:
-                        `1px solid ${COLORS.border}`,
+                      alignItems: 'center',
+                      gap: 10,
                     }}
                   >
                     <div
                       style={{
+                        width: 34,
+                        height: 34,
+                        borderRadius: 10,
+                        background:
+                          'rgba(255,255,255,.04)',
                         display: 'flex',
-                        alignItems:
-                          'center',
-                        gap: 10,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: '#aaa',
                       }}
                     >
-                      <div
-                        style={{
-                          width: 34,
-                          height: 34,
-                          borderRadius: 10,
-                          background:
-                            'rgba(255,255,255,.04)',
-                          display: 'flex',
-                          alignItems:
-                            'center',
-                          justifyContent:
-                            'center',
-                          color: '#aaa',
-                        }}
-                      >
-                        <Icon
-                          name="wallet"
-                          size={17}
-                        />
-                      </div>
-
-                      <div>
-                        <div
-                          style={{
-                            fontSize: 13,
-                            fontWeight: 700,
-                          }}
-                        >
-                          {account.name}
-                        </div>
-
-                        <div
-                          style={{
-                            color:
-                              '#555',
-                            fontSize: 10,
-                            marginTop: 3,
-                          }}
-                        >
-                          {account.type}
-                        </div>
-                      </div>
+                      <Icon
+                        name="wallet"
+                        size={17}
+                      />
                     </div>
 
-                    <strong
-                      style={{
-                        fontSize: 13,
-                      }}
-                    >
-                      {formatCurrency(
-                        account.current_balance
-                      )}
-                    </strong>
+                    <div>
+                      <div
+                        style={{
+                          fontSize: 13,
+                          fontWeight: 700,
+                        }}
+                      >
+                        {account.name}
+                      </div>
+
+                      <div
+                        style={{
+                          color: '#555',
+                          fontSize: 10,
+                          marginTop: 3,
+                        }}
+                      >
+                        {account.account_type ||
+                          'Conta'}
+                      </div>
+                    </div>
                   </div>
-                )
-              )
+
+                  <strong
+                    style={{
+                      fontSize: 13,
+                    }}
+                  >
+                    {formatCurrency(
+                      account.current_balance
+                    )}
+                  </strong>
+                </div>
+              ))
             )}
           </Card>
         </section>
@@ -1984,7 +1560,6 @@ function FinancialManagement() {
             gridTemplateColumns:
               'minmax(0, 1.5fr) minmax(300px, 1fr)',
             gap: 18,
-            marginBottom: 18,
           }}
         >
           <Card
@@ -1996,8 +1571,7 @@ function FinancialManagement() {
             <div
               style={{
                 display: 'flex',
-                justifyContent:
-                  'space-between',
+                justifyContent: 'space-between',
                 alignItems: 'center',
                 marginBottom: 18,
               }}
@@ -2019,57 +1593,41 @@ function FinancialManagement() {
                     marginTop: 5,
                   }}
                 >
-                  Entradas e saídas registradas
+                  Movimentações geradas pelo sistema
                 </div>
               </div>
             </div>
 
-            {latestTransactions.length ===
-            0 ? (
-              <div
-                style={{
-                  padding:
-                    '45px 20px',
-                  textAlign: 'center',
-                  color: '#666',
-                  fontSize: 13,
-                }}
-              >
+            {latestTransactions.length === 0 ? (
+              <EmptyState>
                 Nenhuma movimentação registrada.
-              </div>
+              </EmptyState>
             ) : (
               <div
                 style={{
-                  overflowX:
-                    'auto',
+                  overflowX: 'auto',
                 }}
               >
                 <table
                   style={{
                     width: '100%',
-                    borderCollapse:
-                      'collapse',
+                    borderCollapse: 'collapse',
                     minWidth: 580,
                   }}
                 >
                   <thead>
                     <tr
                       style={{
-                        color:
-                          '#555',
+                        color: '#555',
                         fontSize: 10,
-                        textTransform:
-                          'uppercase',
-                        textAlign:
-                          'left',
-                        letterSpacing:
-                          '.08em',
+                        textTransform: 'uppercase',
+                        textAlign: 'left',
+                        letterSpacing: '.08em',
                       }}
                     >
                       <th
                         style={{
-                          padding:
-                            '9px 7px',
+                          padding: '9px 7px',
                           borderBottom:
                             `1px solid ${COLORS.border}`,
                         }}
@@ -2079,8 +1637,7 @@ function FinancialManagement() {
 
                       <th
                         style={{
-                          padding:
-                            '9px 7px',
+                          padding: '9px 7px',
                           borderBottom:
                             `1px solid ${COLORS.border}`,
                         }}
@@ -2090,8 +1647,7 @@ function FinancialManagement() {
 
                       <th
                         style={{
-                          padding:
-                            '9px 7px',
+                          padding: '9px 7px',
                           borderBottom:
                             `1px solid ${COLORS.border}`,
                         }}
@@ -2101,12 +1657,10 @@ function FinancialManagement() {
 
                       <th
                         style={{
-                          padding:
-                            '9px 7px',
+                          padding: '9px 7px',
                           borderBottom:
                             `1px solid ${COLORS.border}`,
-                          textAlign:
-                            'right',
+                          textAlign: 'right',
                         }}
                       >
                         Valor
@@ -2116,9 +1670,7 @@ function FinancialManagement() {
 
                   <tbody>
                     {latestTransactions.map(
-                      (
-                        transaction
-                      ) => {
+                      (transaction) => {
                         const color =
                           getTransactionColor(
                             transaction.type
@@ -2129,37 +1681,36 @@ function FinancialManagement() {
                             transaction.type
                           );
 
-                        const isOutgoing =
-                          [
-                            'expense',
-                            'withdrawal',
-                            'reserve',
-                            'investment',
-                            'transfer_out',
-                          ].includes(
-                            normalized
-                          );
+                        const isOutgoing = [
+                          'expense',
+                          'withdrawal',
+                          'retirada',
+                          'pro-labore',
+                          'prolabore',
+                          'reserve',
+                          'reserva',
+                          'investment',
+                          'investimento',
+                          'transfer_out',
+                        ].includes(
+                          normalized
+                        );
 
                         return (
                           <tr
-                            key={
-                              transaction.id
-                            }
+                            key={transaction.id}
                           >
                             <td
                               style={{
-                                padding:
-                                  '13px 7px',
+                                padding: '13px 7px',
                                 borderBottom:
                                   `1px solid ${COLORS.border}`,
                               }}
                             >
                               <div
                                 style={{
-                                  display:
-                                    'flex',
-                                  alignItems:
-                                    'center',
+                                  display: 'flex',
+                                  alignItems: 'center',
                                   gap: 9,
                                 }}
                               >
@@ -2171,8 +1722,7 @@ function FinancialManagement() {
                                     background:
                                       `${color}15`,
                                     color,
-                                    display:
-                                      'flex',
+                                    display: 'flex',
                                     alignItems:
                                       'center',
                                     justifyContent:
@@ -2185,34 +1735,26 @@ function FinancialManagement() {
                                         ? 'arrowUp'
                                         : 'arrowDown'
                                     }
-                                    size={
-                                      15
-                                    }
+                                    size={15}
                                   />
                                 </div>
 
                                 <div>
                                   <div
                                     style={{
-                                      fontSize:
-                                        12,
-                                      fontWeight:
-                                        700,
+                                      fontSize: 12,
+                                      fontWeight: 700,
                                     }}
                                   >
-                                    {
-                                      transaction.description
-                                    }
+                                    {transaction.description ||
+                                      'Movimentação financeira'}
                                   </div>
 
                                   <div
                                     style={{
-                                      fontSize:
-                                        10,
-                                      color:
-                                        '#555',
-                                      marginTop:
-                                        3,
+                                      fontSize: 10,
+                                      color: '#555',
+                                      marginTop: 3,
                                     }}
                                   >
                                     {getTransactionLabel(
@@ -2225,32 +1767,25 @@ function FinancialManagement() {
 
                             <td
                               style={{
-                                padding:
-                                  '13px 7px',
+                                padding: '13px 7px',
                                 borderBottom:
                                   `1px solid ${COLORS.border}`,
-                                color:
-                                  '#777',
-                                fontSize:
-                                  11,
+                                color: '#777',
+                                fontSize: 11,
                               }}
                             >
                               {transaction
                                 .financial_categories
-                                ?.name ||
-                                '—'}
+                                ?.name || '—'}
                             </td>
 
                             <td
                               style={{
-                                padding:
-                                  '13px 7px',
+                                padding: '13px 7px',
                                 borderBottom:
                                   `1px solid ${COLORS.border}`,
-                                color:
-                                  '#777',
-                                fontSize:
-                                  11,
+                                color: '#777',
+                                fontSize: 11,
                               }}
                             >
                               {formatDate(
@@ -2260,22 +1795,19 @@ function FinancialManagement() {
 
                             <td
                               style={{
-                                padding:
-                                  '13px 7px',
+                                padding: '13px 7px',
                                 borderBottom:
                                   `1px solid ${COLORS.border}`,
-                                textAlign:
-                                  'right',
+                                textAlign: 'right',
                                 color,
-                                fontWeight:
-                                  800,
-                                fontSize:
-                                  12,
+                                fontWeight: 800,
+                                fontSize: 12,
                               }}
                             >
                               {isOutgoing
                                 ? '- '
                                 : '+ '}
+
                               {formatCurrency(
                                 transaction.amount
                               )}
@@ -2315,12 +1847,10 @@ function FinancialManagement() {
               Onde o dinheiro está saindo
             </div>
 
-            {expenseCategories.length ===
-            0 ? (
+            {expenseCategories.length === 0 ? (
               <div
                 style={{
-                  padding:
-                    '40px 10px',
+                  padding: '40px 10px',
                   textAlign: 'center',
                   color: '#666',
                   fontSize: 13,
@@ -2331,1406 +1861,80 @@ function FinancialManagement() {
             ) : (
               expenseCategories
                 .slice(0, 8)
-                .map(
-                  (
-                    category
-                  ) => {
-                    const percentage =
-                      expenses >
-                      0
-                        ? (category.amount /
-                            expenses) *
-                          100
-                        : 0;
-
-                    return (
-                      <div
-                        key={
-                          category.name
-                        }
-                        style={{
-                          marginBottom:
-                            17,
-                        }}
-                      >
-                        <div
-                          style={{
-                            display:
-                              'flex',
-                            justifyContent:
-                              'space-between',
-                            marginBottom:
-                              7,
-                            fontSize:
-                              12,
-                          }}
-                        >
-                          <span
-                            style={{
-                              color:
-                                '#aaa',
-                            }}
-                          >
-                            {
-                              category.name
-                            }
-                          </span>
-
-                          <strong>
-                            {formatCurrency(
-                              category.amount
-                            )}
-                          </strong>
-                        </div>
-
-                        <div
-                          style={{
-                            height: 6,
-                            background:
-                              '#1d1d1d',
-                            borderRadius:
-                              20,
-                            overflow:
-                              'hidden',
-                          }}
-                        >
-                          <div
-                            style={{
-                              width: `${percentage}%`,
-                              height:
-                                '100%',
-                              background:
-                                COLORS.red,
-                              borderRadius:
-                                20,
-                            }}
-                          />
-                        </div>
-
-                        <div
-                          style={{
-                            color:
-                              '#555',
-                            fontSize:
-                              10,
-                            marginTop:
-                              4,
-                          }}
-                        >
-                          {percentage.toFixed(
-                            1
-                          )}
-                          %
-                        </div>
-                      </div>
-                    );
-                  }
-                )
-            )}
-          </Card>
-        </section>
-
-        <section
-          className="fm-grid-2"
-          style={{
-            display: 'grid',
-            gridTemplateColumns:
-              '1fr 1fr',
-            gap: 18,
-          }}
-        >
-          <Card
-            style={{
-              padding: 22,
-            }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                justifyContent:
-                  'space-between',
-                alignItems: 'center',
-                marginBottom: 18,
-              }}
-            >
-              <div>
-                <h2
-                  style={{
-                    margin: 0,
-                    fontSize: 17,
-                  }}
-                >
-                  Metas financeiras
-                </h2>
-
-                <div
-                  style={{
-                    color: '#666',
-                    fontSize: 12,
-                    marginTop: 5,
-                  }}
-                >
-                  Reserva e objetivos da empresa
-                </div>
-              </div>
-
-              <Icon
-                name="target"
-                size={20}
-              />
-            </div>
-
-            {goals.length === 0 ? (
-              <div
-                style={{
-                  padding:
-                    '30px 10px',
-                  textAlign: 'center',
-                  color: '#666',
-                  fontSize: 13,
-                }}
-              >
-                Nenhuma meta criada ainda.
-              </div>
-            ) : (
-              goals.map(
-                (goal) => {
+                .map((category) => {
                   const percentage =
-                    Number(
-                      goal.target_amount
-                    ) > 0
-                      ? (Number(
-                          goal.current_amount
-                        ) /
-                          Number(
-                            goal.target_amount
-                          )) *
+                    expenses > 0
+                      ? (category.amount /
+                          expenses) *
                         100
                       : 0;
 
                   return (
                     <div
-                      key={goal.id}
+                      key={category.name}
                       style={{
-                        marginBottom:
-                          18,
+                        marginBottom: 17,
                       }}
                     >
                       <div
                         style={{
-                          display:
-                            'flex',
+                          display: 'flex',
                           justifyContent:
                             'space-between',
-                          fontSize:
-                            12,
-                          marginBottom:
-                            7,
+                          marginBottom: 7,
+                          fontSize: 12,
                         }}
                       >
-                        <strong>
-                          {goal.name}
-                        </strong>
-
                         <span
                           style={{
-                            color:
-                              '#777',
+                            color: '#aaa',
                           }}
                         >
-                          {formatCurrency(
-                            goal.current_amount
-                          )}{' '}
-                          /{' '}
-                          {formatCurrency(
-                            goal.target_amount
-                          )}
+                          {category.name}
                         </span>
+
+                        <strong>
+                          {formatCurrency(
+                            category.amount
+                          )}
+                        </strong>
                       </div>
 
                       <div
                         style={{
-                          height: 7,
-                          background:
-                            '#1d1d1d',
-                          borderRadius:
-                            20,
-                          overflow:
-                            'hidden',
+                          height: 6,
+                          background: '#1d1d1d',
+                          borderRadius: 20,
+                          overflow: 'hidden',
                         }}
                       >
                         <div
                           style={{
-                            width: `${Math.min(
-                              100,
-                              percentage
-                            )}%`,
-                            height:
-                              '100%',
+                            width: `${percentage}%`,
+                            height: '100%',
                             background:
-                              COLORS.blue,
-                            borderRadius:
-                              20,
+                              COLORS.red,
+                            borderRadius: 20,
                           }}
                         />
                       </div>
 
                       <div
                         style={{
-                          marginTop:
-                            5,
-                          color:
-                            '#555',
-                          fontSize:
-                            10,
+                          color: '#555',
+                          fontSize: 10,
+                          marginTop: 4,
                         }}
                       >
-                        {percentage.toFixed(
-                          1
-                        )}
-                        % concluído
+                        {percentage.toFixed(1)}%
                       </div>
                     </div>
                   );
-                }
-              )
-            )}
-          </Card>
-
-          <Card
-            style={{
-              padding: 22,
-            }}
-          >
-            <h2
-              style={{
-                margin: 0,
-                fontSize: 17,
-              }}
-            >
-              Regra de distribuição
-            </h2>
-
-            <div
-              style={{
-                color: '#666',
-                fontSize: 12,
-                marginTop: 5,
-                marginBottom: 18,
-              }}
-            >
-              Como o dinheiro poderá ser distribuído
-            </div>
-
-            {rules.length === 0 ? (
-              <div
-                style={{
-                  padding:
-                    '30px 10px',
-                  textAlign: 'center',
-                  color: '#666',
-                  fontSize: 13,
-                }}
-              >
-                Nenhuma regra configurada.
-              </div>
-            ) : (
-              rules.slice(0, 1).map(
-                (rule) => {
-                  const items = [
-                    [
-                      'Operação',
-                      rule.operation_percentage,
-                      COLORS.green,
-                    ],
-                    [
-                      'Despesas',
-                      rule.expense_percentage,
-                      COLORS.red,
-                    ],
-                    [
-                      'Reserva',
-                      rule.reserve_percentage,
-                      COLORS.blue,
-                    ],
-                    [
-                      'Investimentos',
-                      rule.investment_percentage,
-                      '#a855f7',
-                    ],
-                    [
-                      'Retirada',
-                      rule.withdrawal_percentage,
-                      COLORS.yellow,
-                    ],
-                  ];
-
-                  return (
-                    <div
-                      key={rule.id}
-                    >
-                      {items.map(
-                        ([
-                          label,
-                          percentage,
-                          color,
-                        ]) => (
-                          <div
-                            key={label}
-                            style={{
-                              marginBottom:
-                                13,
-                            }}
-                          >
-                            <div
-                              style={{
-                                display:
-                                  'flex',
-                                justifyContent:
-                                  'space-between',
-                                fontSize:
-                                  12,
-                                marginBottom:
-                                  5,
-                              }}
-                            >
-                              <span
-                                style={{
-                                  color:
-                                    '#888',
-                                }}
-                              >
-                                {
-                                  label
-                                }
-                              </span>
-
-                              <strong>
-                                {Number(
-                                  percentage ||
-                                    0
-                                ).toFixed(
-                                  1
-                                )}
-                                %
-                              </strong>
-                            </div>
-
-                            <div
-                              style={{
-                                height: 5,
-                                background:
-                                  '#1d1d1d',
-                                borderRadius:
-                                  20,
-                                overflow:
-                                  'hidden',
-                              }}
-                            >
-                              <div
-                                style={{
-                                  width: `${Math.min(
-                                    100,
-                                    Number(
-                                      percentage ||
-                                        0
-                                    )
-                                  )}%`,
-                                  height:
-                                    '100%',
-                                  background:
-                                    color,
-                                }}
-                              />
-                            </div>
-                          </div>
-                        )
-                      )}
-                    </div>
-                  );
-                }
-              )
+                })
             )}
           </Card>
         </section>
       </main>
-
-      {modal && (
-        <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            zIndex: 100,
-            background:
-              'rgba(0,0,0,.78)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent:
-              'center',
-            padding: 15,
-          }}
-          onMouseDown={(event) => {
-            if (
-              event.target ===
-              event.currentTarget
-            ) {
-              setModal(null);
-            }
-          }}
-        >
-          <div
-            className="fm-modal"
-            style={{
-              width: 500,
-              maxWidth: '100%',
-              maxHeight:
-                'calc(100vh - 30px)',
-              overflowY: 'auto',
-              background:
-                '#111111',
-              border: `1px solid ${COLORS.border}`,
-              borderRadius: 18,
-              padding: 24,
-              boxShadow:
-                '0 30px 100px rgba(0,0,0,.55)',
-            }}
-          >
-            {modal ===
-              'transaction' && (
-              <>
-                <div
-                  style={{
-                    display:
-                      'flex',
-                    justifyContent:
-                      'space-between',
-                    alignItems:
-                      'center',
-                    marginBottom:
-                      22,
-                  }}
-                >
-                  <div>
-                    <h2
-                      style={{
-                        margin: 0,
-                        fontSize:
-                          20,
-                      }}
-                    >
-                      {transactionType ===
-                      'income'
-                        ? 'Nova entrada'
-                        : 'Nova despesa'}
-                    </h2>
-
-                    <div
-                      style={{
-                        color:
-                          '#666',
-                        fontSize:
-                          12,
-                        marginTop:
-                          5,
-                      }}
-                    >
-                      Registre uma movimentação financeira
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={() =>
-                      setModal(
-                        null
-                      )
-                    }
-                    style={{
-                      width: 34,
-                      height: 34,
-                      borderRadius:
-                        9,
-                      border:
-                        `1px solid ${COLORS.border}`,
-                      background:
-                        'transparent',
-                      color:
-                        '#777',
-                      cursor:
-                        'pointer',
-                      display:
-                        'flex',
-                      alignItems:
-                        'center',
-                      justifyContent:
-                        'center',
-                    }}
-                  >
-                    <Icon
-                      name="close"
-                      size={17}
-                    />
-                  </button>
-                </div>
-
-                <form
-                  onSubmit={
-                    createTransaction
-                  }
-                >
-                  <label
-                    style={{
-                      display:
-                        'block',
-                      color:
-                        '#888',
-                      fontSize:
-                        11,
-                      marginBottom:
-                        7,
-                    }}
-                  >
-                    DESCRIÇÃO
-                  </label>
-
-                  <input
-                    value={
-                      form.description
-                    }
-                    onChange={(
-                      event
-                    ) =>
-                      setForm(
-                        (
-                          current
-                        ) => ({
-                          ...current,
-                          description:
-                            event
-                              .target
-                              .value,
-                        })
-                      )
-                    }
-                    placeholder={
-                      transactionType ===
-                      'income'
-                        ? 'Ex.: Pagamento de cliente'
-                        : 'Ex.: Assinatura Adobe'
-                    }
-                    style={{
-                      width:
-                        '100%',
-                      height: 44,
-                      borderRadius:
-                        10,
-                      border:
-                        `1px solid ${COLORS.border}`,
-                      background:
-                        '#090909',
-                      color:
-                        COLORS.white,
-                      padding:
-                        '0 12px',
-                      outline:
-                        'none',
-                      marginBottom:
-                        16,
-                    }}
-                  />
-
-                  <label
-                    style={{
-                      display:
-                        'block',
-                      color:
-                        '#888',
-                      fontSize:
-                        11,
-                      marginBottom:
-                        7,
-                    }}
-                  >
-                    VALOR
-                  </label>
-
-                  <input
-                    type="text"
-                    inputMode="decimal"
-                    value={
-                      form.amount
-                    }
-                    onChange={(
-                      event
-                    ) =>
-                      setForm(
-                        (
-                          current
-                        ) => ({
-                          ...current,
-                          amount:
-                            event
-                              .target
-                              .value,
-                        })
-                      )
-                    }
-                    placeholder="0,00"
-                    style={{
-                      width:
-                        '100%',
-                      height: 44,
-                      borderRadius:
-                        10,
-                      border:
-                        `1px solid ${COLORS.border}`,
-                      background:
-                        '#090909',
-                      color:
-                        COLORS.white,
-                      padding:
-                        '0 12px',
-                      outline:
-                        'none',
-                      marginBottom:
-                        16,
-                    }}
-                  />
-
-                  <div
-                    style={{
-                      display:
-                        'grid',
-                      gridTemplateColumns:
-                        '1fr 1fr',
-                      gap: 12,
-                    }}
-                  >
-                    <div>
-                      <label
-                        style={{
-                          display:
-                            'block',
-                          color:
-                            '#888',
-                          fontSize:
-                            11,
-                          marginBottom:
-                            7,
-                        }}
-                      >
-                        CONTA
-                      </label>
-
-                      <select
-                        value={
-                          form.account_id
-                        }
-                        onChange={(
-                          event
-                        ) =>
-                          setForm(
-                            (
-                              current
-                            ) => ({
-                              ...current,
-                              account_id:
-                                event
-                                  .target
-                                  .value,
-                            })
-                          )
-                        }
-                        style={{
-                          width:
-                            '100%',
-                          height: 44,
-                          borderRadius:
-                            10,
-                          border:
-                            `1px solid ${COLORS.border}`,
-                          background:
-                            '#090909',
-                          color:
-                            COLORS.white,
-                          padding:
-                            '0 10px',
-                          outline:
-                            'none',
-                        }}
-                      >
-                        <option value="">
-                          Selecione
-                        </option>
-
-                        {accounts.map(
-                          (
-                            account
-                          ) => (
-                            <option
-                              key={
-                                account.id
-                              }
-                              value={
-                                account.id
-                              }
-                            >
-                              {
-                                account.name
-                              }
-                            </option>
-                          )
-                        )}
-                      </select>
-                    </div>
-
-                    <div>
-                      <label
-                        style={{
-                          display:
-                            'block',
-                          color:
-                            '#888',
-                          fontSize:
-                            11,
-                          marginBottom:
-                            7,
-                        }}
-                      >
-                        CATEGORIA
-                      </label>
-
-                      <select
-                        value={
-                          form.category_id
-                        }
-                        onChange={(
-                          event
-                        ) =>
-                          setForm(
-                            (
-                              current
-                            ) => ({
-                              ...current,
-                              category_id:
-                                event
-                                  .target
-                                  .value,
-                            })
-                          )
-                        }
-                        style={{
-                          width:
-                            '100%',
-                          height: 44,
-                          borderRadius:
-                            10,
-                          border:
-                            `1px solid ${COLORS.border}`,
-                          background:
-                            '#090909',
-                          color:
-                            COLORS.white,
-                          padding:
-                            '0 10px',
-                          outline:
-                            'none',
-                        }}
-                      >
-                        <option value="">
-                          Sem categoria
-                        </option>
-
-                        {categories
-                          .filter(
-                            (
-                              category
-                            ) =>
-                              normalize(
-                                category.type
-                              ) ===
-                              normalize(
-                                transactionType
-                              )
-                          )
-                          .map(
-                            (
-                              category
-                            ) => (
-                              <option
-                                key={
-                                  category.id
-                                }
-                                value={
-                                  category.id
-                                }
-                              >
-                                {
-                                  category.name
-                                }
-                              </option>
-                            )
-                          )}
-                      </select>
-                    </div>
-                  </div>
-
-                  <div
-                    style={{
-                      marginTop:
-                        16,
-                    }}
-                  >
-                    <label
-                      style={{
-                        display:
-                          'block',
-                        color:
-                          '#888',
-                        fontSize:
-                          11,
-                        marginBottom:
-                          7,
-                      }}
-                    >
-                      DATA
-                    </label>
-
-                    <input
-                      type="date"
-                      value={
-                        form.transaction_date
-                      }
-                      onChange={(
-                        event
-                      ) =>
-                        setForm(
-                          (
-                            current
-                          ) => ({
-                            ...current,
-                            transaction_date:
-                              event
-                                .target
-                                .value,
-                          })
-                        )
-                      }
-                      style={{
-                        width:
-                          '100%',
-                        height: 44,
-                        borderRadius:
-                          10,
-                        border:
-                          `1px solid ${COLORS.border}`,
-                        background:
-                          '#090909',
-                        color:
-                          COLORS.white,
-                        padding:
-                          '0 12px',
-                        outline:
-                          'none',
-                      }}
-                    />
-                  </div>
-
-                  <div
-                    style={{
-                      marginTop:
-                        16,
-                    }}
-                  >
-                    <label
-                      style={{
-                        display:
-                          'block',
-                        color:
-                          '#888',
-                        fontSize:
-                          11,
-                        marginBottom:
-                          7,
-                      }}
-                    >
-                      OBSERVAÇÃO
-                    </label>
-
-                    <textarea
-                      value={
-                        form.notes
-                      }
-                      onChange={(
-                        event
-                      ) =>
-                        setForm(
-                          (
-                            current
-                          ) => ({
-                            ...current,
-                            notes:
-                              event
-                                .target
-                                .value,
-                          })
-                        )
-                      }
-                      placeholder="Opcional"
-                      rows={3}
-                      style={{
-                        width:
-                          '100%',
-                        borderRadius:
-                          10,
-                        border:
-                          `1px solid ${COLORS.border}`,
-                        background:
-                          '#090909',
-                        color:
-                          COLORS.white,
-                        padding:
-                          '12px',
-                        outline:
-                          'none',
-                        resize:
-                          'vertical',
-                      }}
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    disabled={
-                      refreshing
-                    }
-                    style={{
-                      width:
-                        '100%',
-                      height: 46,
-                      marginTop:
-                        20,
-                      borderRadius:
-                        10,
-                      border: 0,
-                      background:
-                        transactionType ===
-                        'income'
-                          ? COLORS.green
-                          : COLORS.red,
-                      color:
-                        COLORS.white,
-                      fontWeight:
-                        800,
-                      cursor:
-                        refreshing
-                          ? 'default'
-                          : 'pointer',
-                      opacity:
-                        refreshing
-                          ? 0.6
-                          : 1,
-                    }}
-                  >
-                    {refreshing
-                      ? 'Salvando...'
-                      : 'Registrar movimentação'}
-                  </button>
-                </form>
-              </>
-            )}
-
-            {modal ===
-              'transfer' && (
-              <>
-                <div
-                  style={{
-                    display:
-                      'flex',
-                    justifyContent:
-                      'space-between',
-                    alignItems:
-                      'center',
-                    marginBottom:
-                      22,
-                  }}
-                >
-                  <div>
-                    <h2
-                      style={{
-                        margin: 0,
-                        fontSize:
-                          20,
-                      }}
-                    >
-                      Transferir dinheiro
-                    </h2>
-
-                    <div
-                      style={{
-                        color:
-                          '#666',
-                        fontSize:
-                          12,
-                        marginTop:
-                          5,
-                      }}
-                    >
-                      Mova dinheiro entre suas contas.
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={() =>
-                      setModal(
-                        null
-                      )
-                    }
-                    style={{
-                      width: 34,
-                      height: 34,
-                      borderRadius:
-                        9,
-                      border:
-                        `1px solid ${COLORS.border}`,
-                      background:
-                        'transparent',
-                      color:
-                        '#777',
-                      cursor:
-                        'pointer',
-                      display:
-                        'flex',
-                      alignItems:
-                        'center',
-                      justifyContent:
-                        'center',
-                    }}
-                  >
-                    <Icon
-                      name="close"
-                      size={17}
-                    />
-                  </button>
-                </div>
-
-                <form
-                  onSubmit={
-                    createTransfer
-                  }
-                >
-                  <label
-                    style={{
-                      display:
-                        'block',
-                      color:
-                        '#888',
-                      fontSize:
-                        11,
-                      marginBottom:
-                        7,
-                    }}
-                  >
-                    CONTA DE ORIGEM
-                  </label>
-
-                  <select
-                    value={
-                      transferForm.from_account_id
-                    }
-                    onChange={(
-                      event
-                    ) =>
-                      setTransferForm(
-                        (
-                          current
-                        ) => ({
-                          ...current,
-                          from_account_id:
-                            event
-                              .target
-                              .value,
-                        })
-                      )
-                    }
-                    style={{
-                      width:
-                        '100%',
-                      height: 44,
-                      borderRadius:
-                        10,
-                      border:
-                        `1px solid ${COLORS.border}`,
-                      background:
-                        '#090909',
-                      color:
-                        COLORS.white,
-                      padding:
-                        '0 10px',
-                      outline:
-                        'none',
-                      marginBottom:
-                        16,
-                    }}
-                  >
-                    <option value="">
-                      Selecione
-                    </option>
-
-                    {accounts.map(
-                      (
-                        account
-                      ) => (
-                        <option
-                          key={
-                            account.id
-                          }
-                          value={
-                            account.id
-                          }
-                        >
-                          {
-                            account.name
-                          }{' '}
-                          —{' '}
-                          {formatCurrency(
-                            account.current_balance
-                          )}
-                        </option>
-                      )
-                    )}
-                  </select>
-
-                  <label
-                    style={{
-                      display:
-                        'block',
-                      color:
-                        '#888',
-                      fontSize:
-                        11,
-                      marginBottom:
-                        7,
-                    }}
-                  >
-                    CONTA DE DESTINO
-                  </label>
-
-                  <select
-                    value={
-                      transferForm.to_account_id
-                    }
-                    onChange={(
-                      event
-                    ) =>
-                      setTransferForm(
-                        (
-                          current
-                        ) => ({
-                          ...current,
-                          to_account_id:
-                            event
-                              .target
-                              .value,
-                        })
-                      )
-                    }
-                    style={{
-                      width:
-                        '100%',
-                      height: 44,
-                      borderRadius:
-                        10,
-                      border:
-                        `1px solid ${COLORS.border}`,
-                      background:
-                        '#090909',
-                      color:
-                        COLORS.white,
-                      padding:
-                        '0 10px',
-                      outline:
-                        'none',
-                      marginBottom:
-                        16,
-                    }}
-                  >
-                    <option value="">
-                      Selecione
-                    </option>
-
-                    {accounts.map(
-                      (
-                        account
-                      ) => (
-                        <option
-                          key={
-                            account.id
-                          }
-                          value={
-                            account.id
-                          }
-                        >
-                          {
-                            account.name
-                          }
-                        </option>
-                      )
-                    )}
-                  </select>
-
-                  <label
-                    style={{
-                      display:
-                        'block',
-                      color:
-                        '#888',
-                      fontSize:
-                        11,
-                      marginBottom:
-                        7,
-                    }}
-                  >
-                    VALOR
-                  </label>
-
-                  <input
-                    type="text"
-                    inputMode="decimal"
-                    value={
-                      transferForm.amount
-                    }
-                    onChange={(
-                      event
-                    ) =>
-                      setTransferForm(
-                        (
-                          current
-                        ) => ({
-                          ...current,
-                          amount:
-                            event
-                              .target
-                              .value,
-                        })
-                      )
-                    }
-                    placeholder="0,00"
-                    style={{
-                      width:
-                        '100%',
-                      height: 44,
-                      borderRadius:
-                        10,
-                      border:
-                        `1px solid ${COLORS.border}`,
-                      background:
-                        '#090909',
-                      color:
-                        COLORS.white,
-                      padding:
-                        '0 12px',
-                      outline:
-                        'none',
-                      marginBottom:
-                        16,
-                    }}
-                  />
-
-                  <label
-                    style={{
-                      display:
-                        'block',
-                      color:
-                        '#888',
-                      fontSize:
-                        11,
-                      marginBottom:
-                        7,
-                    }}
-                  >
-                    DESCRIÇÃO
-                  </label>
-
-                  <input
-                    type="text"
-                    value={
-                      transferForm.description
-                    }
-                    onChange={(
-                      event
-                    ) =>
-                      setTransferForm(
-                        (
-                          current
-                        ) => ({
-                          ...current,
-                          description:
-                            event
-                              .target
-                              .value,
-                        })
-                      )
-                    }
-                    placeholder="Ex.: Separação para reserva"
-                    style={{
-                      width:
-                        '100%',
-                      height: 44,
-                      borderRadius:
-                        10,
-                      border:
-                        `1px solid ${COLORS.border}`,
-                      background:
-                        '#090909',
-                      color:
-                        COLORS.white,
-                      padding:
-                        '0 12px',
-                      outline:
-                        'none',
-                    }}
-                  />
-
-                  <button
-                    type="submit"
-                    disabled={
-                      refreshing
-                    }
-                    style={{
-                      width:
-                        '100%',
-                      height: 46,
-                      marginTop:
-                        20,
-                      borderRadius:
-                        10,
-                      border: 0,
-                      background:
-                        COLORS.white,
-                      color:
-                        '#050505',
-                      fontWeight:
-                        800,
-                      cursor:
-                        refreshing
-                          ? 'default'
-                          : 'pointer',
-                      opacity:
-                        refreshing
-                          ? 0.6
-                          : 1,
-                    }}
-                  >
-                    {refreshing
-                      ? 'Transferindo...'
-                      : 'Confirmar transferência'}
-                  </button>
-                </form>
-              </>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   );
 }
