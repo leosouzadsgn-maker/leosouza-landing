@@ -973,16 +973,17 @@ function AdminDashboard() {
         </div>
 
         {[
-          ['dashboard', 'Dashboard'],
-          ['charges', 'Cobranças'],
-          ['clients', 'Clientes'],
-          ['payments', 'Pagamentos'],
-          ['chart', 'Faturamento'],
-          ['receipt', 'Comprovantes'],
-          ['tag', 'Marcas / Projetos'],
-          ['reports', 'Relatórios'],
-          ['settings', 'Configurações'],
-        ].map(([icon, label], index) => (
+  ['dashboard', 'Dashboard'],
+  ['charges', 'Cobranças'],
+  ['clients', 'Clientes'],
+  ['payments', 'Pagamentos'],
+  ['chart', 'Faturamento'],
+  ['wallet', 'Gestão Financeira'],
+  ['receipt', 'Comprovantes'],
+  ['tag', 'Marcas / Projetos'],
+  ['reports', 'Relatórios'],
+  ['settings', 'Configurações'],
+].map(([icon, label], index) => (
           <div
             key={label}
             onClick={() => {

@@ -1,6 +1,8 @@
 import React, { lazy, Suspense } from 'react';
 
 import AdminDashboard from './pagamentos/pages/AdminDashboard';
+import FinancialManagement from './pagamentos/pages/FinancialManagement';
+
 import Hero from './sections/Hero/Hero';
 import Manifesto from './sections/Manifesto/Manifesto';
 import Services from './sections/Services/Services';
@@ -98,6 +100,19 @@ function App() {
     path === '/pagamentos/admin/dashboard/'
   ) {
     return <AdminDashboard />;
+  }
+
+  /*
+  =====================================================
+  CENTRAL DE PAGAMENTOS - GESTÃO FINANCEIRA
+  =====================================================
+  */
+
+  if (
+    path === '/pagamentos/admin/financeiro' ||
+    path === '/pagamentos/admin/financeiro/'
+  ) {
+    return <FinancialManagement />;
   }
 
   /*
