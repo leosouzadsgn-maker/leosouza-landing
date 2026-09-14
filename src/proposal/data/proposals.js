@@ -38,23 +38,71 @@ const defaultProposal = {
   status: 'active'
 };
 
+
+
+const pedroProposal = {
+  id: 'pedro-wiese',
+  number: '003',
+  company: 'PEDRO WIESE',
+  owner: 'Pedro Wiese',
+  email: '',
+  createdAt: '01 SET 2026',
+  validUntil: '08 SET 2026',
+  diagnosisPdf: '',
+  analysisVideo: '',
+  diagnosis: '',
+  recommendation: '',
+  recommendedPrice: '',
+  bonus: '',
+  landingPage: '',
+  packages: [
+    {
+      name: 'GESTÃO DO INSTAGRAM',
+      description: 'R$ 800,00 / mês\nPlanejamento de conteúdo\nOrganização do calendário de publicações\nCriação das artes para o perfil\nCriação de legendas\nPublicação dos conteúdos\nOrganização visual do feed\nConteúdo institucional da empresa\nConteúdos relacionados ao futebol e ao mercado esportivo\nDesenvolvimento da presença digital da empresa\nAcompanhamento básico dos resultados do perfil',
+      price: 'R$ 800,00 / MÊS'
+    },
+    {
+      name: 'COMUNICAÇÃO DOS ATLETAS',
+      description: 'R$ 100,00 por atleta / mês\nAcompanhamento do calendário de jogos\nIdentificação de datas e horários das partidas\nCriação das artes Matchday\nPublicação dos Matchdays\nAdequação das artes à identidade visual da empresa\nComunicação de resultados e momentos relevantes, quando necessário\nNão haverá cobrança individual por cada arte Matchday.',
+      price: 'R$ 100,00 / ATLETA / MÊS'
+    },
+    {
+      name: 'INVESTIMENTO MENSAL',
+      description: 'R$ 1.800,00 considerando 10 atletas\nR$ 800,00 + R$ 100,00 × quantidade de atletas',
+      price: 'R$ 1.800,00 / MÊS'
+    }
+  ],
+  payment: 'Mensal, com vencimento a definir entre as partes.',
+  notes: 'A quantidade de atletas poderá ser alterada ao longo da parceria, sendo o valor mensal ajustado conforme a quantidade contratada.',
+  status: 'active'
+};
+
+const SEED_PROPOSALS = [defaultProposal, pedroProposal];
 export function getProposals() {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
 
     if (!saved) {
-      localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify([defaultProposal])
-      );
-
-      return [defaultProposal];
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(SEED_PROPOSALS));
+      return SEED_PROPOSALS;
     }
 
-    return JSON.parse(saved);
+    const parsed = JSON.parse(saved);
+    const list = Array.isArray(parsed) ? parsed : [];
+
+    const ids = new Set(list.map(item => item.id));
+    const missingSeeds = SEED_PROPOSALS.filter(item => !ids.has(item.id));
+
+    if (missingSeeds.length) {
+      const merged = [...list, ...missingSeeds];
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+      return merged;
+    }
+
+    return list;
   } catch (error) {
     console.error('Erro ao carregar propostas:', error);
-    return [defaultProposal];
+    return SEED_PROPOSALS;
   }
 }
 
@@ -102,10 +150,7 @@ export function createProposal(data) {
   };
 
   const updated = [
-    ...proposals.map(item => ({
-      ...item,
-      status: 'archived'
-    })),
+    ...proposals,
     proposal
   ];
 

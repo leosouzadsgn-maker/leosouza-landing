@@ -1,10 +1,4 @@
-import React, { lazy, Suspense } from 'react';
-
-import AdminDashboard from './pagamentos/pages/AdminDashboard';
-import FinancialManagement from './pagamentos/pages/FinancialManagement';
-import Charges from './pagamentos/pages/Charges';
-import Brands from './pagamentos/pages/Brands';
-import Clients from './pagamentos/pages/Clients';
+import React from 'react';
 
 import Hero from './sections/Hero/Hero';
 import Manifesto from './sections/Manifesto/Manifesto';
@@ -21,13 +15,9 @@ import ProposalDiagnostico from './proposal/pages/ProposalDiagnostico';
 import ProposalDirection from './proposal/pages/ProposalDirection';
 import ProposalPlans from './proposal/pages/ProposalPlans';
 import ProposalAdmin from './proposal/pages/ProposalAdmin';
-import ProposalFernando from './proposal/pages/ProposalFernando';
+import ProposalPedro from './proposal/pages/ProposalPedro';
 
 import TreinamentoKreative from './treinamento/TreinamentoKreative';
-
-const AdminLogin = lazy(
-  () => import('./pagamentos/pages/AdminLogin')
-);
 
 function MainSite() {
   return (
@@ -44,197 +34,12 @@ function MainSite() {
   );
 }
 
-function LoadingPage() {
-  return (
-    <main
-      style={{
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background: '#070707',
-        color: '#ffffff',
-        fontFamily: 'Inter, Arial, sans-serif',
-      }}
-    >
-      Carregando...
-    </main>
-  );
-}
-
-function PaymentReturnPage() {
-  const params = new URLSearchParams(
-    window.location.search
-  );
-
-  const chargeId = params.get('charge_id');
-
-  return (
-    <main
-      style={{
-        minHeight: '100vh',
-        background:
-          'radial-gradient(circle at top, rgba(239,43,53,.10), transparent 35%), #070707',
-        color: '#ffffff',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 24,
-        fontFamily: 'Inter, Arial, sans-serif',
-      }}
-    >
-      <section
-        style={{
-          width: '100%',
-          maxWidth: 520,
-          padding: 34,
-          borderRadius: 18,
-          border:
-            '1px solid rgba(255,255,255,.10)',
-          background: '#101010',
-          boxShadow:
-            '0 30px 90px rgba(0,0,0,.45)',
-          textAlign: 'center',
-        }}
-      >
-        <div
-          style={{
-            width: 64,
-            height: 64,
-            borderRadius: '50%',
-            margin: '0 auto 18px',
-            background:
-              'rgba(34,197,94,.10)',
-            border:
-              '1px solid rgba(34,197,94,.25)',
-            color: '#22c55e',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: 30,
-            fontWeight: 800,
-          }}
-        >
-          ✓
-        </div>
-
-        <div
-          style={{
-            fontSize: 25,
-            fontWeight: 800,
-            letterSpacing: '-.03em',
-          }}
-        >
-          Pagamento recebido
-        </div>
-
-        <p
-          style={{
-            margin: '10px auto 0',
-            maxWidth: 390,
-            color: '#888',
-            fontSize: 13,
-            lineHeight: 1.6,
-          }}
-        >
-          Obrigado pelo pagamento. Estamos
-          processando a confirmação da transação.
-        </p>
-
-        {chargeId && (
-          <div
-            style={{
-              marginTop: 20,
-              padding: 13,
-              borderRadius: 10,
-              background: '#0b0b0b',
-              border:
-                '1px solid rgba(255,255,255,.07)',
-              color: '#666',
-              fontSize: 10,
-              wordBreak: 'break-all',
-            }}
-          >
-            Referência da cobrança:{' '}
-            {chargeId}
-          </div>
-        )}
-
-        <div
-          style={{
-            marginTop: 22,
-            paddingTop: 18,
-            borderTop:
-              '1px solid rgba(255,255,255,.08)',
-            color: '#555',
-            fontSize: 11,
-            lineHeight: 1.5,
-          }}
-        >
-          O comprovante personalizado será
-          disponibilizado após a confirmação
-          definitiva do pagamento.
-        </div>
-      </section>
-    </main>
-  );
-}
-
 function App() {
   const path = window.location.pathname;
 
-  if (
-    path === '/pagamentos/admin' ||
-    path === '/pagamentos/admin/'
-  ) {
-    return (
-      <Suspense fallback={<LoadingPage />}>
-        <AdminLogin />
-      </Suspense>
-    );
-  }
-
-  if (
-    path === '/pagamentos/admin/dashboard' ||
-    path === '/pagamentos/admin/dashboard/'
-  ) {
-    return <AdminDashboard />;
-  }
-
-  if (
-    path === '/pagamentos/admin/cobrancas' ||
-    path === '/pagamentos/admin/cobrancas/'
-  ) {
-    return <Charges />;
-  }
-
-  if (
-    path === '/pagamentos/admin/clientes' ||
-    path === '/pagamentos/admin/clientes/'
-  ) {
-    return <Clients />;
-  }
-
-  if (
-    path === '/pagamentos/admin/marcas' ||
-    path === '/pagamentos/admin/marcas/'
-  ) {
-    return <Brands />;
-  }
-
-  if (
-    path === '/pagamentos/admin/financeiro' ||
-    path === '/pagamentos/admin/financeiro/'
-  ) {
-    return <FinancialManagement />;
-  }
-
-  if (
-    path === '/pagamentos/confirmado' ||
-    path === '/pagamentos/confirmado/'
-  ) {
-    return <PaymentReturnPage />;
-  }
+  /* =====================================================
+     TREINAMENTO COMERCIAL KREATIVE
+  ===================================================== */
 
   if (
     path === '/treinamentokreative' ||
@@ -243,50 +48,65 @@ function App() {
     return <TreinamentoKreative />;
   }
 
-  if (
-    path.startsWith('/admin/propostas')
-  ) {
+  /* =====================================================
+     ADMIN
+  ===================================================== */
+
+  if (path.startsWith('/admin/propostas')) {
     return <ProposalAdmin />;
   }
 
-  if (
-    path === '/proposta/fernando-veiga' ||
-    path === '/proposta/fernando-veiga/'
-  ) {
-    return <ProposalFernando />;
+  /* =====================================================
+     PROPOSTA PEDRO WIESE
+  ===================================================== */
+
+  if (path === '/proposta/pedro-wiese' || path === '/proposta/pedro-wiese/') {
+    return <ProposalPedro />;
   }
+
+  /* =====================================================
+     DIREÇÃO
+  ===================================================== */
 
   if (path.includes('/direcao')) {
     return <ProposalDirection />;
   }
 
+  /* =====================================================
+     PLANOS
+  ===================================================== */
+
   if (path.includes('/planos')) {
     return <ProposalPlans />;
   }
 
-  if (
-    /^\/proposta\/[^/]+\/contexto\/?$/.test(
-      path
-    )
-  ) {
+  /* =====================================================
+     CONTEXTO
+  ===================================================== */
+
+  if (path.match(/^\/proposta\/[^/]+\/contexto\/?$/)) {
     return <ProposalContext />;
   }
 
-  if (
-    /^\/proposta\/[^/]+\/diagnostico\/?$/.test(
-      path
-    )
-  ) {
+  /* =====================================================
+     DIAGNÓSTICO
+  ===================================================== */
+
+  if (path.match(/^\/proposta\/[^/]+\/diagnostico\/?$/)) {
     return <ProposalDiagnostico />;
   }
 
-  if (
-    /^\/proposta\/[^/]+\/?$/.test(
-      path
-    )
-  ) {
+  /* =====================================================
+     ENTRADA DA PROPOSTA
+  ===================================================== */
+
+  if (path.match(/^\/proposta\/[^/]+\/?$/)) {
     return <ProposalEntry />;
   }
+
+  /* =====================================================
+     SITE PRINCIPAL
+  ===================================================== */
 
   return <MainSite />;
 }

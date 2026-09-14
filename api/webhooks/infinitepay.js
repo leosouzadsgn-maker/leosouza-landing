@@ -29,9 +29,7 @@ function json(res, status, body) {
 }
 
 function money(value) {
-  return Number(
-    value || 0
-  ).toLocaleString(
+  return Number(value || 0).toLocaleString(
     'pt-BR',
     {
       style: 'currency',
@@ -40,92 +38,51 @@ function money(value) {
   );
 }
 
-function paymentMethodLabel(
-  captureMethod
-) {
-  if (
-    captureMethod ===
-    'credit_card'
-  ) {
+function paymentMethodLabel(captureMethod) {
+  if (captureMethod === 'credit_card') {
     return 'Cartão de crédito';
   }
 
-  if (
-    captureMethod ===
-    'pix'
-  ) {
+  if (captureMethod === 'pix') {
     return 'Pix';
   }
 
-  return (
-    captureMethod ||
-    'Pagamento'
-  );
+  return captureMethod || 'Pagamento';
 }
 
-function normalizePaymentMethod(
-  captureMethod
-) {
-  if (
-    captureMethod ===
-    'credit_card'
-  ) {
+function normalizePaymentMethod(captureMethod) {
+  if (captureMethod === 'credit_card') {
     return 'cartao';
   }
 
-  if (
-    captureMethod ===
-    'pix'
-  ) {
+  if (captureMethod === 'pix') {
     return 'pix';
   }
 
-  return (
-    captureMethod ||
-    'outro'
-  );
+  return captureMethod || 'outro';
 }
 
 function createReceiptNumber() {
-  const now =
-    new Date();
+  const now = new Date();
 
-  const date =
-    [
-      now.getFullYear(),
-      String(
-        now.getMonth() + 1
-      ).padStart(2, '0'),
-      String(
-        now.getDate()
-      ).padStart(2, '0'),
-    ].join('');
+  const date = [
+    now.getFullYear(),
+    String(now.getMonth() + 1).padStart(2, '0'),
+    String(now.getDate()).padStart(2, '0'),
+  ].join('');
 
-  const suffix =
-    randomUUID()
-      .replace(
-        /-/g,
-        ''
-      )
-      .slice(
-        0,
-        8
-      )
-      .toUpperCase();
+  const suffix = randomUUID()
+    .replace(/-/g, '')
+    .slice(0, 8)
+    .toUpperCase();
 
   return `REC-${date}-${suffix}`;
 }
 
 function createValidationCode() {
   return `KRV-${randomUUID()
-    .replace(
-      /-/g,
-      ''
-    )
-    .slice(
-      0,
-      12
-    )
+    .replace(/-/g, '')
+    .slice(0, 12)
     .toUpperCase()}`;
 }
 
@@ -145,21 +102,17 @@ function buildEmailHtml({
   infinitePayReceiptUrl,
   referenceCode,
 }) {
-  const formattedAmount =
-    money(amount);
+  const formattedAmount = money(amount);
 
-  const formattedDate =
-    new Date(
-      paidAt
-    ).toLocaleString(
-      'pt-BR',
-      {
-        dateStyle:
-          'long',
-        timeStyle:
-          'short',
-      }
-    );
+  const formattedDate = new Date(
+    paidAt
+  ).toLocaleString(
+    'pt-BR',
+    {
+      dateStyle: 'long',
+      timeStyle: 'short',
+    }
+  );
 
   return `
 <!DOCTYPE html>
@@ -277,21 +230,14 @@ function buildEmailHtml({
               line-height:1.6;
             "
           >
-            Olá, ${
-              clientName ||
-              'cliente'
-            }.
+            Olá, ${clientName || 'cliente'}.
             Seu pagamento foi identificado
             e registrado com sucesso.
           </div>
 
         </div>
 
-        <div
-          style="
-            padding:30px;
-          "
-        >
+        <div style="padding:30px;">
 
           <div
             style="
@@ -333,10 +279,7 @@ function buildEmailHtml({
                 font-size:13px;
               "
             >
-              ${
-                title ||
-                'Pagamento'
-              }
+              ${title || 'Pagamento'}
             </div>
 
             ${
@@ -390,10 +333,7 @@ function buildEmailHtml({
                   font-weight:700;
                 "
               >
-                ${
-                  brandName ||
-                  'Central de Pagamentos'
-                }
+                ${brandName || 'Central de Pagamentos'}
               </td>
             </tr>
 
@@ -419,11 +359,7 @@ function buildEmailHtml({
                   font-weight:700;
                 "
               >
-                ${
-                  paymentMethodLabel(
-                    paymentMethod
-                  )
-                }
+                ${paymentMethodLabel(paymentMethod)}
               </td>
             </tr>
 
@@ -449,10 +385,7 @@ function buildEmailHtml({
                   font-weight:700;
                 "
               >
-                ${
-                  installments ||
-                  1
-                }x
+                ${installments || 1}x
               </td>
             </tr>
 
@@ -502,10 +435,7 @@ function buildEmailHtml({
                   font-weight:700;
                 "
               >
-                ${
-                  referenceCode ||
-                  '—'
-                }
+                ${referenceCode || '—'}
               </td>
             </tr>
 
@@ -637,7 +567,6 @@ function buildEmailHtml({
       </div>
 
     </div>
-
   </div>
 </body>
 </html>
@@ -649,61 +578,48 @@ async function sendEmail({
   subject,
   html,
 }) {
-  if (
-    !RESEND_API_KEY
-  ) {
+  if (!RESEND_API_KEY) {
     console.warn(
       'RESEND_API_KEY não configurada.'
     );
 
     return {
       sent: false,
-      reason:
-        'RESEND_API_KEY_MISSING',
+      reason: 'RESEND_API_KEY_MISSING',
     };
   }
 
-  const response =
-    await fetch(
-      'https://api.resend.com/emails',
-      {
-        method: 'POST',
+  const response = await fetch(
+    'https://api.resend.com/emails',
+    {
+      method: 'POST',
 
-        headers: {
-          Authorization:
-            `Bearer ${RESEND_API_KEY}`,
+      headers: {
+        Authorization:
+          `Bearer ${RESEND_API_KEY}`,
 
-          'Content-Type':
-            'application/json',
-        },
+        'Content-Type':
+          'application/json',
+      },
 
-        body: JSON.stringify({
-          from:
-            EMAIL_FROM,
-
-          to: [
-            to,
-          ],
-
-          subject,
-
-          html,
-        }),
-      }
-    );
+      body: JSON.stringify({
+        from: EMAIL_FROM,
+        to: [to],
+        subject,
+        html,
+      }),
+    }
+  );
 
   let data = null;
 
   try {
-    data =
-      await response.json();
+    data = await response.json();
   } catch {
     data = null;
   }
 
-  if (
-    !response.ok
-  ) {
+  if (!response.ok) {
     console.error(
       'Erro Resend:',
       data
@@ -711,18 +627,14 @@ async function sendEmail({
 
     return {
       sent: false,
-      reason:
-        'RESEND_ERROR',
-      response:
-        data,
+      reason: 'RESEND_ERROR',
+      response: data,
     };
   }
 
   return {
     sent: true,
-    id:
-      data?.id ||
-      null,
+    id: data?.id || null,
   };
 }
 
@@ -730,20 +642,15 @@ export default async function handler(
   req,
   res
 ) {
-  if (
-    req.method !== 'POST'
-  ) {
+  if (req.method !== 'POST') {
     return json(res, 405, {
       success: false,
-      message:
-        'Método não permitido.',
+      message: 'Método não permitido.',
     });
   }
 
   try {
-    if (
-      !SUPABASE_SERVICE_ROLE_KEY
-    ) {
+    if (!SUPABASE_SERVICE_ROLE_KEY) {
       return json(res, 500, {
         success: false,
         message:
@@ -751,38 +658,26 @@ export default async function handler(
       });
     }
 
-    const payload =
-      req.body ||
-      {};
+    const payload = req.body || {};
 
-    /*
-     * Dados enviados pela InfinitePay
-     */
     const invoiceSlug =
-      payload.invoice_slug ||
-      null;
+      payload.invoice_slug || null;
 
     const orderNsu =
-      payload.order_nsu ||
-      null;
+      payload.order_nsu || null;
 
     const transactionNsu =
-      payload.transaction_nsu ||
-      null;
+      payload.transaction_nsu || null;
 
     const captureMethod =
-      payload.capture_method ||
-      null;
+      payload.capture_method || null;
 
     const installments =
       Number(
-        payload.installments ||
-        1
+        payload.installments || 1
       );
 
-    if (
-      !orderNsu
-    ) {
+    if (!orderNsu) {
       console.error(
         'Webhook sem order_nsu:',
         payload
@@ -801,19 +696,16 @@ export default async function handler(
         SUPABASE_SERVICE_ROLE_KEY,
         {
           auth: {
-            autoRefreshToken:
-              false,
-
-            persistSession:
-              false,
+            autoRefreshToken: false,
+            persistSession: false,
           },
         }
       );
 
     /*
-     * Localiza a cobrança pela referência
-     * que nós mesmos enviamos para a InfinitePay.
+     * LOCALIZA A COBRANÇA
      */
+
     const {
       data: charge,
       error: chargeError,
@@ -838,9 +730,7 @@ export default async function handler(
         )
         .maybeSingle();
 
-    if (
-      chargeError
-    ) {
+    if (chargeError) {
       console.error(
         'Erro ao localizar cobrança:',
         chargeError
@@ -853,9 +743,7 @@ export default async function handler(
       });
     }
 
-    if (
-      !charge
-    ) {
+    if (!charge) {
       console.error(
         'Cobrança não encontrada:',
         orderNsu
@@ -869,12 +757,10 @@ export default async function handler(
     }
 
     /*
-     * Idempotência:
-     * evita registrar duas vezes o mesmo pagamento.
+     * IDEMPOTÊNCIA
      */
-    if (
-      transactionNsu
-    ) {
+
+    if (transactionNsu) {
       const {
         data: existingPayment,
       } =
@@ -882,7 +768,8 @@ export default async function handler(
           .from('payments')
           .select(`
             id,
-            charge_id
+            charge_id,
+            status
           `)
           .eq(
             'gateway_transaction_id',
@@ -890,21 +777,61 @@ export default async function handler(
           )
           .maybeSingle();
 
-      if (
-        existingPayment
-      ) {
+      if (existingPayment) {
+
+        /*
+         * Mesmo que o webhook já tenha criado
+         * o pagamento, garantimos que o financeiro
+         * esteja processado.
+         */
+
+        const {
+          data: financialResult,
+          error: financialError,
+        } =
+          await supabaseAdmin.rpc(
+            'process_payment_financials',
+            {
+              p_payment_id:
+                existingPayment.id,
+            }
+          );
+
+        if (financialError) {
+          console.error(
+            'Erro processando financeiro do pagamento existente:',
+            financialError
+          );
+
+          return json(res, 500, {
+            success: false,
+            code:
+              'FINANCIAL_PROCESSING_ERROR',
+            message:
+              'Pagamento já registrado, mas não foi possível conferir o financeiro.',
+            payment_id:
+              existingPayment.id,
+          });
+        }
+
+        console.log(
+          'FINANCEIRO CONFERIDO PARA PAGAMENTO EXISTENTE:',
+          financialResult
+        );
+
         return json(res, 200, {
           success: true,
           duplicate: true,
+          financial_processed:
+            true,
+          payment_id:
+            existingPayment.id,
           message:
-            'Pagamento já processado.',
+            'Pagamento já processado e financeiro conferido.',
         });
       }
     }
 
-    /*
-     * Segunda proteção contra duplicidade.
-     */
     const {
       data: existingOrderPayment,
     } =
@@ -929,25 +856,61 @@ export default async function handler(
         )
         .maybeSingle();
 
-    if (
-      existingOrderPayment
-    ) {
+    if (existingOrderPayment) {
+
+      const {
+        data: financialResult,
+        error: financialError,
+      } =
+        await supabaseAdmin.rpc(
+          'process_payment_financials',
+          {
+            p_payment_id:
+              existingOrderPayment.id,
+          }
+        );
+
+      if (financialError) {
+        console.error(
+          'Erro processando financeiro de pagamento existente:',
+          financialError
+        );
+
+        return json(res, 500, {
+          success: false,
+          code:
+            'FINANCIAL_PROCESSING_ERROR',
+          message:
+            'Pagamento já registrado, mas não foi possível conferir o financeiro.',
+          payment_id:
+            existingOrderPayment.id,
+        });
+      }
+
+      console.log(
+        'FINANCEIRO CONFERIDO:',
+        financialResult
+      );
+
       return json(res, 200, {
         success: true,
         duplicate: true,
+        financial_processed:
+          true,
+        payment_id:
+          existingOrderPayment.id,
         message:
-          'Pagamento desse pedido já está registrado.',
+          'Pagamento desse pedido já estava registrado e o financeiro foi conferido.',
       });
     }
 
     /*
-     * A InfinitePay envia amount e paid_amount
-     * em centavos.
+     * VALORES DO PAGAMENTO
      */
+
     const amountInCents =
       Number(
-        payload.amount ||
-        0
+        payload.amount || 0
       );
 
     const paidAmountInCents =
@@ -971,35 +934,29 @@ export default async function handler(
     }
 
     const amount =
-      amountInCents /
-      100;
+      amountInCents / 100;
 
     const paidAmount =
       Number.isFinite(
         paidAmountInCents
       )
-        ? paidAmountInCents /
-          100
+        ? paidAmountInCents / 100
         : amount;
 
     /*
-     * No fluxo atual, usamos o valor da cobrança
-     * como valor bruto recebido.
-     *
-     * A diferença entre paid_amount e amount será
-     * armazenada como taxa quando existir.
+     * Mantemos o mesmo cálculo que já estava
+     * no webhook atual.
      */
+
     const feeAmount =
       Math.max(
-        paidAmount -
-          amount,
+        paidAmount - amount,
         0
       );
 
     const netAmount =
       Math.max(
-        amount -
-          feeAmount,
+        amount - feeAmount,
         0
       );
 
@@ -1007,8 +964,9 @@ export default async function handler(
       new Date().toISOString();
 
     /*
-     * Busca cliente.
+     * CLIENTE
      */
+
     const {
       data: client,
       error: clientError,
@@ -1027,9 +985,7 @@ export default async function handler(
         )
         .maybeSingle();
 
-    if (
-      clientError
-    ) {
+    if (clientError) {
       console.warn(
         'Erro buscando cliente:',
         clientError
@@ -1037,8 +993,9 @@ export default async function handler(
     }
 
     /*
-     * Busca marca.
+     * MARCA
      */
+
     const {
       data: brand,
     } =
@@ -1060,8 +1017,9 @@ export default async function handler(
         .maybeSingle();
 
     /*
-     * Registra o pagamento.
+     * REGISTRA O PAGAMENTO
      */
+
     const {
       data: payment,
       error: paymentError,
@@ -1138,8 +1096,58 @@ export default async function handler(
     }
 
     /*
-     * Atualiza a cobrança.
+     * ========================================================
+     * NOVO:
+     * PROCESSA O PAGAMENTO NO FINANCEIRO
+     *
+     * A função do banco:
+     *
+     * payment
+     * -> financial_transactions
+     * -> regra ativa
+     * -> financial_allocations
+     * -> saldos das contas
+     * ========================================================
      */
+
+    const {
+      data: financialResult,
+      error: financialError,
+    } =
+      await supabaseAdmin.rpc(
+        'process_payment_financials',
+        {
+          p_payment_id:
+            payment.id,
+        }
+      );
+
+    if (financialError) {
+      console.error(
+        'Erro processando financeiro do pagamento:',
+        financialError
+      );
+
+      return json(res, 500, {
+        success: false,
+        code:
+          'FINANCIAL_PROCESSING_ERROR',
+        message:
+          'Pagamento registrado, mas não foi possível lançar e distribuir o valor no financeiro.',
+        payment_id:
+          payment.id,
+      });
+    }
+
+    console.log(
+      'FINANCEIRO PROCESSADO:',
+      financialResult
+    );
+
+    /*
+     * ATUALIZA A COBRANÇA
+     */
+
     const {
       error: updateChargeError,
     } =
@@ -1186,8 +1194,9 @@ export default async function handler(
     }
 
     /*
-     * Cria o comprovante.
+     * CRIA O COMPROVANTE
      */
+
     let receipt = null;
 
     const {
@@ -1206,12 +1215,11 @@ export default async function handler(
         )
         .maybeSingle();
 
-    if (
-      existingReceipt
-    ) {
+    if (existingReceipt) {
       receipt =
         existingReceipt;
     } else {
+
       const {
         data: newReceipt,
         error: receiptError,
@@ -1265,8 +1273,9 @@ export default async function handler(
     }
 
     /*
-     * Registra o evento recebido.
+     * REGISTRA O EVENTO
      */
+
     const externalEventId =
       transactionNsu ||
       invoiceSlug ||
@@ -1290,9 +1299,8 @@ export default async function handler(
         )
         .maybeSingle();
 
-    if (
-      !existingEvent
-    ) {
+    if (!existingEvent) {
+
       const {
         error: eventError,
       } =
@@ -1330,9 +1338,7 @@ export default async function handler(
               paidAt,
           });
 
-      if (
-        eventError
-      ) {
+      if (eventError) {
         console.warn(
           'Não foi possível salvar payment_event:',
           eventError
@@ -1341,25 +1347,26 @@ export default async function handler(
     }
 
     /*
-     * URL pública do comprovante.
+     * URL DO COMPROVANTE
      */
+
     const receiptUrl =
       `${SITE_URL}/pagamentos/comprovante?code=${encodeURIComponent(
         receipt.validation_code
       )}`;
 
     /*
-     * Envia e-mail.
+     * E-MAIL
      */
+
     let emailResult = {
       sent: false,
       reason:
         'CLIENT_EMAIL_MISSING',
     };
 
-    if (
-      client?.email
-    ) {
+    if (client?.email) {
+
       const html =
         buildEmailHtml({
           brandName:
@@ -1445,6 +1452,9 @@ export default async function handler(
         paymentMethod:
           captureMethod,
 
+        financial:
+          financialResult,
+
         receipt:
           receipt.receipt_number,
 
@@ -1456,20 +1466,27 @@ export default async function handler(
       }
     );
 
-    /*
-     * Resposta esperada pela InfinitePay.
-     */
     return json(res, 200, {
       success: true,
       message: null,
       payment_id:
         payment.id,
+
+      financial_processed:
+        true,
+
+      financial:
+        financialResult,
+
       receipt_number:
         receipt.receipt_number,
+
       receipt_url:
         receiptUrl,
     });
+
   } catch (error) {
+
     console.error(
       'ERRO NO WEBHOOK INFINITEPAY:',
       error
