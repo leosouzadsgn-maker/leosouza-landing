@@ -272,7 +272,7 @@ function ProposalPedro() {
           <div className="pp-examples">
             <div>
               <span>EXEMPLO COM 12 ATLETAS</span>
-              <strong>12 atletas → R$ 1.200,00</strong>
+              <strong>10 atletas → R$ 1.000,00</strong>
             </div>
 
             <div>
@@ -285,7 +285,7 @@ function ProposalPedro() {
             <span>TOTAL DO EXEMPLO</span>
 
             <strong>
-              R$ 2.000,00
+              R$ 1.800,00
               <small>/ MÊS</small>
             </strong>
           </div>
