@@ -1,0 +1,3106 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap');
+
+:root {
+  --ouro-bg: #0d0f10;
+  --ouro-bg-2: #111416;
+  --ouro-bg-3: #15191a;
+  --ouro-paper: #f0ece4;
+  --ouro-paper-2: #e8e2d7;
+  --ouro-ink: #151616;
+  --ouro-muted: #777a78;
+  --ouro-light-muted: #b6b9b6;
+  --ouro-gold: #c8a75b;
+  --ouro-gold-2: #e1c47a;
+  --ouro-gold-dark: #8d6e2d;
+  --ouro-white: #faf8f3;
+  --ouro-border: rgba(255, 255, 255, 0.1);
+  --ouro-border-dark: rgba(15, 18, 17, 0.12);
+  --ouro-radius: 24px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--ouro-bg);
+  color: var(--ouro-white);
+  font-family: 'DM Sans', sans-serif;
+}
+
+button,
+a {
+  font: inherit;
+}
+
+.ouro-page {
+  position: relative;
+  overflow: hidden;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(200, 167, 91, 0.08), transparent 28%),
+    radial-gradient(circle at 85% 25%, rgba(200, 167, 91, 0.05), transparent 24%),
+    var(--ouro-bg);
+}
+
+.ouro-page::selection {
+  background: var(--ouro-gold);
+  color: #121212;
+}
+
+.ouro-noise {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E");
+}
+
+.ouro-orb {
+  position: fixed;
+  pointer-events: none;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.12;
+  z-index: 0;
+}
+
+.ouro-orb-1 {
+  width: 350px;
+  height: 350px;
+  top: 8%;
+  left: -180px;
+  background: var(--ouro-gold);
+  animation: ouroOrbMove 12s ease-in-out infinite;
+}
+
+.ouro-orb-2 {
+  width: 300px;
+  height: 300px;
+  right: -150px;
+  top: 55%;
+  background: #9a824f;
+  animation: ouroOrbMove 15s ease-in-out infinite reverse;
+}
+
+.ouro-topbar {
+  position: absolute;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 28px 5vw;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(9, 10, 10, 0.42);
+  backdrop-filter: blur(18px);
+}
+
+.ouro-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.ouro-brand-mark {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(200, 167, 91, 0.6);
+  color: var(--ouro-gold-2);
+  font-family: 'Manrope', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.ouro-brand div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ouro-brand strong {
+  font-size: 12px;
+  letter-spacing: 0.15em;
+}
+
+.ouro-brand span {
+  color: #9e9f9d;
+  font-size: 8px;
+  letter-spacing: 0.18em;
+}
+
+.ouro-topbar-label {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  color: #979a96;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+}
+
+.ouro-topbar-label span {
+  color: var(--ouro-gold-2);
+}
+
+.ouro-hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.ouro-hero-grid,
+.ouro-final-grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.18;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 80px 80px;
+  mask-image: radial-gradient(circle at center, black, transparent 75%);
+}
+
+.ouro-hero-inner {
+  position: relative;
+  z-index: 2;
+  width: min(1400px, 90vw);
+  margin: 0 auto;
+  padding: 150px 0 100px;
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 7vw;
+  align-items: center;
+}
+
+.ouro-hero-copy {
+  max-width: 720px;
+}
+
+.ouro-kicker,
+.ouro-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--ouro-gold-2);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.ouro-kicker::before,
+.ouro-eyebrow::before {
+  content: '';
+  width: 28px;
+  height: 1px;
+  background: var(--ouro-gold);
+}
+
+.ouro-hero h1 {
+  margin: 20px 0 4px;
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(72px, 10vw, 180px);
+  line-height: 0.8;
+  letter-spacing: -0.08em;
+  font-weight: 800;
+}
+
+.ouro-hero h1 span {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(225, 196, 122, 0.65);
+}
+
+.ouro-hero-title {
+  margin: 30px 0 12px;
+  color: var(--ouro-gold-2);
+  font-size: clamp(14px, 1.2vw, 19px);
+  font-weight: 800;
+  letter-spacing: 0.18em;
+}
+
+.ouro-hero-description {
+  margin: 0;
+  max-width: 640px;
+  color: #e9e4da;
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(27px, 3vw, 46px);
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+
+.ouro-hero-text {
+  max-width: 620px;
+  margin: 25px 0 0;
+  color: #929691;
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.ouro-primary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 32px;
+  min-height: 58px;
+  padding: 0 22px 0 28px;
+  border: 1px solid rgba(200, 167, 91, 0.7);
+  background: linear-gradient(135deg, #d2b66c, #a98742);
+  color: #171613;
+  text-decoration: none;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    transform 240ms ease,
+    box-shadow 240ms ease,
+    background 240ms ease;
+}
+
+.ouro-primary-button span {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(20, 19, 16, 0.25);
+}
+
+.ouro-primary-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 50px rgba(200, 167, 91, 0.2);
+}
+
+.ouro-hero-visual {
+  position: relative;
+  min-height: 680px;
+  display: grid;
+  place-items: center;
+}
+
+.ouro-hero-glow {
+  position: absolute;
+  width: 60%;
+  height: 60%;
+  border-radius: 50%;
+  background: rgba(200, 167, 91, 0.09);
+  filter: blur(75px);
+  animation: ouroPulse 5s ease-in-out infinite;
+}
+
+.ouro-hero-core {
+  position: relative;
+  width: min(480px, 75vw);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+}
+
+.ouro-core-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(200, 167, 91, 0.2);
+}
+
+.ring-1 {
+  animation: ouroSpin 25s linear infinite;
+}
+
+.ring-2 {
+  inset: 10%;
+  border-style: dashed;
+  animation: ouroSpinReverse 17s linear infinite;
+}
+
+.ring-3 {
+  inset: 22%;
+  border-color: rgba(225, 196, 122, 0.35);
+  box-shadow: 0 0 80px rgba(200, 167, 91, 0.12);
+  animation: ouroSpin 12s linear infinite;
+}
+
+.ouro-core-center {
+  width: 42%;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  border: 1px solid rgba(225, 196, 122, 0.35);
+  background:
+    radial-gradient(circle, rgba(225, 196, 122, 0.12), transparent 70%),
+    rgba(11, 12, 12, 0.9);
+  box-shadow:
+    0 0 70px rgba(200, 167, 91, 0.12),
+    inset 0 0 45px rgba(200, 167, 91, 0.06);
+  border-radius: 50%;
+}
+
+.ouro-core-center span {
+  color: #9a9d97;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+}
+
+.ouro-core-center strong {
+  color: var(--ouro-gold-2);
+  font-family: 'Manrope', sans-serif;
+  font-size: 54px;
+  letter-spacing: -0.08em;
+  line-height: 0.9;
+}
+
+.ouro-core-center small {
+  margin-top: 15px;
+  color: #6f726e;
+  font-size: 7px;
+  letter-spacing: 0.2em;
+}
+
+.ouro-floating-card {
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  width: 180px;
+  padding: 17px;
+  background: rgba(23, 26, 25, 0.9);
+  border: 1px solid rgba(225, 196, 122, 0.17);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(18px);
+}
+
+.ouro-floating-card span {
+  color: var(--ouro-gold-2);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+}
+
+.ouro-floating-card strong {
+  margin-top: 8px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 29px;
+}
+
+.ouro-floating-card small {
+  margin-top: 5px;
+  color: #777b77;
+  line-height: 1.5;
+}
+
+.ouro-floating-card-1 {
+  top: 19%;
+  left: 4%;
+  transform: rotate(-6deg);
+  animation: ouroFloatA 5s ease-in-out infinite;
+}
+
+.ouro-floating-card-2 {
+  right: 0%;
+  bottom: 18%;
+  transform: rotate(5deg);
+  animation: ouroFloatB 6s ease-in-out infinite;
+}
+
+.ouro-hero-data {
+  position: absolute;
+  padding: 8px 11px;
+  border: 1px solid rgba(225, 196, 122, 0.12);
+  color: #6d716d;
+  background: rgba(10, 11, 11, 0.5);
+  font-size: 8px;
+  letter-spacing: 0.14em;
+}
+
+.data-1 {
+  left: 7%;
+  top: 52%;
+}
+
+.data-2 {
+  right: 10%;
+  top: 15%;
+}
+
+.data-3 {
+  left: 22%;
+  bottom: 12%;
+}
+
+.data-4 {
+  right: 12%;
+  bottom: 6%;
+}
+
+.ouro-scroll-indicator {
+  position: absolute;
+  bottom: 34px;
+  left: 50%;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  transform: translateX(-50%);
+  color: #676c68;
+  font-size: 8px;
+  letter-spacing: 0.18em;
+}
+
+.ouro-scroll-indicator span {
+  width: 32px;
+  height: 1px;
+  background: var(--ouro-gold);
+}
+
+.ouro-intro-strip {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding: 18px 5vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  overflow: hidden;
+  background: #101211;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.ouro-intro-item {
+  white-space: nowrap;
+  color: #777b76;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.17em;
+}
+
+.ouro-intro-item:nth-child(odd) {
+  color: var(--ouro-gold-2);
+}
+
+.ouro-intro-line {
+  width: 16px;
+  height: 1px;
+  flex: 0 0 auto;
+  background: rgba(200, 167, 91, 0.3);
+}
+
+.ouro-section {
+  position: relative;
+  z-index: 2;
+  padding: 130px 5vw;
+  background: var(--ouro-paper);
+  color: var(--ouro-ink);
+}
+
+.ouro-section:nth-of-type(even) {
+  background: #ece7dd;
+}
+
+.ouro-section-soft {
+  background:
+    radial-gradient(circle at 10% 5%, rgba(200, 167, 91, 0.09), transparent 25%),
+    var(--ouro-paper-2);
+}
+
+.ouro-section-dark {
+  background:
+    radial-gradient(circle at 80% 10%, rgba(200, 167, 91, 0.08), transparent 22%),
+    #111414;
+  color: var(--ouro-white);
+}
+
+.ouro-section-header {
+  width: min(1320px, 100%);
+  margin: 0 auto 60px;
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: 26px;
+  align-items: start;
+}
+
+.ouro-section-index {
+  padding-top: 7px;
+  color: var(--ouro-gold-dark);
+  font-family: 'Manrope', sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.ouro-section-dark .ouro-section-index {
+  color: var(--ouro-gold-2);
+}
+
+.ouro-section-header h2 {
+  max-width: 1000px;
+  margin: 13px 0 14px;
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(39px, 5vw, 76px);
+  line-height: 0.98;
+  letter-spacing: -0.065em;
+}
+
+.ouro-section-header p {
+  max-width: 840px;
+  margin: 0;
+  color: #747874;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.ouro-section-dark .ouro-section-header p {
+  color: #868a86;
+}
+
+.ouro-two-column {
+  width: min(1320px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr;
+  gap: 8vw;
+}
+
+.ouro-lead {
+  margin: 0;
+  color: #383b39;
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(23px, 2vw, 31px);
+  line-height: 1.27;
+  letter-spacing: -0.035em;
+}
+
+.ouro-two-column h3 {
+  margin: 0 0 20px;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.ouro-feature-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 11px 20px;
+}
+
+.ouro-feature {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  color: #555956;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.ouro-feature-dot {
+  width: 5px;
+  height: 5px;
+  flex: 0 0 auto;
+  background: var(--ouro-gold);
+  border-radius: 50%;
+}
+
+.ouro-operation-cloud {
+  width: min(1100px, 100%);
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.ouro-operation-cloud span {
+  padding: 10px 13px;
+  border: 1px solid rgba(15, 18, 17, 0.1);
+  background: rgba(255, 255, 255, 0.32);
+  color: #60645f;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition:
+    transform 220ms ease,
+    border-color 220ms ease;
+}
+
+.ouro-operation-cloud span:hover {
+  transform: translateY(-3px);
+  border-color: rgba(200, 167, 91, 0.55);
+}
+
+.ouro-statement {
+  width: min(1050px, 100%);
+  margin: 80px auto 0;
+  padding: 34px 0 0;
+  border-top: 1px solid rgba(15, 18, 17, 0.13);
+}
+
+.ouro-statement span {
+  display: block;
+  color: var(--ouro-gold-dark);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.17em;
+}
+
+.ouro-statement strong {
+  display: block;
+  max-width: 900px;
+  margin-top: 11px;
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(27px, 3vw, 46px);
+  line-height: 1.1;
+  letter-spacing: -0.05em;
+}
+
+.ouro-statement.light {
+  border-top: 1px solid rgba(15, 18, 17, 0.12);
+}
+
+.ouro-chain-flow {
+  width: min(970px, 100%);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ouro-chain-node {
+  width: min(660px, 92%);
+  padding: 18px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid rgba(15, 18, 17, 0.11);
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.ouro-chain-node span {
+  color: var(--ouro-gold-dark);
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.ouro-chain-node strong {
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  letter-spacing: 0.08em;
+}
+
+.ouro-chain-arrow {
+  padding: 8px 0;
+  color: var(--ouro-gold-dark);
+  font-size: 15px;
+}
+
+.ouro-modality-grid {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.ouro-modality {
+  min-height: 125px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid rgba(15, 18, 17, 0.1);
+  background: rgba(255, 255, 255, 0.34);
+}
+
+.ouro-modality span {
+  color: var(--ouro-gold-dark);
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.ouro-modality strong {
+  font-family: 'Manrope', sans-serif;
+  font-size: 18px;
+  letter-spacing: -0.02em;
+}
+
+.ouro-note {
+  width: min(1000px, 100%);
+  margin: 24px auto 0;
+  color: #767a75;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.ouro-process-grid {
+  width: min(1320px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 18px;
+}
+
+.ouro-card {
+  padding: 32px;
+  background: rgba(255, 255, 255, 0.56);
+  border: 1px solid rgba(15, 18, 17, 0.1);
+  border-radius: var(--ouro-radius);
+}
+
+.ouro-card-number,
+.ouro-management-card > span,
+.ouro-control-card > span {
+  color: var(--ouro-gold-dark);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+}
+
+.ouro-card h3,
+.ouro-management-card h3,
+.ouro-control-card h3 {
+  margin: 12px 0 13px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 25px;
+  letter-spacing: -0.04em;
+}
+
+.ouro-card p,
+.ouro-management-card p,
+.ouro-control-card p,
+.ouro-roles span {
+  margin: 0;
+  color: #71746f;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.ouro-search-box {
+  margin: 28px 0;
+  padding: 16px;
+  background: rgba(15, 18, 17, 0.04);
+  border: 1px solid rgba(15, 18, 17, 0.08);
+}
+
+.ouro-search-box > span {
+  color: #858983;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+}
+
+.ouro-search-field {
+  margin-top: 10px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid rgba(15, 18, 17, 0.08);
+  background: rgba(255, 255, 255, 0.75);
+  color: #9b9f98;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+}
+
+.ouro-search-field b {
+  color: var(--ouro-gold-dark);
+  font-size: 17px;
+}
+
+.ouro-special-grid {
+  width: min(1250px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+}
+
+.ouro-special-card {
+  min-height: 170px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.42);
+  border: 1px solid rgba(15, 18, 17, 0.09);
+}
+
+.ouro-special-card span {
+  color: var(--ouro-gold-dark);
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+}
+
+.ouro-special-card strong {
+  font-family: 'Manrope', sans-serif;
+  font-size: 16px;
+  line-height: 1.35;
+}
+
+.ouro-card-operation {
+  width: min(1250px, 100%);
+  margin: 0 auto;
+  padding: 32px;
+  display: grid;
+  grid-template-columns: 0.65fr 1.35fr;
+  gap: 35px;
+  border: 1px solid rgba(15, 18, 17, 0.1);
+  border-radius: var(--ouro-radius);
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.ouro-card-credit-visual {
+  min-height: 260px;
+  padding: 26px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(225, 196, 122, 0.3), transparent 35%),
+    linear-gradient(145deg, #1e2220, #0f1210);
+  color: white;
+  border-radius: 20px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.2);
+}
+
+.ouro-chip {
+  width: 44px;
+  height: 34px;
+  border: 1px solid rgba(225, 196, 122, 0.45);
+  background:
+    linear-gradient(135deg, transparent 45%, rgba(225, 196, 122, 0.4) 46%, transparent 49%),
+    linear-gradient(45deg, transparent 45%, rgba(225, 196, 122, 0.35) 46%, transparent 49%);
+  border-radius: 8px;
+}
+
+.ouro-card-credit-visual span {
+  display: block;
+  color: #aaa99f;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+}
+
+.ouro-card-credit-visual strong {
+  display: block;
+  margin-top: 6px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 23px;
+}
+
+.ouro-card-credit-visual small {
+  color: #6e726d;
+  letter-spacing: 0.17em;
+}
+
+.ouro-input-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.ouro-input-item {
+  padding: 15px;
+  border: 1px solid rgba(15, 18, 17, 0.09);
+  background: rgba(255, 255, 255, 0.65);
+}
+
+.ouro-input-item span {
+  display: block;
+  color: #7d817c;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+}
+
+.ouro-input-item div {
+  margin-top: 16px;
+  color: #b2b4af;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+}
+
+.ouro-three-grid {
+  width: min(1320px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+
+.ouro-brand-pills,
+.ouro-bonus-stack,
+.ouro-financial-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 22px 0;
+}
+
+.ouro-brand-pills span,
+.ouro-bonus-stack span,
+.ouro-bonus-stack strong,
+.ouro-financial-pills span {
+  padding: 9px 11px;
+  border: 1px solid rgba(15, 18, 17, 0.09);
+  background: rgba(255, 255, 255, 0.55);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.ouro-rule {
+  margin-top: 17px;
+  padding-top: 17px;
+  border-top: 1px solid rgba(15, 18, 17, 0.08);
+}
+
+.ouro-rule strong {
+  display: block;
+  font-size: 12px;
+}
+
+.ouro-rule span {
+  display: block;
+  margin-top: 6px;
+  color: #81847f;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.ouro-section-dark .ouro-section-header h2 {
+  color: #f2eee5;
+}
+
+.ouro-fc-layout {
+  width: min(1250px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 16px;
+}
+
+.ouro-fc-panel {
+  padding: 38px;
+  border: 1px solid rgba(225, 196, 122, 0.15);
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.ouro-fc-symbol {
+  display: grid;
+  place-items: center;
+  width: 82px;
+  height: 82px;
+  border: 1px solid rgba(225, 196, 122, 0.4);
+  color: var(--ouro-gold-2);
+  font-family: 'Manrope', sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 25px;
+}
+
+.ouro-fc-panel > span {
+  color: var(--ouro-gold-2);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+}
+
+.ouro-fc-panel h3 {
+  max-width: 720px;
+  margin: 17px 0 0;
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(26px, 3vw, 44px);
+  line-height: 1.12;
+  letter-spacing: -0.05em;
+}
+
+.ouro-code-flow {
+  margin-top: 45px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.ouro-code-flow span,
+.ouro-code-flow strong {
+  padding: 11px 12px;
+  border: 1px solid rgba(225, 196, 122, 0.14);
+  color: #b5b8b2;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+}
+
+.ouro-code-flow b {
+  color: var(--ouro-gold-2);
+}
+
+.ouro-code-flow strong {
+  color: #1a1915;
+  border-color: var(--ouro-gold);
+  background: var(--ouro-gold-2);
+}
+
+.ouro-fc-side {
+  display: grid;
+  gap: 12px;
+}
+
+.ouro-fc-example {
+  padding: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.ouro-fc-example span {
+  color: #898e89;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+}
+
+.ouro-fc-example strong {
+  display: block;
+  margin: 9px 0 4px;
+  color: var(--ouro-gold-2);
+  font-family: 'Manrope', sans-serif;
+  font-size: 33px;
+}
+
+.ouro-fc-example p {
+  margin: 0;
+  color: #727771;
+  font-size: 11px;
+}
+
+.ouro-limit {
+  width: min(1250px, 100%);
+  margin: 18px auto 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.ouro-limit > div {
+  padding: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.ouro-limit span {
+  color: #7c817c;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.17em;
+}
+
+.ouro-limit strong {
+  display: block;
+  margin-top: 8px;
+  color: var(--ouro-gold-2);
+  font-family: 'Manrope', sans-serif;
+  font-size: 30px;
+}
+
+.ouro-limit p {
+  margin: 5px 0 0;
+  color: #737873;
+  font-size: 11px;
+}
+
+.ouro-approval-flow {
+  width: min(1250px, 100%);
+  margin: 55px auto 0;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 9px;
+  align-items: center;
+}
+
+.ouro-approval-flow > div {
+  padding: 19px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #a9ada7;
+  text-align: center;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.ouro-approval-flow span {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--ouro-gold-2);
+}
+
+.ouro-approval-flow b {
+  color: #676c67;
+  text-align: center;
+}
+
+.ouro-dark-note {
+  width: min(850px, 100%);
+  margin: 28px auto 0;
+  color: #747973;
+  font-size: 11px;
+  line-height: 1.7;
+  text-align: center;
+}
+
+.ouro-nc-grid {
+  width: min(1000px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.ouro-nc-card {
+  min-height: 160px;
+  padding: 24px;
+  border: 1px solid rgba(15, 18, 17, 0.1);
+  background: rgba(255, 255, 255, 0.45);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.ouro-nc-card span {
+  color: var(--ouro-gold-dark);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.ouro-nc-card strong {
+  font-family: 'Manrope', sans-serif;
+  font-size: 26px;
+}
+
+.ouro-commission-layout {
+  width: min(1220px, 100%);
+  margin: 0 auto;
+  display: grid;
+  gap: 20px;
+}
+
+.ouro-commission-equation {
+  padding: 34px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr;
+  align-items: center;
+  gap: 15px;
+  border: 1px solid rgba(15, 18, 17, 0.1);
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: var(--ouro-radius);
+}
+
+.ouro-commission-equation div {
+  min-height: 110px;
+  padding: 17px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.ouro-commission-equation div:not(.highlight) {
+  border: 1px solid rgba(15, 18, 17, 0.08);
+  background: rgba(255, 255, 255, 0.65);
+}
+
+.ouro-commission-equation .highlight {
+  border: 1px solid rgba(141, 110, 45, 0.32);
+  background: rgba(200, 167, 91, 0.12);
+}
+
+.ouro-commission-equation span {
+  color: #848881;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+}
+
+.ouro-commission-equation strong {
+  font-family: 'Manrope', sans-serif;
+  font-size: 25px;
+}
+
+.ouro-commission-equation b {
+  color: var(--ouro-gold-dark);
+}
+
+.ouro-transparent-box {
+  padding: 27px 32px;
+  border-left: 3px solid var(--ouro-gold);
+  background: rgba(200, 167, 91, 0.07);
+}
+
+.ouro-transparent-box > span {
+  color: var(--ouro-gold-dark);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+}
+
+.ouro-transparent-box p {
+  margin: 11px 0 10px;
+  max-width: 900px;
+  color: #676b66;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.ouro-transparent-box strong {
+  font-family: 'Manrope', sans-serif;
+  font-size: 17px;
+}
+
+.ouro-vendor-panel {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  padding: 30px;
+  background: linear-gradient(145deg, #191d1b, #0f1211);
+  color: white;
+  border-radius: var(--ouro-radius);
+  box-shadow: 0 35px 80px rgba(0, 0, 0, 0.15);
+}
+
+.ouro-vendor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 25px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.ouro-vendor-header span {
+  color: var(--ouro-gold-2);
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+}
+
+.ouro-vendor-header h3 {
+  margin: 7px 0 0;
+  font-family: 'Manrope', sans-serif;
+  font-size: 28px;
+}
+
+.ouro-vendor-tag {
+  padding: 9px 11px;
+  border: 1px solid rgba(225, 196, 122, 0.2);
+  color: #aaa;
+  font-size: 8px;
+  letter-spacing: 0.15em;
+}
+
+.ouro-vendor-metrics {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 9px;
+  margin-top: 19px;
+}
+
+.ouro-vendor-metrics > div {
+  padding: 19px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.ouro-vendor-metrics span {
+  display: block;
+  color: #6f756f;
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: 0.13em;
+}
+
+.ouro-vendor-metrics strong {
+  display: block;
+  margin-top: 8px;
+  color: #f1ede2;
+  font-family: 'Manrope', sans-serif;
+  font-size: 17px;
+}
+
+.ouro-progress {
+  margin-top: 23px;
+}
+
+.ouro-progress > span {
+  display: flex;
+  justify-content: space-between;
+  color: #8f948f;
+  font-size: 9px;
+}
+
+.ouro-progress > span b {
+  color: var(--ouro-gold-2);
+  font-size: 8px;
+  letter-spacing: 0.13em;
+}
+
+.ouro-progress-bar {
+  height: 5px;
+  margin-top: 9px;
+  overflow: hidden;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.ouro-progress-bar span {
+  display: block;
+  width: 78%;
+  height: 100%;
+  background: linear-gradient(90deg, #8e6f31, #e4c77d);
+  animation: ouroProgress 2s ease;
+}
+
+.ouro-units-grid {
+  width: min(1250px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+
+.ouro-unit-card {
+  padding: 28px;
+  background: rgba(255, 255, 255, 0.42);
+  border: 1px solid rgba(15, 18, 17, 0.08);
+}
+
+.ouro-unit-card > span {
+  color: var(--ouro-gold-dark);
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+}
+
+.ouro-unit-card h3 {
+  margin: 10px 0 24px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 22px;
+}
+
+.ouro-cash-layout {
+  width: min(1250px, 100%);
+  margin: 20px auto 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.ouro-cash-card {
+  padding: 30px;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(15, 18, 17, 0.08);
+}
+
+.ouro-cash-card > span {
+  color: var(--ouro-gold-dark);
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+}
+
+.ouro-cash-card > strong {
+  display: block;
+  margin: 10px 0 23px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 22px;
+}
+
+.ouro-cash-card p {
+  margin: 0;
+  color: #72766f;
+  line-height: 1.8;
+  font-size: 13px;
+}
+
+.ouro-docs-grid {
+  width: min(1150px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.ouro-doc-card {
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border: 1px solid rgba(15, 18, 17, 0.08);
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.ouro-doc-icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 52px;
+  border: 1px solid rgba(200, 167, 91, 0.45);
+  color: var(--ouro-gold-dark);
+  font-size: 8px;
+  font-weight: 900;
+}
+
+.ouro-doc-card strong {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+}
+
+.ouro-doc-card span {
+  display: block;
+  margin-top: 4px;
+  color: #858981;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.ouro-signature {
+  width: min(1150px, 100%);
+  margin: 25px auto 0;
+  text-align: center;
+}
+
+.ouro-signature-flow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 9px;
+  align-items: center;
+}
+
+.ouro-signature-flow span,
+.ouro-signature-flow strong {
+  padding: 10px 11px;
+  border: 1px solid rgba(15, 18, 17, 0.08);
+  background: rgba(255, 255, 255, 0.55);
+  font-size: 8px;
+  letter-spacing: 0.1em;
+}
+
+.ouro-signature-flow strong {
+  background: rgba(200, 167, 91, 0.13);
+  border-color: rgba(141, 110, 45, 0.24);
+}
+
+.ouro-signature-flow b {
+  color: var(--ouro-gold-dark);
+}
+
+.ouro-signature p {
+  margin: 20px auto 0;
+  max-width: 700px;
+  color: #7d8179;
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+.ouro-reprint {
+  width: min(1150px, 100%);
+  margin: 55px auto 0;
+  padding: 28px;
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr;
+  gap: 35px;
+  border: 1px solid rgba(15, 18, 17, 0.08);
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.ouro-reprint span {
+  color: var(--ouro-gold-dark);
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+}
+
+.ouro-reprint h3 {
+  margin: 10px 0 0;
+  font-family: 'Manrope', sans-serif;
+  font-size: 22px;
+}
+
+.ouro-extract,
+.ouro-employees {
+  width: min(1320px, 100%);
+  margin: 0 auto;
+  overflow: auto;
+  border: 1px solid rgba(15, 18, 17, 0.1);
+  background: rgba(255, 255, 255, 0.42);
+}
+
+.ouro-extract-head,
+.ouro-extract-row {
+  min-width: 1000px;
+  display: grid;
+  grid-template-columns: 0.7fr 0.8fr 1fr 1fr 0.7fr 1.2fr 0.9fr 0.9fr;
+}
+
+.ouro-extract-head {
+  padding: 13px 17px;
+  background: #e2dbd0;
+  color: #6e736d;
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+}
+
+.ouro-extract-row {
+  padding: 17px;
+  border-top: 1px solid rgba(15, 18, 17, 0.07);
+}
+
+.ouro-extract-row span {
+  color: #575b56;
+  font-size: 10px;
+}
+
+.ouro-extract-row span:last-child {
+  color: var(--ouro-gold-dark);
+  font-weight: 900;
+}
+
+.ouro-employees {
+  margin-top: 10px;
+}
+
+.ouro-employee-head,
+.ouro-employee-row {
+  min-width: 850px;
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 0.8fr 0.8fr;
+}
+
+.ouro-employee-head {
+  padding: 13px 17px;
+  background: #e2dbd0;
+  color: #6e736d;
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+}
+
+.ouro-employee-row {
+  padding: 17px;
+  border-top: 1px solid rgba(15, 18, 17, 0.07);
+}
+
+.ouro-employee-row span {
+  color: #555a55;
+  font-size: 10px;
+}
+
+.ouro-employee-row .status-cell {
+  color: var(--ouro-gold-dark);
+  font-weight: 900;
+}
+
+.ouro-history-callout {
+  width: min(1000px, 100%);
+  margin: 25px auto 0;
+  padding: 25px 28px;
+  border-left: 3px solid var(--ouro-gold);
+  background: rgba(200, 167, 91, 0.07);
+}
+
+.ouro-history-callout strong {
+  color: var(--ouro-gold-dark);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+}
+
+.ouro-history-callout p {
+  margin: 9px 0 0;
+  color: #6f736e;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.ouro-management-grid {
+  width: min(1320px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.ouro-management-card {
+  padding: 30px;
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(15, 18, 17, 0.08);
+}
+
+.ouro-report-grid {
+  width: min(1200px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.ouro-report-card {
+  padding: 26px;
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(15, 18, 17, 0.08);
+}
+
+.ouro-report-card > span {
+  display: block;
+  margin-bottom: 20px;
+  color: var(--ouro-gold-dark);
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.13em;
+}
+
+.ouro-report-card div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 11px;
+  color: #696d67;
+  font-size: 10px;
+}
+
+.ouro-report-card i {
+  width: 4px;
+  height: 4px;
+  background: var(--ouro-gold);
+  border-radius: 50%;
+}
+
+.ouro-negotiation {
+  width: min(1200px, 100%);
+  margin: 16px auto 0;
+  padding: 28px;
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 30px;
+  border: 1px solid rgba(15, 18, 17, 0.08);
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.ouro-negotiation > div:first-child > span {
+  color: var(--ouro-gold-dark);
+  font-size: 8px;
+  font-weight: 900;
+}
+
+.ouro-negotiation h3 {
+  margin: 10px 0;
+  font-family: 'Manrope', sans-serif;
+  font-size: 21px;
+}
+
+.ouro-negotiation p {
+  margin: 0;
+  color: #777b74;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.ouro-negotiation-visual {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto 1fr;
+  gap: 10px;
+  align-items: center;
+}
+
+.ouro-negotiation-visual div {
+  padding: 20px;
+  background: rgba(15, 18, 17, 0.04);
+  border: 1px solid rgba(15, 18, 17, 0.08);
+}
+
+.ouro-negotiation-visual span {
+  display: block;
+  color: #8b9089;
+  font-size: 8px;
+  font-weight: 900;
+}
+
+.ouro-negotiation-visual strong {
+  display: block;
+  margin-top: 9px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 21px;
+}
+
+.ouro-negotiation-visual b {
+  color: var(--ouro-gold-dark);
+}
+
+.ouro-financial-report {
+  width: min(1200px, 100%);
+  margin: 16px auto 0;
+  padding: 25px 28px;
+  border: 1px solid rgba(200, 167, 91, 0.2);
+  background: rgba(200, 167, 91, 0.05);
+}
+
+.ouro-financial-report > span {
+  color: var(--ouro-gold-dark);
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+}
+
+.ouro-financial-pills {
+  margin-bottom: 0;
+}
+
+.ouro-dashboard {
+  width: min(1270px, 100%);
+  margin: 0 auto;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #101312;
+  color: white;
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.18);
+}
+
+.ouro-dashboard-top {
+  min-height: 54px;
+  padding: 0 17px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.ouro-window-dots {
+  display: flex;
+  gap: 5px;
+}
+
+.ouro-window-dots i {
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #595e59;
+}
+
+.ouro-dashboard-top > span {
+  color: #8f938d;
+  font-size: 8px;
+  letter-spacing: 0.14em;
+}
+
+.ouro-status {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 7px;
+  color: #7d827d;
+  font-size: 7px;
+  letter-spacing: 0.13em;
+}
+
+.ouro-status > span {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--ouro-gold-2);
+}
+
+.ouro-dashboard-body {
+  display: grid;
+  grid-template-columns: 190px 1fr;
+  min-height: 520px;
+}
+
+.ouro-dashboard-sidebar {
+  padding: 18px;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.ouro-mini-logo {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  margin-bottom: 25px;
+  border: 1px solid rgba(225, 196, 122, 0.32);
+  color: var(--ouro-gold-2);
+  font-size: 9px;
+  font-weight: 900;
+}
+
+.ouro-side-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 8px;
+  margin-bottom: 3px;
+  color: #70766f;
+  font-size: 9px;
+}
+
+.ouro-side-item span {
+  width: 4px;
+  height: 4px;
+  background: currentColor;
+  border-radius: 50%;
+}
+
+.ouro-side-item.active {
+  background: rgba(200, 167, 91, 0.08);
+  color: var(--ouro-gold-2);
+}
+
+.ouro-dashboard-content {
+  padding: 28px;
+}
+
+.ouro-dashboard-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+}
+
+.ouro-dashboard-heading span,
+.ouro-list-title {
+  color: #717871;
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+}
+
+.ouro-dashboard-heading h3 {
+  margin: 7px 0 0;
+  font-family: 'Manrope', sans-serif;
+  font-size: 27px;
+}
+
+.ouro-dashboard-date {
+  padding: 8px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  color: #777d76;
+  font-size: 7px;
+  letter-spacing: 0.11em;
+}
+
+.ouro-metric-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.ouro-metric {
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.ouro-metric span {
+  color: #70766f;
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: 0.13em;
+}
+
+.ouro-metric strong {
+  display: block;
+  margin-top: 7px;
+  color: #f0ece2;
+  font-family: 'Manrope', sans-serif;
+  font-size: 24px;
+}
+
+.ouro-metric small {
+  display: block;
+  margin-top: 5px;
+  color: #676d66;
+  font-size: 8px;
+}
+
+.ouro-dashboard-main {
+  display: grid;
+  grid-template-columns: 1.5fr 0.8fr;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.ouro-chart,
+.ouro-dashboard-list {
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.ouro-chart-head {
+  display: flex;
+  justify-content: space-between;
+  color: #777d76;
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+.ouro-bars {
+  height: 240px;
+  margin-top: 20px;
+  display: flex;
+  align-items: end;
+  gap: 8px;
+}
+
+.ouro-bar-wrap {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  align-items: end;
+}
+
+.ouro-bar {
+  width: 100%;
+  background: linear-gradient(180deg, #e3c677, #806226);
+  animation: ouroBarGrow 1.6s ease both;
+}
+
+.ouro-bar-wrap:nth-child(2) .ouro-bar {
+  animation-delay: 50ms;
+}
+
+.ouro-bar-wrap:nth-child(3) .ouro-bar {
+  animation-delay: 100ms;
+}
+
+.ouro-bar-wrap:nth-child(4) .ouro-bar {
+  animation-delay: 150ms;
+}
+
+.ouro-bar-wrap:nth-child(5) .ouro-bar {
+  animation-delay: 200ms;
+}
+
+.ouro-bar-wrap:nth-child(6) .ouro-bar {
+  animation-delay: 250ms;
+}
+
+.ouro-bar-wrap:nth-child(7) .ouro-bar {
+  animation-delay: 300ms;
+}
+
+.ouro-bar-wrap:nth-child(8) .ouro-bar {
+  animation-delay: 350ms;
+}
+
+.ouro-bar-wrap:nth-child(9) .ouro-bar {
+  animation-delay: 400ms;
+}
+
+.ouro-bar-wrap:nth-child(10) .ouro-bar {
+  animation-delay: 450ms;
+}
+
+.ouro-bar-wrap:nth-child(11) .ouro-bar {
+  animation-delay: 500ms;
+}
+
+.ouro-bar-wrap:nth-child(12) .ouro-bar {
+  animation-delay: 550ms;
+}
+
+.ouro-list-title {
+  padding-bottom: 13px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.ouro-list-row {
+  padding: 13px 0;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.ouro-list-row div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.ouro-list-row strong {
+  color: #dcdad2;
+  font-size: 9px;
+}
+
+.ouro-list-row span {
+  color: #656a65;
+  font-size: 7px;
+}
+
+.ouro-list-row b {
+  color: var(--ouro-gold-2);
+  font-size: 9px;
+}
+
+.ouro-admin-panel {
+  width: min(1270px, 100%);
+  margin: 18px auto 0;
+  padding: 30px;
+  border: 1px solid rgba(15, 18, 17, 0.09);
+  background: rgba(255, 255, 255, 0.45);
+}
+
+.ouro-admin-title {
+  display: flex;
+  gap: 17px;
+  align-items: flex-start;
+}
+
+.ouro-admin-title > span {
+  color: var(--ouro-gold-dark);
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.ouro-admin-title div > span {
+  color: var(--ouro-gold-dark);
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+}
+
+.ouro-admin-title h3 {
+  margin: 7px 0 0;
+  font-family: 'Manrope', sans-serif;
+  font-size: 26px;
+}
+
+.ouro-admin-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  margin-top: 28px;
+}
+
+.ouro-admin-grid span {
+  padding: 11px 9px;
+  background: rgba(15, 18, 17, 0.04);
+  border: 1px solid rgba(15, 18, 17, 0.06);
+  color: #686d67;
+  text-align: center;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.ouro-control-grid {
+  width: min(1300px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+
+.ouro-control-card {
+  padding: 29px;
+  background: rgba(255, 255, 255, 0.48);
+  border: 1px solid rgba(15, 18, 17, 0.08);
+}
+
+.ouro-roles {
+  display: grid;
+  gap: 11px;
+  margin-top: 22px;
+}
+
+.ouro-roles div {
+  padding: 15px 0;
+  border-top: 1px solid rgba(15, 18, 17, 0.07);
+}
+
+.ouro-roles strong {
+  display: block;
+  color: #515651;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+
+.ouro-roles span {
+  display: block;
+  margin-top: 4px;
+}
+
+.ouro-dark-chain {
+  width: min(850px, 100%);
+  margin: 0 auto;
+}
+
+.ouro-dark-chain .ouro-chain-node {
+  color: #e5e0d6;
+  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.ouro-dark-chain .ouro-chain-node span {
+  color: var(--ouro-gold-2);
+}
+
+.ouro-device-grid {
+  width: min(1200px, 100%);
+  margin: 55px auto 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.ouro-device-grid > div {
+  min-height: 140px;
+  padding: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.ouro-device-grid span,
+.ouro-product-pillars span {
+  color: var(--ouro-gold-2);
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+}
+
+.ouro-device-grid strong {
+  display: block;
+  margin-top: 20px;
+  color: #c8ccc4;
+  font-family: 'Manrope', sans-serif;
+  font-size: 15px;
+  line-height: 1.35;
+}
+
+.ouro-product-pillars {
+  width: min(1200px, 100%);
+  margin: 16px auto 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.ouro-product-pillars div {
+  min-height: 135px;
+  padding: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.ouro-product-pillars strong {
+  display: block;
+  margin-top: 15px;
+  color: #d1d5ce;
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.ouro-network {
+  position: relative;
+  width: min(1100px, 100%);
+  min-height: 650px;
+  margin: 0 auto;
+  padding: 70px 40px;
+  border: 1px solid rgba(15, 18, 17, 0.09);
+  background:
+    radial-gradient(circle at center, rgba(200, 167, 91, 0.11), transparent 30%),
+    rgba(255, 255, 255, 0.4);
+}
+
+.ouro-network::before,
+.ouro-network::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 23%;
+  width: 48%;
+  height: 50%;
+  transform: translateX(-50%);
+  border: 1px dashed rgba(141, 110, 45, 0.18);
+  border-radius: 50%;
+}
+
+.ouro-network::after {
+  width: 28%;
+  height: 32%;
+  top: 31%;
+}
+
+.ouro-network-core {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 3;
+  width: 150px;
+  height: 150px;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(200, 167, 91, 0.55);
+  border-radius: 50%;
+  background: #171a18;
+  color: white;
+  box-shadow: 0 0 70px rgba(200, 167, 91, 0.14);
+}
+
+.ouro-network-core span {
+  color: #8c9089;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+}
+
+.ouro-network-core strong {
+  color: var(--ouro-gold-2);
+  font-family: 'Manrope', sans-serif;
+  font-size: 30px;
+}
+
+.ouro-network-column {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  gap: 11px;
+}
+
+.ouro-network-column:nth-of-type(1) {
+  left: 7%;
+}
+
+.ouro-network-column:nth-of-type(3) {
+  right: 7%;
+}
+
+.ouro-network-column.middle {
+  left: 50%;
+  top: 17%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+}
+
+.ouro-network-column span,
+.ouro-network-bottom span {
+  padding: 12px 14px;
+  border: 1px solid rgba(15, 18, 17, 0.09);
+  background: rgba(255, 255, 255, 0.56);
+  color: #666b65;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+.ouro-network-bottom {
+  position: absolute;
+  left: 50%;
+  bottom: 6%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 9px;
+}
+
+.ouro-sale-flow {
+  width: min(1100px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 100px 1fr;
+  align-items: center;
+  gap: 30px;
+}
+
+.ouro-sale-column {
+  padding: 26px;
+  border: 1px solid rgba(15, 18, 17, 0.09);
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.ouro-sale-column > span {
+  color: var(--ouro-gold-dark);
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+}
+
+.ouro-sale-column > div {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 14px 0;
+  border-top: 1px solid rgba(15, 18, 17, 0.07);
+}
+
+.ouro-sale-column > span + div {
+  margin-top: 20px;
+}
+
+.ouro-sale-column b {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(200, 167, 91, 0.32);
+  color: var(--ouro-gold-dark);
+  font-size: 8px;
+}
+
+.ouro-sale-column strong {
+  color: #5b6059;
+  font-size: 10px;
+}
+
+.ouro-sale-center {
+  color: var(--ouro-gold-dark);
+  font-family: 'Manrope', sans-serif;
+  font-size: 40px;
+  text-align: center;
+}
+
+.ouro-differential {
+  width: min(1200px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+
+.ouro-differential-item {
+  min-height: 125px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid rgba(15, 18, 17, 0.09);
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.ouro-differential-item span {
+  color: var(--ouro-gold-dark);
+  font-size: 8px;
+  font-weight: 900;
+}
+
+.ouro-differential-item strong {
+  font-family: 'Manrope', sans-serif;
+  font-size: 16px;
+}
+
+.ouro-differential-bottom {
+  width: min(1000px, 100%);
+  margin: 28px auto 0;
+  padding: 30px;
+  text-align: center;
+  background: rgba(200, 167, 91, 0.08);
+  border: 1px solid rgba(200, 167, 91, 0.18);
+}
+
+.ouro-differential-bottom strong {
+  font-family: 'Manrope', sans-serif;
+  font-size: 21px;
+  line-height: 1.4;
+}
+
+.ouro-module-grid {
+  width: min(1300px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.ouro-module {
+  min-height: 180px;
+  padding: 23px;
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(15, 18, 17, 0.08);
+  transition:
+    transform 220ms ease,
+    border-color 220ms ease;
+}
+
+.ouro-module:hover {
+  transform: translateY(-4px);
+  border-color: rgba(200, 167, 91, 0.4);
+}
+
+.ouro-module span {
+  color: var(--ouro-gold-dark);
+  font-size: 8px;
+  font-weight: 900;
+}
+
+.ouro-module h3 {
+  margin: 18px 0 10px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 17px;
+}
+
+.ouro-module p {
+  margin: 0;
+  color: #81857f;
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.ouro-growth {
+  width: min(1150px, 100%);
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 9px;
+}
+
+.ouro-growth span {
+  padding: 12px 14px;
+  border: 1px solid rgba(15, 18, 17, 0.1);
+  background: rgba(255, 255, 255, 0.48);
+  color: #636862;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.ouro-growth-statement {
+  width: min(920px, 100%);
+  margin: 55px auto 0;
+  text-align: center;
+}
+
+.ouro-growth-statement span {
+  color: var(--ouro-gold-dark);
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+}
+
+.ouro-growth-statement strong {
+  display: block;
+  margin-top: 11px;
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(32px, 5vw, 60px);
+  letter-spacing: -0.06em;
+}
+
+.ouro-growth-statement p {
+  color: #797d77;
+  font-size: 12px;
+}
+
+.ouro-conclusion {
+  background:
+    radial-gradient(circle at 75% 30%, rgba(200, 167, 91, 0.12), transparent 25%),
+    #131615;
+  color: white;
+}
+
+.ouro-conclusion-inner {
+  width: min(1250px, 100%);
+  margin: 0 auto;
+}
+
+.ouro-conclusion h2 {
+  display: inline-block;
+  margin: 70px 7vw 0 0;
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(58px, 8vw, 125px);
+  line-height: 0.78;
+  letter-spacing: -0.08em;
+}
+
+.ouro-conclusion h2 em {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(225, 196, 122, 0.72);
+  font-style: normal;
+}
+
+.ouro-conclusion p {
+  max-width: 760px;
+  margin: 80px 0 0;
+  color: #92968f;
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+.ouro-final-quote {
+  width: min(1000px, 100%);
+  margin-top: 52px;
+  padding: 32px;
+  border-left: 3px solid var(--ouro-gold);
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.ouro-final-quote span {
+  color: var(--ouro-gold-2);
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+}
+
+.ouro-final-quote strong {
+  display: block;
+  margin-top: 12px;
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(24px, 3vw, 39px);
+  line-height: 1.1;
+}
+
+.ouro-validation-grid {
+  width: min(1050px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 9px;
+}
+
+.ouro-validation-grid div {
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(15, 18, 17, 0.08);
+}
+
+.ouro-validation-grid span {
+  color: var(--ouro-gold-dark);
+  font-size: 8px;
+  font-weight: 900;
+}
+
+.ouro-validation-grid strong {
+  font-size: 10px;
+  color: #666b65;
+}
+
+.ouro-validation-footer {
+  width: min(900px, 100%);
+  margin: 30px auto 0;
+  padding: 28px;
+  text-align: center;
+  background: rgba(200, 167, 91, 0.07);
+  border: 1px solid rgba(200, 167, 91, 0.15);
+}
+
+.ouro-validation-footer strong {
+  font-family: 'Manrope', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.ouro-final-section {
+  position: relative;
+  min-height: 90svh;
+  display: grid;
+  place-items: center;
+  padding: 130px 5vw;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at center, rgba(200, 167, 91, 0.12), transparent 28%),
+    #0c0e0e;
+  text-align: center;
+}
+
+.ouro-final-section > .ouro-reveal {
+  position: relative;
+  z-index: 2;
+  width: min(1100px, 100%);
+}
+
+.ouro-final-logo {
+  margin-top: 36px;
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 7px;
+}
+
+.ouro-final-logo span,
+.ouro-final-logo strong {
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(54px, 8vw, 110px);
+  line-height: 0.9;
+  letter-spacing: -0.08em;
+}
+
+.ouro-final-logo span {
+  color: white;
+}
+
+.ouro-final-logo strong {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(225, 196, 122, 0.8);
+}
+
+.ouro-final-section h2 {
+  max-width: 900px;
+  margin: 45px auto 0;
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(31px, 4vw, 59px);
+  line-height: 1.05;
+  letter-spacing: -0.05em;
+}
+
+.ouro-final-tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 9px;
+  margin-top: 35px;
+}
+
+.ouro-final-tags span {
+  padding: 10px 12px;
+  border: 1px solid rgba(225, 196, 122, 0.15);
+  color: #8e938d;
+  font-size: 8px;
+  letter-spacing: 0.13em;
+}
+
+.ouro-final-line {
+  margin-top: 30px;
+  color: var(--ouro-gold-2);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.2em;
+}
+
+.ouro-final-section .ouro-primary-button {
+  margin-top: 35px;
+}
+
+.ouro-signature {
+  margin-top: 55px;
+  color: #6b706a;
+  font-size: 10px;
+  line-height: 1.7;
+}
+
+.ouro-reveal {
+  opacity: 0;
+  transform: translateY(35px);
+  transition:
+    opacity 850ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 850ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ouro-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes ouroOrbMove {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(80px, 35px, 0);
+  }
+}
+
+@keyframes ouroPulse {
+  0%,
+  100% {
+    transform: scale(0.9);
+    opacity: 0.55;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.9;
+  }
+}
+
+@keyframes ouroSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes ouroSpinReverse {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes ouroFloatA {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-6deg);
+  }
+  50% {
+    transform: translateY(-13px) rotate(-3deg);
+  }
+}
+
+@keyframes ouroFloatB {
+  0%,
+  100% {
+    transform: translateY(0) rotate(5deg);
+  }
+  50% {
+    transform: translateY(14px) rotate(2deg);
+  }
+}
+
+@keyframes ouroProgress {
+  from {
+    width: 0;
+  }
+  to {
+    width: 78%;
+  }
+}
+
+@keyframes ouroBarGrow {
+  from {
+    transform: scaleY(0);
+    transform-origin: bottom;
+  }
+  to {
+    transform: scaleY(1);
+    transform-origin: bottom;
+  }
+}
+
+@media (max-width: 1100px) {
+  .ouro-hero-inner {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .ouro-hero-copy {
+    max-width: 850px;
+  }
+
+  .ouro-hero-visual {
+    min-height: 520px;
+  }
+
+  .ouro-special-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .ouro-vendor-metrics {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .ouro-module-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .ouro-report-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .ouro-admin-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .ouro-device-grid,
+  .ouro-product-pillars {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 800px) {
+  .ouro-topbar {
+    padding: 19px 18px;
+  }
+
+  .ouro-topbar-label {
+    display: none;
+  }
+
+  .ouro-brand span {
+    display: none;
+  }
+
+  .ouro-hero-inner {
+    width: min(92vw, 100%);
+    padding: 130px 0 90px;
+  }
+
+  .ouro-hero h1 {
+    font-size: clamp(68px, 21vw, 125px);
+  }
+
+  .ouro-hero-description {
+    font-size: 28px;
+  }
+
+  .ouro-hero-visual {
+    min-height: 420px;
+  }
+
+  .ouro-floating-card {
+    width: 140px;
+  }
+
+  .ouro-core-center strong {
+    font-size: 36px;
+  }
+
+  .ouro-intro-strip {
+    justify-content: flex-start;
+    overflow-x: auto;
+  }
+
+  .ouro-section {
+    padding: 90px 18px;
+  }
+
+  .ouro-section-header {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-bottom: 38px;
+  }
+
+  .ouro-two-column,
+  .ouro-process-grid,
+  .ouro-card-operation,
+  .ouro-fc-layout,
+  .ouro-cash-layout,
+  .ouro-reprint,
+  .ouro-negotiation,
+  .ouro-sale-flow {
+    grid-template-columns: 1fr;
+  }
+
+  .ouro-feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ouro-modality-grid,
+  .ouro-special-grid,
+  .ouro-three-grid,
+  .ouro-units-grid,
+  .ouro-docs-grid,
+  .ouro-control-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .ouro-nc-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .ouro-commission-equation {
+    grid-template-columns: 1fr;
+  }
+
+  .ouro-commission-equation > b {
+    display: none;
+  }
+
+  .ouro-approval-flow {
+    grid-template-columns: 1fr;
+  }
+
+  .ouro-approval-flow b {
+    display: none;
+  }
+
+  .ouro-module-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .ouro-report-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .ouro-dashboard-body {
+    grid-template-columns: 1fr;
+  }
+
+  .ouro-dashboard-sidebar {
+    display: none;
+  }
+
+  .ouro-dashboard-main {
+    grid-template-columns: 1fr;
+  }
+
+  .ouro-admin-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .ouro-network {
+    min-height: 700px;
+    padding: 20px;
+  }
+
+  .ouro-network-column:nth-of-type(1) {
+    left: 3%;
+  }
+
+  .ouro-network-column:nth-of-type(3) {
+    right: 3%;
+  }
+
+  .ouro-network-column.middle {
+    top: 14%;
+  }
+
+  .ouro-differential {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .ouro-device-grid,
+  .ouro-product-pillars {
+    grid-template-columns: 1fr;
+  }
+
+  .ouro-conclusion h2 {
+    display: block;
+    margin-right: 0;
+    margin-top: 60px;
+  }
+
+  .ouro-validation-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .ouro-hero-visual {
+    min-height: 340px;
+  }
+
+  .ouro-hero-core {
+    width: 300px;
+  }
+
+  .ouro-floating-card {
+    width: 125px;
+    padding: 13px;
+  }
+
+  .ouro-floating-card-1 {
+    left: 0;
+  }
+
+  .ouro-floating-card-2 {
+    right: 0;
+  }
+
+  .ouro-hero-data {
+    display: none;
+  }
+
+  .ouro-modality-grid,
+  .ouro-special-grid,
+  .ouro-three-grid,
+  .ouro-units-grid,
+  .ouro-docs-grid,
+  .ouro-control-grid,
+  .ouro-report-grid,
+  .ouro-management-grid,
+  .ouro-nc-grid,
+  .ouro-validation-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ouro-module-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ouro-vendor-metrics {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .ouro-admin-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .ouro-extract-head,
+  .ouro-extract-row {
+    min-width: 900px;
+  }
+
+  .ouro-network {
+    min-height: 780px;
+  }
+
+  .ouro-network-column.middle {
+    top: 23%;
+    flex-direction: column;
+  }
+
+  .ouro-network-bottom {
+    bottom: 9%;
+    width: 90%;
+  }
+
+  .ouro-sale-flow {
+    gap: 18px;
+  }
+
+  .ouro-sale-center {
+    transform: rotate(90deg);
+  }
+
+  .ouro-differential {
+    grid-template-columns: 1fr;
+  }
+
+  .ouro-conclusion h2 {
+    font-size: 61px;
+  }
+
+  .ouro-final-section {
+    padding: 100px 18px;
+  }
+
+  .ouro-final-section h2 {
+    font-size: 32px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .ouro-reveal {
+    opacity: 1;
+    transform: none;
+  }
+}

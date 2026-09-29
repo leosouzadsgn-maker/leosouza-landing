@@ -9,13 +9,9 @@ import Positioning from './sections/Positioning/Positioning';
 import Sports from './sections/Sports/Sports';
 import Contact from './sections/Contact/Contact';
 
-import ProposalEntry from './proposal/pages/ProposalEntry';
-import ProposalContext from './proposal/pages/ProposalContext';
-import ProposalDiagnostico from './proposal/pages/ProposalDiagnostico';
-import ProposalDirection from './proposal/pages/ProposalDirection';
-import ProposalPlans from './proposal/pages/ProposalPlans';
 import ProposalAdmin from './proposal/pages/ProposalAdmin';
 import ProposalPedro from './proposal/pages/ProposalPedro';
+import ProposalOuroCred from './proposal/pages/ProposalOuroCred';
 
 import TreinamentoKreative from './treinamento/TreinamentoKreative';
 
@@ -37,9 +33,9 @@ function MainSite() {
 function App() {
   const path = window.location.pathname;
 
-  /* =====================================================
-     TREINAMENTO COMERCIAL KREATIVE
-  ===================================================== */
+  // =====================================================
+  // TREINAMENTO KREATIVE
+  // =====================================================
 
   if (
     path === '/treinamentokreative' ||
@@ -48,65 +44,39 @@ function App() {
     return <TreinamentoKreative />;
   }
 
-  /* =====================================================
-     ADMIN
-  ===================================================== */
+  // =====================================================
+  // ADMIN DE PROPOSTAS
+  // =====================================================
 
-  if (path.startsWith('/admin/propostas')) {
+  if (path === '/admin/propostas' || path === '/admin/propostas/') {
     return <ProposalAdmin />;
   }
 
-  /* =====================================================
-     PROPOSTA PEDRO WIESE
-  ===================================================== */
+  // =====================================================
+  // PROPOSTA OUROCRED
+  // =====================================================
 
-  if (path === '/proposta/pedro-wiese' || path === '/proposta/pedro-wiese/') {
+  if (
+  path === '/projetoourocred' ||
+  path === '/projetoourocred/'
+) {
+  return <ProposalOuroCred />;
+}
+
+  // =====================================================
+  // PROPOSTA PEDRO
+  // =====================================================
+
+  if (
+    path === '/proposta/pedro-wiese' ||
+    path === '/proposta/pedro-wiese/'
+  ) {
     return <ProposalPedro />;
   }
 
-  /* =====================================================
-     DIREÇÃO
-  ===================================================== */
-
-  if (path.includes('/direcao')) {
-    return <ProposalDirection />;
-  }
-
-  /* =====================================================
-     PLANOS
-  ===================================================== */
-
-  if (path.includes('/planos')) {
-    return <ProposalPlans />;
-  }
-
-  /* =====================================================
-     CONTEXTO
-  ===================================================== */
-
-  if (path.match(/^\/proposta\/[^/]+\/contexto\/?$/)) {
-    return <ProposalContext />;
-  }
-
-  /* =====================================================
-     DIAGNÓSTICO
-  ===================================================== */
-
-  if (path.match(/^\/proposta\/[^/]+\/diagnostico\/?$/)) {
-    return <ProposalDiagnostico />;
-  }
-
-  /* =====================================================
-     ENTRADA DA PROPOSTA
-  ===================================================== */
-
-  if (path.match(/^\/proposta\/[^/]+\/?$/)) {
-    return <ProposalEntry />;
-  }
-
-  /* =====================================================
-     SITE PRINCIPAL
-  ===================================================== */
+  // =====================================================
+  // SITE PRINCIPAL
+  // =====================================================
 
   return <MainSite />;
 }
