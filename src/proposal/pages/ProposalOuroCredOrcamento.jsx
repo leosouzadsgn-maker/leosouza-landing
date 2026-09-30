@@ -977,13 +977,14 @@ function ProposalOuroCredOrcamento() {
 
             <div className="ouro-orc-accept-buttons">
               <a
-                href="https://wa.me/5538991333384?text=Olá%2C%20Felipe.%20Recebi%20e%20analisei%20a%20proposta%20comercial%20da%20Plataforma%20Ouro%20Cred.%20Gostaria%20de%20conversar%20sobre%20a%20aprovação%20do%20projeto."
-                target="_blank"
-                rel="noreferrer"
-              >
-                FALAR SOBRE A PROPOSTA
-                <span>→</span>
-              </a>
+  href="https://wa.me/553131912341?text=Recebi%20e%20analisei%20a%20proposta%20comercial%20da%20Plataforma%20Ouro%20Cred.%20Gostaria%20de%20conversar%20sobre%20a%20aprova%C3%A7%C3%A3o%20do%20projeto."
+  target="_blank"
+  rel="noreferrer"
+  className="ouro-orc-accept-whatsapp"
+>
+  FALAR SOBRE A PROPOSTA
+  <span>→</span>
+</a>
 
               <button
                 type="button"
