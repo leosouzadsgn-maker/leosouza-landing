@@ -12,6 +12,7 @@ import Contact from './sections/Contact/Contact';
 import ProposalAdmin from './proposal/pages/ProposalAdmin';
 import ProposalPedro from './proposal/pages/ProposalPedro';
 import ProposalOuroCred from './proposal/pages/ProposalOuroCred';
+import ProposalOuroCredOrcamento from './proposal/pages/ProposalOuroCredOrcamento';
 
 import TreinamentoKreative from './treinamento/TreinamentoKreative';
 
@@ -48,20 +49,34 @@ function App() {
   // ADMIN DE PROPOSTAS
   // =====================================================
 
-  if (path === '/admin/propostas' || path === '/admin/propostas/') {
+  if (
+    path === '/admin/propostas' ||
+    path === '/admin/propostas/'
+  ) {
     return <ProposalAdmin />;
   }
 
   // =====================================================
-  // PROPOSTA OUROCRED
+  // ORÇAMENTO OURO CRED
   // =====================================================
 
   if (
-  path === '/projetoourocred' ||
-  path === '/projetoourocred/'
-) {
-  return <ProposalOuroCred />;
-}
+    path === '/projetoourocred/orcamento' ||
+    path === '/projetoourocred/orcamento/'
+  ) {
+    return <ProposalOuroCredOrcamento />;
+  }
+
+  // =====================================================
+  // PROJETO OURO CRED
+  // =====================================================
+
+  if (
+    path === '/projetoourocred' ||
+    path === '/projetoourocred/'
+  ) {
+    return <ProposalOuroCred />;
+  }
 
   // =====================================================
   // PROPOSTA PEDRO
